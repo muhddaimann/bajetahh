@@ -4,6 +4,7 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
   Animated,
+  Platform,
 } from "react-native";
 import { Surface, useTheme, Portal } from "react-native-paper";
 import { useDesign } from "../contexts/designContext";
@@ -30,9 +31,9 @@ export function OverlayModal({
     if (visible) {
       Animated.spring(animatedValue, {
         toValue: 1,
-        useNativeDriver: true,
         tension: 50,
         friction: 8,
+        useNativeDriver: true,
       }).start();
     }
   }, [visible]);
@@ -42,9 +43,7 @@ export function OverlayModal({
       toValue: 0,
       duration: 150,
       useNativeDriver: true,
-    }).start(() => {
-      onDismiss();
-    });
+    }).start(onDismiss);
   };
 
   if (!visible) return null;
@@ -56,7 +55,7 @@ export function OverlayModal({
 
   const translateY = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [100, 0],
+    outputRange: [60, 0],
   });
 
   return (
@@ -69,59 +68,74 @@ export function OverlayModal({
           bottom: 0,
           left: 0,
           zIndex: 1000,
+          justifyContent: "center",
+          alignItems: "center",
+          padding: tokens.spacing.lg,
         }}
       >
         <TouchableWithoutFeedback onPress={dismissable ? hide : undefined}>
           <Animated.View
             style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              padding: tokens.spacing.xl,
+              position: "absolute",
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
               backgroundColor: theme.colors.backdrop,
               opacity: backdropOpacity,
             }}
+          />
+        </TouchableWithoutFeedback>
+
+        <Animated.View
+          renderToHardwareTextureAndroid
+          style={{
+            width: "100%",
+            maxWidth: 500,
+            maxHeight: "85%",
+            opacity: animatedValue,
+            transform: [{ translateY }],
+          }}
+        >
+          <Surface
+            elevation={0}
+            style={{
+              backgroundColor: theme.colors.surface,
+              borderRadius: tokens.radii["2xl"],
+              ...Platform.select({
+                ios: {
+                  shadowColor: "#000",
+                  shadowOpacity: 0.15,
+                  shadowRadius: 24,
+                  shadowOffset: {
+                    width: 0,
+                    height: 12,
+                  },
+                },
+                android: {
+                  elevation: 0,
+                },
+              }),
+            }}
           >
-            <TouchableWithoutFeedback>
-              <Animated.View
-                renderToHardwareTextureAndroid
-                style={{
-                  width: "100%",
-                  maxWidth: 500,
-                  maxHeight: "85%",
-                  opacity: animatedValue,
-                  transform: [{ translateY }],
+            <View
+              style={{
+                width: "100%",
+                overflow: "hidden",
+                borderRadius: tokens.radii["2xl"],
+              }}
+            >
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  padding: tokens.spacing.xl,
                 }}
               >
-                <Surface
-                  elevation={5}
-                  style={{
-                    width: "100%",
-                    backgroundColor: theme.colors.surface,
-                    borderRadius: tokens.radii["2xl"],
-                  }}
-                >
-                  <View
-                    style={{
-                      width: "100%",
-                      overflow: "hidden",
-                      borderRadius: tokens.radii["2xl"],
-                    }}
-                  >
-                    <ScrollView
-                      showsVerticalScrollIndicator={false}
-                      contentContainerStyle={{
-                        padding: tokens.spacing.xl,
-                      }}
-                    >
-                      {content}
-                    </ScrollView>
-                  </View>
-                </Surface>
-              </Animated.View>
-            </TouchableWithoutFeedback>
-          </Animated.View>
-        </TouchableWithoutFeedback>
+                {content}
+              </ScrollView>
+            </View>
+          </Surface>
+        </Animated.View>
       </View>
     </Portal>
   );

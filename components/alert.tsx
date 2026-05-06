@@ -1,5 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import { View, TouchableWithoutFeedback, Animated } from "react-native";
+import {
+  View,
+  TouchableWithoutFeedback,
+  Animated,
+  Platform,
+} from "react-native";
 import {
   Surface,
   Text,
@@ -34,9 +39,9 @@ export function OverlayAlert({
     if (visible) {
       Animated.spring(animatedValue, {
         toValue: 1,
-        useNativeDriver: true,
         tension: 65,
         friction: 7,
+        useNativeDriver: true,
       }).start();
     }
   }, [visible]);
@@ -46,9 +51,7 @@ export function OverlayAlert({
       toValue: 0,
       duration: 150,
       useNativeDriver: true,
-    }).start(() => {
-      onClose();
-    });
+    }).start(onClose);
   };
 
   if (!visible) return null;
@@ -60,12 +63,12 @@ export function OverlayAlert({
 
   const contentScale = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [0.8, 1],
+    outputRange: [0.92, 1],
   });
 
   const contentTranslateY = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [50, 0],
+    outputRange: [30, 0],
   });
 
   return (
@@ -78,117 +81,139 @@ export function OverlayAlert({
           bottom: 0,
           left: 0,
           zIndex: 1000,
+          justifyContent: "center",
+          alignItems: "center",
+          padding: tokens.spacing.xl,
         }}
       >
         <TouchableWithoutFeedback onPress={hide}>
           <Animated.View
             style={{
-              flex: 1,
+              position: "absolute",
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
               backgroundColor: theme.colors.backdrop,
-              justifyContent: "center",
-              alignItems: "center",
-              padding: tokens.spacing.xl,
               opacity: backdropOpacity,
             }}
+          />
+        </TouchableWithoutFeedback>
+
+        <Animated.View
+          renderToHardwareTextureAndroid
+          style={{
+            width: "100%",
+            maxWidth: 320,
+            opacity: animatedValue,
+            transform: [
+              { scale: contentScale },
+              { translateY: contentTranslateY },
+            ],
+          }}
+        >
+          <Surface
+            elevation={0}
+            style={{
+              backgroundColor: theme.colors.surface,
+              borderRadius: tokens.radii["2xl"],
+              ...Platform.select({
+                ios: {
+                  shadowColor: "#000",
+                  shadowOpacity: 0.15,
+                  shadowRadius: 24,
+                  shadowOffset: {
+                    width: 0,
+                    height: 12,
+                  },
+                },
+                android: {
+                  elevation: 0,
+                },
+              }),
+            }}
           >
-            <TouchableWithoutFeedback>
-              <Animated.View
-                renderToHardwareTextureAndroid
+            <View
+              style={{
+                padding: tokens.spacing.xl,
+                gap: tokens.spacing.lg,
+                alignItems: "center",
+                overflow: "hidden",
+                borderRadius: tokens.radii["2xl"],
+              }}
+            >
+              <View
                 style={{
-                  width: "100%",
-                  maxWidth: 320,
-                  opacity: animatedValue,
-                  transform: [
-                    { scale: contentScale },
-                    { translateY: contentTranslateY },
-                  ],
+                  marginBottom: tokens.spacing.xs,
                 }}
               >
-                <Surface
-                  elevation={5}
+                <View
                   style={{
-                    width: "100%",
+                    width: 72,
+                    height: 72,
+                    borderRadius: 36,
+                    justifyContent: "center",
                     alignItems: "center",
-                    backgroundColor: theme.colors.surface,
-                    borderRadius: tokens.radii["2xl"],
-                    padding: tokens.spacing.xl,
-                    gap: tokens.spacing.lg,
+                    backgroundColor: theme.colors.primaryContainer,
                   }}
                 >
-                  <View
+                  <Icon
+                    source="bell-outline"
+                    size={32}
+                    color={theme.colors.primary}
+                  />
+                </View>
+              </View>
+
+              <View
+                style={{
+                  alignItems: "center",
+                  gap: tokens.spacing.sm,
+                }}
+              >
+                {title && (
+                  <Text
+                    variant="headlineSmall"
                     style={{
-                      marginBottom: tokens.spacing.xs,
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      color: theme.colors.onSurface,
                     }}
                   >
-                    <View
-                      style={{
-                        width: 72,
-                        height: 72,
-                        borderRadius: 36,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        backgroundColor: theme.colors.primaryContainer,
-                      }}
-                    >
-                      <Icon
-                        source="bell-outline"
-                        size={32}
-                        color={theme.colors.primary}
-                      />
-                    </View>
-                  </View>
+                    {title}
+                  </Text>
+                )}
 
-                  <View
+                {message && (
+                  <Text
+                    variant="bodyMedium"
                     style={{
-                      alignItems: "center",
-                      gap: tokens.spacing.sm,
+                      textAlign: "center",
+                      lineHeight: 22,
+                      color: theme.colors.onSurfaceVariant,
                     }}
                   >
-                    {title && (
-                      <Text
-                        variant="headlineSmall"
-                        style={{
-                          fontWeight: "bold",
-                          textAlign: "center",
-                          color: theme.colors.onSurface,
-                        }}
-                      >
-                        {title}
-                      </Text>
-                    )}
+                    {message}
+                  </Text>
+                )}
+              </View>
 
-                    {message && (
-                      <Text
-                        variant="bodyMedium"
-                        style={{
-                          textAlign: "center",
-                          lineHeight: 22,
-                          color: theme.colors.onSurfaceVariant,
-                        }}
-                      >
-                        {message}
-                      </Text>
-                    )}
-                  </View>
-
-                  <Button
-                    mode="contained"
-                    onPress={hide}
-                    style={{
-                      width: "100%",
-                      borderRadius: tokens.radii.pill,
-                    }}
-                    contentStyle={{
-                      paddingVertical: tokens.spacing.xs,
-                    }}
-                  >
-                    {buttonText}
-                  </Button>
-                </Surface>
-              </Animated.View>
-            </TouchableWithoutFeedback>
-          </Animated.View>
-        </TouchableWithoutFeedback>
+              <Button
+                mode="contained"
+                onPress={hide}
+                style={{
+                  width: "100%",
+                  borderRadius: tokens.radii.pill,
+                }}
+                contentStyle={{
+                  paddingVertical: tokens.spacing.xs,
+                }}
+              >
+                {buttonText}
+              </Button>
+            </View>
+          </Surface>
+        </Animated.View>
       </View>
     </Portal>
   );
