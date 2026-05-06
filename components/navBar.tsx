@@ -33,12 +33,11 @@ export function NavBar() {
     }).start();
   }, [hideTabBar]);
 
-  const handleActionButton = async () => {
+  const handleActionButton = () => {
     if (isHome) {
       router.push("/(tabs)/home/main");
     } else {
-      await signOut();
-      router.replace("/goodbye");
+      signOut();
     }
   };
 

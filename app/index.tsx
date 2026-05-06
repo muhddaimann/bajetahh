@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
-import { Text, TextInput, Button, Card, HelperText, useTheme, ActivityIndicator } from 'react-native-paper';
+import { Text, TextInput, Button, Card, useTheme, ActivityIndicator } from 'react-native-paper';
 import { router } from 'expo-router';
 import { useDesign } from '../contexts/designContext';
 import { useAuth } from '../contexts/authContext';
@@ -9,7 +9,6 @@ import { KeyboardLayout } from '../components/keyboardLayout';
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(false);
 
   const theme = useTheme();
   const tokens = useDesign();
@@ -24,10 +23,7 @@ export default function Login() {
   const handleLogin = async () => {
     const success = await signIn(username.trim(), password);
     if (success) {
-      setError(false);
       router.replace('/welcome');
-    } else {
-      setError(true);
     }
   };
 
@@ -85,7 +81,6 @@ export default function Login() {
           autoCapitalize="none"
           autoCorrect={false}
           left={<TextInput.Icon icon="account-outline" />}
-          error={error}
           returnKeyType="next"
         />
 
@@ -97,18 +92,11 @@ export default function Login() {
           secureTextEntry
           style={{ marginTop: tokens.spacing.md }}
           left={<TextInput.Icon icon="lock-outline" />}
-          error={error}
           returnKeyType="done"
           onSubmitEditing={handleLogin}
         />
 
-        <HelperText
-          type="error"
-          visible={error}
-          style={{ marginTop: tokens.spacing.xs }}
-        >
-          Invalid username or password
-        </HelperText>
+        <View style={{ height: tokens.spacing.md }} />
 
         <Button
           mode="contained"

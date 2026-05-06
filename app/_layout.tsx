@@ -35,21 +35,21 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <TokenProvider>
-        <AuthProvider>
-          <DesignProvider>
-            <ThemeProvider>
-              <LoaderProvider>
-                <OverlayProvider>
+      <DesignProvider>
+        <ThemeProvider>
+          <LoaderProvider>
+            <OverlayProvider>
+              <TokenProvider>
+                <AuthProvider>
                   <View style={{ flex: 1 }}>
                     <Stack screenOptions={{ headerShown: false }} />
                   </View>
-                </OverlayProvider>
-              </LoaderProvider>
-            </ThemeProvider>
-          </DesignProvider>
-        </AuthProvider>
-      </TokenProvider>
+                </AuthProvider>
+              </TokenProvider>
+            </OverlayProvider>
+          </LoaderProvider>
+        </ThemeProvider>
+      </DesignProvider>
     </SafeAreaProvider>
   );
 }

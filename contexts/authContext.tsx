@@ -1,11 +1,13 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { router } from 'expo-router';
 import { useToken } from './tokenContext';
+import { useOverlay } from './overlayContext';
 
 type AuthContextType = {
   user: string | null;
   isLoading: boolean;
   signIn: (username: string, password: string) => Promise<boolean>;
-  signOut: () => Promise<void>;
+  signOut: (force?: boolean) => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,7 +21,9 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  
   const { getToken, saveToken, deleteToken } = useToken();
+  const { alert, confirm, toast } = useOverlay();
 
   useEffect(() => {
     const loadSession = async () => {
@@ -42,23 +46,53 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         await saveToken(username);
         setUser(username);
+        toast({ message: `Success! Welcome back, ${username}.`, variant: 'success' });
         return true;
       } catch (e) {
-        console.error('Failed to save session', e);
+        alert({ 
+          title: 'System Error', 
+          message: 'Secure storage failed. Please check your device settings.' 
+        });
         return false;
       }
+    } else {
+      alert({ 
+        title: 'Login Failed', 
+        message: 'Invalid username or password. Please try again.' 
+      });
+      return false;
     }
-    return false;
   };
 
-  const signOut = async () => {
+  const performSignOut = useCallback(async () => {
     try {
       await deleteToken();
       setUser(null);
+      router.replace('/goodbye');
     } catch (e) {
       console.error('Failed to delete session', e);
+      alert({ 
+        title: 'Error', 
+        message: 'Could not complete sign out. Please try again.' 
+      });
     }
-  };
+  }, [deleteToken, alert]);
+
+  const signOut = useCallback((force = false) => {
+    if (force) {
+      performSignOut();
+      return;
+    }
+
+    confirm({
+      title: 'Sign Out',
+      message: 'Are you sure you want to log out of your account?',
+      confirmText: 'Log Out',
+      cancelText: 'Cancel',
+      isDestructive: true,
+      onConfirm: performSignOut,
+    });
+  }, [confirm, performSignOut]);
 
   return (
     <AuthContext.Provider value={{ user, isLoading, signIn, signOut }}>
