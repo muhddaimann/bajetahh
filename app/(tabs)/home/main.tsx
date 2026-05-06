@@ -21,7 +21,7 @@ export default function Main() {
   const theme = useTheme();
   const tokens = useDesign();
   const { setHideTabBar } = useTabs();
-  const { alert, confirm, toast, showModal, hideModal } = useOverlay();
+  const { alert, confirm, toast, showModal, hideModal, showSheet, hideSheet } = useOverlay();
   const { showLoader, hideLoader } = useLoader();
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
 
@@ -121,6 +121,46 @@ export default function Main() {
     });
   };
 
+  const handleSheet = () => {
+    showSheet({
+      title: "Item Details",
+      content: (
+        <View style={{ gap: tokens.spacing.lg }}>
+          <Text variant="bodyLarge" style={{ lineHeight: 24 }}>
+            This is the new Page Sheet component. It's designed to provide an immersive experience 
+            for detailed content, similar to how iOS handles item detail views.
+          </Text>
+          
+          <Divider />
+          
+          <View style={{ gap: tokens.spacing.sm }}>
+            <Text variant="titleMedium">Features</Text>
+            {[
+              "Immersive full-screen (90%) coverage",
+              "Smooth slide-up spring animation",
+              "Integrated header with close button",
+              "Visual grabber indicator",
+              "Optimized for long scrollable content"
+            ].map((feature, i) => (
+              <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Icon source="check" size={20} color={theme.colors.primary} />
+                <Text variant="bodyMedium">{feature}</Text>
+              </View>
+            ))}
+          </View>
+
+          <Divider />
+
+          <Text variant="bodyMedium" style={{ lineHeight: 22 }}>
+            You can use this for displaying deep details about an item, long forms, 
+            or complex interactive sub-pages without navigating away from the current context.
+            It respects the top safe area insets and provides a professional feel.
+          </Text>
+        </View>
+      ),
+    });
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <ScrollView
@@ -181,7 +221,7 @@ export default function Main() {
                 Non-intrusive feedback messages at the bottom.
               </Text>
               <Button mode="outlined" onPress={handleToast}>
-                Show Toast
+                Show Toast  
               </Button>
             </View>
 
@@ -194,6 +234,18 @@ export default function Main() {
               </Text>
               <Button mode="outlined" onPress={handleModal}>
                 Show Modal
+              </Button>
+            </View>
+
+            <Divider />
+
+            <View>
+              <Text variant="titleMedium">Page Sheet (iOS Style)</Text>
+              <Text variant="bodySmall" style={{ marginBottom: tokens.spacing.sm }}>
+                Immersive container for detailed content or long forms.
+              </Text>
+              <Button mode="outlined" onPress={handleSheet}>
+                Show Sheet
               </Button>
             </View>
 

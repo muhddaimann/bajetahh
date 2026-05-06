@@ -3,6 +3,7 @@ import { OverlayAlert } from "../components/alert";
 import { OverlayConfirm } from "../components/confirm";
 import { OverlayToast, ToastVariant } from "../components/toast";
 import { OverlayModal } from "../components/modal";
+import { OverlaySheet } from "../components/sheet";
 
 type AlertOptions = {
   title: string;
@@ -36,12 +37,20 @@ type ModalOptions = {
   dismissable?: boolean;
 };
 
+type SheetOptions = {
+  title?: string;
+  content: React.ReactNode;
+  onDismiss?: () => void;
+};
+
 type OverlayContextType = {
   alert: (options: AlertOptions) => void;
   confirm: (options: ConfirmOptions) => void;
   toast: (options: ToastOptions | string) => void;
   showModal: (options: ModalOptions) => void;
   hideModal: () => void;
+  showSheet: (options: SheetOptions) => void;
+  hideSheet: () => void;
 };
 
 const OverlayContext = createContext<OverlayContextType | undefined>(undefined);
@@ -62,6 +71,10 @@ export function OverlayProvider({ children }: { children: React.ReactNode }) {
   // Modal State
   const [modalVisible, setModalVisible] = useState(false);
   const [modalConfig, setModalConfig] = useState<ModalOptions | null>(null);
+
+  // Sheet State
+  const [sheetVisible, setSheetVisible] = useState(false);
+  const [sheetConfig, setSheetConfig] = useState<SheetOptions | null>(null);
 
   const alert = useCallback((options: AlertOptions) => {
     setAlertConfig(options);
@@ -92,6 +105,16 @@ export function OverlayProvider({ children }: { children: React.ReactNode }) {
     modalConfig?.onDismiss?.();
   }, [modalConfig]);
 
+  const showSheet = useCallback((options: SheetOptions) => {
+    setSheetConfig(options);
+    setSheetVisible(true);
+  }, []);
+
+  const hideSheet = useCallback(() => {
+    setSheetVisible(false);
+    sheetConfig?.onDismiss?.();
+  }, [sheetConfig]);
+
   const handleAlertClose = () => {
     setAlertVisible(false);
     alertConfig?.onPress?.();
@@ -108,7 +131,7 @@ export function OverlayProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <OverlayContext.Provider value={{ alert, confirm, toast, showModal, hideModal }}>
+    <OverlayContext.Provider value={{ alert, confirm, toast, showModal, hideModal, showSheet, hideSheet }}>
       {children}
       
       <OverlayAlert 
@@ -135,6 +158,13 @@ export function OverlayProvider({ children }: { children: React.ReactNode }) {
         content={modalConfig?.content}
         onDismiss={hideModal}
         dismissable={modalConfig?.dismissable}
+      />
+
+      <OverlaySheet 
+        visible={sheetVisible}
+        title={sheetConfig?.title}
+        content={sheetConfig?.content}
+        onDismiss={hideSheet}
       />
 
       <OverlayToast 
