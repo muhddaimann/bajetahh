@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, View, TouchableOpacity, StyleSheet } from "react-native";
+import { Animated, View, TouchableOpacity } from "react-native";
 import { Surface, Text, useTheme, Icon, Portal } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDesign } from "../contexts/designContext";
@@ -73,9 +73,9 @@ export function OverlayToast({
     Animated.parallel([
       Animated.spring(translateY, {
         toValue: 0,
-        useNativeDriver: true,
         tension: 40,
         friction: 7,
+        useNativeDriver: true,
       }),
       Animated.timing(opacity, {
         toValue: 1,
@@ -85,6 +85,7 @@ export function OverlayToast({
     ]).start();
 
     const timer = setTimeout(hide, duration);
+
     return () => clearTimeout(timer);
   }, [visible]);
 
@@ -100,9 +101,7 @@ export function OverlayToast({
         duration: 200,
         useNativeDriver: true,
       }),
-    ]).start(() => {
-      onDismiss();
-    });
+    ]).start(onDismiss);
   };
 
   if (!visible) return null;
@@ -111,46 +110,60 @@ export function OverlayToast({
     <Portal>
       <View
         pointerEvents="box-none"
-        style={[
-          styles.container,
-          { 
-            paddingHorizontal: tokens.spacing.md,
-            paddingTop: insets.top + tokens.spacing.md 
-          }
-        ]}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 9999,
+          alignItems: "center",
+          paddingHorizontal: tokens.spacing.md,
+          paddingTop: insets.top + tokens.spacing.md,
+        }}
       >
         <Animated.View
-          renderToHardwareTextureAndroid={true}
+          renderToHardwareTextureAndroid
           style={{
+            width: "100%",
+            maxWidth: 600,
+            alignSelf: "center",
             opacity,
             transform: [{ translateY }],
-            width: '100%',
-            maxWidth: 600,
-            alignSelf: 'center',
-            backgroundColor: 'transparent',
           }}
         >
           <Surface
-            style={[
-              styles.content,
-              {
-                borderRadius: tokens.radii.sm,
-                backgroundColor: variantConfig.bg,
-              }
-            ]}
+            elevation={5}
+            style={{
+              minHeight: 48,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              paddingVertical: tokens.spacing.xs,
+              paddingHorizontal: tokens.spacing.md,
+              borderRadius: tokens.radii.md,
+              backgroundColor: variantConfig.bg,
+            }}
           >
-            <View style={styles.messageContainer}>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                alignItems: "center",
+                paddingVertical: tokens.spacing.sm,
+              }}
+            >
               <Icon
                 source={variantConfig.icon}
                 size={22}
                 color={variantConfig.text}
               />
+
               <Text
                 variant="bodyMedium"
                 style={{
-                  color: variantConfig.text,
-                  marginLeft: tokens.spacing.sm,
                   flex: 1,
+                  marginLeft: tokens.spacing.sm,
+                  color: variantConfig.text,
                 }}
               >
                 {message}
@@ -163,13 +176,17 @@ export function OverlayToast({
                   onAction?.();
                   hide();
                 }}
-                style={styles.actionButton}
+                style={{
+                  marginLeft: tokens.spacing.sm,
+                  paddingHorizontal: tokens.spacing.sm,
+                  paddingVertical: tokens.spacing.md,
+                }}
               >
                 <Text
                   variant="labelLarge"
                   style={{
+                    fontWeight: "bold",
                     color: variantConfig.action,
-                    fontWeight: 'bold',
                   }}
                 >
                   {actionLabel.toUpperCase()}
@@ -182,33 +199,3 @@ export function OverlayToast({
     </Portal>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    zIndex: 9999,
-    alignItems: 'center',
-  },
-  content: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-    minHeight: 48,
-  },
-  messageContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    paddingVertical: 8,
-  },
-  actionButton: {
-    marginLeft: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 10,
-  },
-});

@@ -1,7 +1,14 @@
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, TouchableWithoutFeedback, Animated } from 'react-native';
-import { Surface, Text, Button, useTheme, Portal, Icon } from 'react-native-paper';
-import { useDesign } from '../contexts/designContext';
+import React, { useEffect, useRef } from "react";
+import { View, TouchableWithoutFeedback, Animated } from "react-native";
+import {
+  Surface,
+  Text,
+  Button,
+  useTheme,
+  Portal,
+  Icon,
+} from "react-native-paper";
+import { useDesign } from "../contexts/designContext";
 
 type Props = {
   visible: boolean;
@@ -14,19 +21,19 @@ type Props = {
   isDestructive?: boolean;
 };
 
-export function OverlayConfirm({ 
-  visible, 
-  title, 
-  message, 
-  confirmText = 'Confirm', 
-  cancelText = 'Cancel', 
-  onConfirm, 
+export function OverlayConfirm({
+  visible,
+  title,
+  message,
+  confirmText = "Confirm",
+  cancelText = "Cancel",
+  onConfirm,
   onCancel,
-  isDestructive = false
+  isDestructive = false,
 }: Props) {
   const theme = useTheme();
   const tokens = useDesign();
-  
+
   const animatedValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -69,83 +76,159 @@ export function OverlayConfirm({
 
   return (
     <Portal>
-      <View style={styles.fullscreen}>
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+          zIndex: 1000,
+        }}
+      >
         <TouchableWithoutFeedback onPress={() => hide(onCancel)}>
-          <Animated.View 
-            style={[
-              styles.backdrop, 
-              { opacity: backdropOpacity }
-            ]}
+          <Animated.View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              padding: tokens.spacing.xl,
+              backgroundColor: theme.colors.backdrop,
+              opacity: backdropOpacity,
+            }}
           >
             <TouchableWithoutFeedback>
               <Animated.View
-                renderToHardwareTextureAndroid={true}
+                renderToHardwareTextureAndroid
                 style={{
-                  width: '100%',
+                  width: "100%",
                   maxWidth: 340,
+                  opacity: animatedValue,
                   transform: [
                     { scale: contentScale },
-                    { translateY: contentTranslateY }
+                    { translateY: contentTranslateY },
                   ],
-                  opacity: animatedValue,
-                  backgroundColor: 'transparent',
                 }}
               >
                 <Surface
-                  style={[
-                    styles.content,
-                    { 
-                      backgroundColor: theme.colors.surface,
-                      borderRadius: tokens.radii["2xl"],
-                      padding: tokens.spacing.xl,
-                      gap: tokens.spacing.lg,
-                    }
-                  ]}
                   elevation={5}
+                  style={{
+                    width: "100%",
+                    alignItems: "center",
+                    backgroundColor: theme.colors.surface,
+                    borderRadius: tokens.radii["2xl"],
+                    padding: tokens.spacing.xl,
+                    gap: tokens.spacing.lg,
+                  }}
                 >
-                  <View style={styles.header}>
-                    <View style={[
-                      styles.iconCircle, 
-                      { backgroundColor: isDestructive ? theme.colors.errorContainer : theme.colors.secondaryContainer }
-                    ]}>
-                      <Icon 
-                        source={isDestructive ? "alert-outline" : "help-circle-outline"} 
-                        size={32} 
-                        color={isDestructive ? theme.colors.error : theme.colors.secondary} 
+                  <View
+                    style={{
+                      marginBottom: tokens.spacing.xs,
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 72,
+                        height: 72,
+                        borderRadius: 36,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: isDestructive
+                          ? theme.colors.errorContainer
+                          : theme.colors.secondaryContainer,
+                      }}
+                    >
+                      <Icon
+                        source={
+                          isDestructive
+                            ? "alert-outline"
+                            : "help-circle-outline"
+                        }
+                        size={32}
+                        color={
+                          isDestructive
+                            ? theme.colors.error
+                            : theme.colors.secondary
+                        }
                       />
                     </View>
                   </View>
 
-                  <View style={styles.body}>
+                  <View
+                    style={{
+                      width: "100%",
+                      alignItems: "center",
+                      gap: tokens.spacing.sm,
+                    }}
+                  >
                     {title && (
-                      <Text variant="headlineSmall" style={[styles.title, { color: theme.colors.onSurface }]}>
+                      <Text
+                        variant="headlineSmall"
+                        style={{
+                          fontWeight: "bold",
+                          textAlign: "center",
+                          color: theme.colors.onSurface,
+                        }}
+                      >
                         {title}
                       </Text>
                     )}
+
                     {message && (
-                      <Text variant="bodyMedium" style={[styles.message, { color: theme.colors.onSurfaceVariant }]}>
+                      <Text
+                        variant="bodyMedium"
+                        style={{
+                          textAlign: "center",
+                          lineHeight: 22,
+                          color: theme.colors.onSurfaceVariant,
+                        }}
+                      >
                         {message}
                       </Text>
                     )}
                   </View>
 
-                  <View style={styles.actions}>
-                    <Button 
-                      mode="contained" 
-                      onPress={() => hide(onConfirm)} 
-                      style={[styles.button, { borderRadius: tokens.radii.pill }]}
-                      buttonColor={isDestructive ? theme.colors.error : theme.colors.primary}
-                      textColor={isDestructive ? theme.colors.onError : theme.colors.onPrimary}
-                      contentStyle={{ paddingVertical: 6 }}
+                  <View
+                    style={{
+                      width: "100%",
+                      gap: tokens.spacing.xs,
+                    }}
+                  >
+                    <Button
+                      mode="contained"
+                      onPress={() => hide(onConfirm)}
+                      buttonColor={
+                        isDestructive
+                          ? theme.colors.error
+                          : theme.colors.primary
+                      }
+                      textColor={
+                        isDestructive
+                          ? theme.colors.onError
+                          : theme.colors.onPrimary
+                      }
+                      style={{
+                        width: "100%",
+                        borderRadius: tokens.radii.pill,
+                      }}
+                      contentStyle={{
+                        paddingVertical: tokens.spacing.xs,
+                      }}
                     >
                       {confirmText}
                     </Button>
-                    <Button 
-                      mode="text" 
-                      onPress={() => hide(onCancel)} 
-                      style={[styles.button, { borderRadius: tokens.radii.pill }]}
+
+                    <Button
+                      mode="text"
+                      onPress={() => hide(onCancel)}
                       textColor={theme.colors.onSurfaceVariant}
-                      contentStyle={{ paddingVertical: 6 }}
+                      style={{
+                        width: "100%",
+                        borderRadius: tokens.radii.pill,
+                      }}
+                      contentStyle={{
+                        paddingVertical: tokens.spacing.xs,
+                      }}
                     >
                       {cancelText}
                     </Button>
@@ -159,50 +242,3 @@ export function OverlayConfirm({
     </Portal>
   );
 }
-
-const styles = StyleSheet.create({
-  fullscreen: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 1000,
-  },
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  content: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  header: {
-    marginBottom: 4,
-  },
-  iconCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  body: {
-    alignItems: 'center',
-    gap: 8,
-  },
-  title: {
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  message: {
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-  actions: {
-    width: '100%',
-    gap: 4,
-  },
-  button: {
-    width: '100%',
-  },
-});

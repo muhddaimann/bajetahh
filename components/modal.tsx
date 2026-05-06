@@ -1,7 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, TouchableWithoutFeedback, ScrollView, Animated } from 'react-native';
-import { Surface, useTheme, Portal } from 'react-native-paper';
-import { useDesign } from '../contexts/designContext';
+import React, { useEffect, useRef } from "react";
+import {
+  View,
+  TouchableWithoutFeedback,
+  ScrollView,
+  Animated,
+} from "react-native";
+import { Surface, useTheme, Portal } from "react-native-paper";
+import { useDesign } from "../contexts/designContext";
 
 type Props = {
   visible: boolean;
@@ -10,10 +15,15 @@ type Props = {
   dismissable?: boolean;
 };
 
-export function OverlayModal({ visible, content, onDismiss, dismissable = true }: Props) {
+export function OverlayModal({
+  visible,
+  content,
+  onDismiss,
+  dismissable = true,
+}: Props) {
   const theme = useTheme();
   const tokens = useDesign();
-  
+
   const animatedValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -51,40 +61,58 @@ export function OverlayModal({ visible, content, onDismiss, dismissable = true }
 
   return (
     <Portal>
-      <View style={styles.fullscreen}>
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+          zIndex: 1000,
+        }}
+      >
         <TouchableWithoutFeedback onPress={dismissable ? hide : undefined}>
-          <Animated.View 
-            style={[
-              styles.backdrop, 
-              { opacity: backdropOpacity }
-            ]}
+          <Animated.View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              padding: tokens.spacing.xl,
+              backgroundColor: theme.colors.backdrop,
+              opacity: backdropOpacity,
+            }}
           >
             <TouchableWithoutFeedback>
               <Animated.View
-                renderToHardwareTextureAndroid={true}
+                renderToHardwareTextureAndroid
                 style={{
-                  width: '100%',
+                  width: "100%",
                   maxWidth: 500,
-                  maxHeight: '85%',
-                  transform: [{ translateY }],
+                  maxHeight: "85%",
                   opacity: animatedValue,
-                  backgroundColor: 'transparent',
+                  transform: [{ translateY }],
                 }}
               >
                 <Surface
-                  style={[
-                    styles.surface,
-                    { 
-                      backgroundColor: theme.colors.surface,
-                      borderRadius: tokens.radii["2xl"],
-                    }
-                  ]}
                   elevation={5}
+                  style={{
+                    width: "100%",
+                    backgroundColor: theme.colors.surface,
+                    borderRadius: tokens.radii["2xl"],
+                  }}
                 >
-                  <View style={[styles.contentWrapper, { borderRadius: tokens.radii["2xl"] }]}>
-                    <ScrollView 
+                  <View
+                    style={{
+                      width: "100%",
+                      overflow: "hidden",
+                      borderRadius: tokens.radii["2xl"],
+                    }}
+                  >
+                    <ScrollView
                       showsVerticalScrollIndicator={false}
-                      contentContainerStyle={{ padding: tokens.spacing.xl }}
+                      contentContainerStyle={{
+                        padding: tokens.spacing.xl,
+                      }}
                     >
                       {content}
                     </ScrollView>
@@ -98,24 +126,3 @@ export function OverlayModal({ visible, content, onDismiss, dismissable = true }
     </Portal>
   );
 }
-
-const styles = StyleSheet.create({
-  fullscreen: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 1000,
-  },
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 26,
-  },
-  surface: {
-    width: '100%',
-  },
-  contentWrapper: {
-    width: '100%',
-    overflow: 'hidden',
-  },
-});

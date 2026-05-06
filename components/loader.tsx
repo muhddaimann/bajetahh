@@ -1,6 +1,7 @@
-import React from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
-import { ActivityIndicator, Portal, useTheme, Text } from 'react-native-paper';
+import React from "react";
+import { View, Animated } from "react-native";
+import { ActivityIndicator, Portal, useTheme, Text } from "react-native-paper";
+import { useDesign } from "../contexts/designContext";
 
 type Props = {
   visible: boolean;
@@ -9,35 +10,52 @@ type Props = {
 
 export function OverlayLoader({ visible, message }: Props) {
   const theme = useTheme();
+  const tokens = useDesign();
   const opacity = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
-    if (visible) {
-      Animated.timing(opacity, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: true,
-      }).start();
-    } else {
-      Animated.timing(opacity, {
-        toValue: 0,
-        duration: 150,
-        useNativeDriver: true,
-      }).start();
-    }
+    Animated.timing(opacity, {
+      toValue: visible ? 1 : 0,
+      duration: visible ? 200 : 150,
+      useNativeDriver: true,
+    }).start();
   }, [visible]);
 
   if (!visible) return null;
 
   return (
     <Portal>
-      <Animated.View style={[styles.fullscreen, { opacity }]}>
-        <View style={styles.backdrop}>
-          <ActivityIndicator size="large" color="white" />
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+          zIndex: 9999,
+          opacity,
+        }}
+      >
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: theme.colors.backdrop,
+            justifyContent: "center",
+            alignItems: "center",
+            gap: tokens.spacing.md,
+            paddingHorizontal: tokens.spacing.xl,
+          }}
+        >
+          <ActivityIndicator size="large" color={theme.colors.onPrimary} />
+
           {message && (
-            <Text 
-              variant="bodyLarge" 
-              style={[styles.message, { color: 'white' }]}
+            <Text
+              variant="bodyLarge"
+              style={{
+                color: theme.colors.onPrimary,
+                fontWeight: "500",
+                textAlign: "center",
+              }}
             >
               {message}
             </Text>
@@ -47,21 +65,3 @@ export function OverlayLoader({ visible, message }: Props) {
     </Portal>
   );
 }
-
-const styles = StyleSheet.create({
-  fullscreen: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 9999,
-  },
-  backdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 16,
-  },
-  message: {
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-});
