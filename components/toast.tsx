@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, View, TouchableOpacity, Easing, Platform } from "react-native";
+import { Animated, View, Pressable, Easing } from "react-native";
 import { Surface, Text, useTheme, Icon, Portal } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDesign } from "../contexts/designContext";
@@ -26,38 +26,37 @@ export function OverlayToast({
   const theme = useTheme();
   const tokens = useDesign();
   const insets = useSafeAreaInsets();
-
   const translateY = useRef(new Animated.Value(-100)).current;
   const opacity = useRef(new Animated.Value(0)).current;
   const progress = useRef(new Animated.Value(0)).current;
 
   const variantConfig = {
     default: {
-      bg: theme.colors.surfaceVariant,
+      bg: theme.colors.surface,
       text: theme.colors.onSurfaceVariant,
       icon: icon ?? "information",
       accent: theme.colors.onSurfaceVariant,
     },
     success: {
-      bg: theme.colors.surfaceVariant,
+      bg: theme.colors.surface,
       text: theme.colors.onSurface,
       icon: icon ?? "check-circle",
       accent: theme.colors.tertiary,
     },
     error: {
-      bg: theme.colors.surfaceVariant,
+      bg: theme.colors.surface,
       text: theme.colors.onSurface,
       icon: icon ?? "alert-circle",
       accent: theme.colors.error,
     },
     warning: {
-      bg: theme.colors.surfaceVariant,
+      bg: theme.colors.surface,
       text: theme.colors.onSurface,
       icon: icon ?? "alert",
       accent: theme.colors.secondary,
     },
     info: {
-      bg: theme.colors.surfaceVariant,
+      bg: theme.colors.surface,
       text: theme.colors.onSurface,
       icon: icon ?? "information",
       accent: theme.colors.primary,
@@ -142,89 +141,81 @@ export function OverlayToast({
             transform: [{ translateY }],
           }}
         >
-          <TouchableOpacity activeOpacity={0.9} onPress={hide}>
-            <Surface
-              style={{
-                borderRadius: tokens.radii.xl,
-                backgroundColor: variantConfig.bg,
-                ...Platform.select({
-                  ios: {
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 8 },
-                    shadowOpacity: 0.2,
-                    shadowRadius: 12,
-                  },
-                }),
-              }}
-            >
-              <View
+          <Pressable onPress={hide}>
+            {({ pressed }) => (
+              <Surface
                 style={{
-                  minHeight: 56,
-                  borderRadius: tokens.radii.xl,
-                  overflow: "hidden", // Clip progress bar here
+                  borderRadius: tokens.radii.lg,
+                  backgroundColor: variantConfig.bg,
                 }}
               >
                 <View
                   style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    paddingVertical: tokens.spacing.sm,
-                    paddingHorizontal: tokens.spacing.lg,
-                    flex: 1,
+                    minHeight: 56,
+                    borderRadius: tokens.radii.lg,
+                    overflow: "hidden", // Clip progress bar here
                   }}
                 >
                   <View
                     style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: 16,
-                      backgroundColor: "rgba(255, 255, 255, 0.08)",
-                      justifyContent: "center",
+                      flexDirection: "row",
                       alignItems: "center",
+                      paddingVertical: tokens.spacing.sm,
+                      paddingHorizontal: tokens.spacing.lg,
+                      flex: 1,
                     }}
                   >
-                    <Icon
-                      source={variantConfig.icon}
-                      size={20}
-                      color={variantConfig.accent}
-                    />
+                    <View
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: 16,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Icon
+                        source={variantConfig.icon}
+                        size={20}
+                        color={variantConfig.accent}
+                      />
+                    </View>
+
+                    <Text
+                      variant="bodyMedium"
+                      style={{
+                        flex: 1,
+                        marginLeft: tokens.spacing.md,
+                        color: variantConfig.text,
+                        fontWeight: "500",
+                      }}
+                    >
+                      {message}
+                    </Text>
                   </View>
 
-                  <Text
-                    variant="bodyMedium"
+                  {/* Progress Indicator */}
+                  <View
                     style={{
-                      flex: 1,
-                      marginLeft: tokens.spacing.md,
-                      color: variantConfig.text,
-                      fontWeight: "500",
+                      height: 3,
+                      width: "100%",
+                      position: "absolute",
+                      bottom: 0,
                     }}
                   >
-                    {message}
-                  </Text>
+                    <Animated.View
+                      style={{
+                        height: "100%",
+                        width: progressWidth,
+                        backgroundColor: variantConfig.accent,
+                        opacity: 0.9,
+                      }}
+                    />
+                  </View>
                 </View>
-
-                {/* Progress Indicator */}
-                <View
-                  style={{
-                    height: 3,
-                    width: "100%",
-                    backgroundColor: "rgba(255, 255, 255, 0.05)",
-                    position: "absolute",
-                    bottom: 0,
-                  }}
-                >
-                  <Animated.View
-                    style={{
-                      height: "100%",
-                      width: progressWidth,
-                      backgroundColor: variantConfig.accent,
-                      opacity: 0.9,
-                    }}
-                  />
-                </View>
-              </View>
-            </Surface>
-          </TouchableOpacity>
+              </Surface>
+            )}
+          </Pressable>
         </Animated.View>
       </View>
     </Portal>

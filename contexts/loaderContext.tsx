@@ -28,7 +28,7 @@ export function LoaderProvider({ children }: { children: React.ReactNode }) {
   const performRefresh = useCallback(async (task: () => Promise<void>, msg: string = "Refreshing...") => {
     setIsRefreshing(true);
     showLoader(msg);
-    const refreshTimeout = setTimeout(() => setIsRefreshing(false), 500);
+    const refreshTimeout = setTimeout(() => setIsRefreshing(false), 0);
 
     try {
       await task();

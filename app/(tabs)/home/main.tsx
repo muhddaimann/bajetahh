@@ -268,7 +268,7 @@ export default function Main() {
                 Non-intrusive feedback messages at the bottom.
               </Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: tokens.spacing.xs }}>
-                {(['success', 'error', 'warning', 'info', 'default'] as const).map((v) => (
+                {(['success', 'error', 'warning', 'info'] as const).map((v) => (
                   <Button 
                     key={v}
                     mode="outlined" 
