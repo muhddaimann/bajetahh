@@ -14,7 +14,7 @@ import {
   PlusJakartaSans_700Bold,
 } from "@expo-google-fonts/plus-jakarta-sans";
 import { useEffect } from "react";
-import { View, Platform, StyleSheet } from "react-native";
+import { View, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
 
 SplashScreen.preventAutoHideAsync();
@@ -60,7 +60,7 @@ function AppContent() {
     <View
       style={{
         flex: 1,
-        backgroundColor: theme.colors.surfaceVariant,
+        backgroundColor: Platform.OS === "web" ? theme.colors.surfaceVariant : theme.colors.background,
         alignItems: "center",
       }}
     >
@@ -81,7 +81,12 @@ function AppContent() {
           }),
         }}
       >
-        <Stack screenOptions={{ headerShown: false }} />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: theme.colors.background },
+          }}
+        />
       </View>
     </View>
   );

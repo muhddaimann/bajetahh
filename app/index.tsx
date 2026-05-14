@@ -12,7 +12,6 @@ import {
   Button,
   Card,
   useTheme,
-  ActivityIndicator,
 } from "react-native-paper";
 import { router } from "expo-router";
 import { useDesign } from "../contexts/designContext";
@@ -28,42 +27,22 @@ export default function Login() {
 
   React.useEffect(() => {
     if (!isLoading && user) {
-      router.replace("/welcome");
+      router.replace("/(tabs)/home");
     }
   }, [user, isLoading]);
 
   const handleLogin = async () => {
-    const success = await signIn(username.trim(), password);
-
-    if (success) {
-      router.replace("/welcome");
-    }
+    await signIn(username.trim(), password);
   };
 
-  if (isLoading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: theme.colors.background,
-        }}
-      >
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
-  return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+  const renderContent = () => (
+    <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{
           flex: 1,
           justifyContent: "center",
           paddingHorizontal: tokens.spacing.xl,
-          backgroundColor: theme.colors.background,
         }}
       >
         <Card
@@ -137,6 +116,16 @@ export default function Login() {
           </Button>
         </Card>
       </KeyboardAvoidingView>
+    </View>
+  );
+
+  if (Platform.OS === "web") {
+    return renderContent();
+  }
+
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      {renderContent()}
     </TouchableWithoutFeedback>
   );
 }

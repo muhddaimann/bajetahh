@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { router } from 'expo-router';
 import { useToken } from './tokenContext';
 import { useOverlay } from './overlayContext';
+import { useLoader } from './loaderContext';
 
 type AuthContextType = {
   user: string | null;
@@ -24,6 +25,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   
   const { getToken, saveToken, deleteToken } = useToken();
   const { alert, confirm, toast } = useOverlay();
+  const { showLoader, hideLoader } = useLoader();
 
   useEffect(() => {
     const loadSession = async () => {
@@ -42,13 +44,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const signIn = async (username: string, password: string) => {
+    showLoader("Signing you in...");
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 800));
+
     if (username === 'user' && password === '123') {
       try {
         await saveToken(username);
         setUser(username);
+        hideLoader();
         toast({ message: `Success! Welcome back, ${username}.`, variant: 'success' });
+        router.replace('/(tabs)/home');
         return true;
       } catch (e) {
+        hideLoader();
         alert({ 
           title: 'System Error', 
           message: 'Secure storage failed. Please check your device settings.' 
@@ -56,6 +65,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return false;
       }
     } else {
+      hideLoader();
       alert({ 
         title: 'Login Failed', 
         message: 'Invalid username or password. Please try again.' 
@@ -65,18 +75,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const performSignOut = useCallback(async () => {
+    showLoader("Logging you out...");
     try {
+      await new Promise(resolve => setTimeout(resolve, 800));
       await deleteToken();
       setUser(null);
-      router.replace('/goodbye');
+      hideLoader();
+      router.replace('/');
     } catch (e) {
+      hideLoader();
       console.error('Failed to delete session', e);
       alert({ 
         title: 'Error', 
         message: 'Could not complete sign out. Please try again.' 
       });
     }
-  }, [deleteToken, alert]);
+  }, [deleteToken, alert, showLoader, hideLoader]);
 
   const signOut = useCallback((force = false) => {
     if (force) {
