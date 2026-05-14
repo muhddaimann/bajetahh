@@ -14,7 +14,8 @@ import {
   PlusJakartaSans_700Bold,
 } from "@expo-google-fonts/plus-jakarta-sans";
 import { useEffect } from "react";
-import { View } from "react-native";
+import { View, Platform, StyleSheet } from "react-native";
+import { useTheme } from "react-native-paper";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -41,9 +42,7 @@ export default function RootLayout() {
             <OverlayProvider>
               <TokenProvider>
                 <AuthProvider>
-                  <View style={{ flex: 1 }}>
-                    <Stack screenOptions={{ headerShown: false }} />
-                  </View>
+                  <AppContent />
                 </AuthProvider>
               </TokenProvider>
             </OverlayProvider>
@@ -51,5 +50,39 @@ export default function RootLayout() {
         </ThemeProvider>
       </DesignProvider>
     </SafeAreaProvider>
+  );
+}
+
+function AppContent() {
+  const theme = useTheme();
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: theme.colors.surfaceVariant,
+        alignItems: "center",
+      }}
+    >
+      <View
+        style={{
+          flex: 1,
+          width: "100%",
+          maxWidth: 500,
+          backgroundColor: theme.colors.background,
+          ...(Platform.OS === "web" && {
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.1,
+            shadowRadius: 20,
+            borderLeftWidth: 1,
+            borderRightWidth: 1,
+            borderColor: theme.colors.outlineVariant,
+          }),
+        }}
+      >
+        <Stack screenOptions={{ headerShown: false }} />
+      </View>
+    </View>
   );
 }
