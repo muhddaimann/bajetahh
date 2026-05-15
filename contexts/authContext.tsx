@@ -43,8 +43,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signIn = async (username: string, password: string) => {
     showLoader("Signing you in...");
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise(resolve => setTimeout(resolve, 10000));
 
     if (username === 'user' && password === '123') {
       try {

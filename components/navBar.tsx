@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Animated, View, Pressable, Easing } from "react-native";
 import { Text, useTheme } from "react-native-paper";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePathname, router } from "expo-router";
 import { useDesign } from "../contexts/designContext";
 import { useAuth } from "../contexts/authContext";
@@ -10,7 +9,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export function NavBar() {
   const theme = useTheme();
-  const insets = useSafeAreaInsets();
   const tokens = useDesign();
   const pathname = usePathname();
   const { signOut } = useAuth();
@@ -68,9 +66,7 @@ export function NavBar() {
       renderToHardwareTextureAndroid
       style={{
         position: "absolute",
-        bottom:
-          (insets.bottom > 0 ? insets.bottom : tokens.spacing.md) +
-          tokens.spacing.lg,
+        bottom: tokens.spacing.sm,
         left: tokens.spacing["2xl"],
         right: tokens.spacing["2xl"],
         flexDirection: "row",

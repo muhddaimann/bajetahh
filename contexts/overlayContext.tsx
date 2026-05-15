@@ -1,4 +1,12 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
+import { Platform } from "react-native";
+import { useTheme } from "react-native-paper";
 import { OverlayAlert } from "../components/overlay/alert";
 import { OverlayConfirm } from "../components/overlay/confirm";
 import { OverlayToast, ToastVariant } from "../components/overlay/toast";
@@ -69,6 +77,8 @@ type OverlayContextType = {
 const OverlayContext = createContext<OverlayContextType | undefined>(undefined);
 
 export function OverlayProvider({ children }: { children: React.ReactNode }) {
+  const theme = useTheme();
+
   // Alert State
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertConfig, setAlertConfig] = useState<AlertOptions | null>(null);
@@ -97,6 +107,29 @@ export function OverlayProvider({ children }: { children: React.ReactNode }) {
   const [loaderMessage, setLoaderMessage] = useState<string | undefined>(
     undefined,
   );
+
+  const isAnyOverlayVisible =
+    alertVisible ||
+    confirmVisible ||
+    modalVisible ||
+    sheetVisible ||
+    isLoading;
+
+  useEffect(() => {
+    if (Platform.OS === "web") {
+      // Prevent background scrolling when overlay is active
+      document.body.style.overflow = isAnyOverlayVisible ? "hidden" : "auto";
+
+      // Sync theme-color meta tag with backdrop state
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) {
+        meta.setAttribute(
+          "content",
+          isAnyOverlayVisible ? "#322F37" : theme.colors.background,
+        );
+      }
+    }
+  }, [isAnyOverlayVisible, theme.colors.background]);
 
   const alert = useCallback((options: AlertOptions) => {
     setAlertConfig(options);
