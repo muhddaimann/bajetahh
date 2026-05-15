@@ -10,7 +10,6 @@ import { useTheme, Text, Card, Icon, Avatar } from "react-native-paper";
 import { useDesign } from "../../../contexts/designContext";
 import ScrollTop from "../../../components/scrollTop";
 import { useTabs } from "../../../contexts/tabContext";
-import Header from "../../../components/header";
 import { useRouter } from "expo-router";
 
 export default function Home() {

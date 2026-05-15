@@ -26,7 +26,7 @@ export default function Attendance() {
   const tokens = useDesign();
   const { setHideTabBar } = useTabs();
   const { toast, performRefresh, confirm } = useOverlay();
-  
+
   const [isClockedIn, setIsClockedIn] = useState(false);
   const [clockInTime, setClockInTime] = useState<string | null>(null);
   const scrollViewRef = useRef<ScrollView | null>(null);
@@ -55,7 +55,10 @@ export default function Attendance() {
       message: `Are you sure you want to ${action.toLowerCase()} at ${new Date().toLocaleTimeString()}?`,
       confirmText: action,
       onConfirm: () => {
-        const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const now = new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
         if (!isClockedIn) {
           setClockInTime(now);
           setIsClockedIn(true);
@@ -93,8 +96,9 @@ export default function Attendance() {
         scrollEventThrottle={16}
         contentContainerStyle={{
           flexGrow: 1,
-          paddingHorizontal: tokens.spacing.xl,
+          paddingHorizontal: tokens.spacing.lg,
           paddingBottom: tokens.spacing["3xl"],
+          gap: tokens.spacing.md,
         }}
         showsVerticalScrollIndicator={false}
       >
@@ -110,35 +114,43 @@ export default function Attendance() {
           style={{
             backgroundColor: theme.colors.surface,
             borderRadius: tokens.radii.xl,
-            marginTop: tokens.spacing.md,
           }}
           contentStyle={{
             padding: tokens.spacing.xl,
-            alignItems: 'center',
+            alignItems: "center",
             gap: tokens.spacing.md,
           }}
         >
-          <Avatar.Icon 
-            size={64} 
-            icon={isClockedIn ? "timer" : "timer-off"} 
-            style={{ backgroundColor: isClockedIn ? theme.colors.primaryContainer : theme.colors.surfaceVariant }}
-            color={isClockedIn ? theme.colors.primary : theme.colors.onSurfaceVariant}
+          <Avatar.Icon
+            size={64}
+            icon={isClockedIn ? "timer" : "timer-off"}
+            style={{
+              backgroundColor: isClockedIn
+                ? theme.colors.primaryContainer
+                : theme.colors.surfaceVariant,
+            }}
+            color={
+              isClockedIn ? theme.colors.primary : theme.colors.onSurfaceVariant
+            }
           />
-          <View style={{ alignItems: 'center' }}>
-            <Text variant="headlineSmall" style={{ fontWeight: 'bold' }}>
+          <View style={{ alignItems: "center" }}>
+            <Text variant="headlineSmall" style={{ fontWeight: "bold" }}>
               {isClockedIn ? "Currently Clocked In" : "Not Clocked In"}
             </Text>
             {isClockedIn && (
-              <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>
+              <Text
+                variant="bodyMedium"
+                style={{ color: theme.colors.onSurfaceVariant }}
+              >
                 Since {clockInTime}
               </Text>
             )}
           </View>
-          
-          <Button 
-            mode="contained" 
+
+          <Button
+            mode="contained"
             onPress={toggleClock}
-            style={{ width: '100%', borderRadius: tokens.radii.lg }}
+            style={{ width: "100%", borderRadius: tokens.radii.lg }}
             contentStyle={{ paddingVertical: tokens.spacing.xs }}
           >
             {isClockedIn ? "Clock Out" : "Clock In Now"}
@@ -146,9 +158,17 @@ export default function Attendance() {
         </Card>
 
         {/* History Section */}
-        <View style={{ marginTop: tokens.spacing.xl, gap: tokens.spacing.md }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text variant="titleLarge" style={{ fontWeight: 'bold' }}>Recent Logs</Text>
+        <View style={{ gap: tokens.spacing.md }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
+              Recent Logs
+            </Text>
             <TouchableOpacity onPress={handleRefresh}>
               <Icon source="refresh" size={24} color={theme.colors.primary} />
             </TouchableOpacity>
@@ -163,19 +183,31 @@ export default function Attendance() {
                 borderRadius: tokens.radii.lg,
               }}
             >
-              <Card.Content style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Card.Content
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
                 <View>
                   <Text variant="titleMedium">{log.date}</Text>
-                  <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant }}>
+                  <Text
+                    variant="bodySmall"
+                    style={{ color: theme.colors.onSurfaceVariant }}
+                  >
                     {log.in} - {log.out}
                   </Text>
                 </View>
-                <View style={{ alignItems: 'flex-end' }}>
-                  <Text 
-                    variant="labelLarge" 
-                    style={{ 
-                      color: log.status === "On Time" ? theme.colors.primary : theme.colors.error,
-                      fontWeight: 'bold'
+                <View style={{ alignItems: "flex-end" }}>
+                  <Text
+                    variant="labelLarge"
+                    style={{
+                      color:
+                        log.status === "On Time"
+                          ? theme.colors.primary
+                          : theme.colors.error,
+                      fontWeight: "bold",
                     }}
                   >
                     {log.status}

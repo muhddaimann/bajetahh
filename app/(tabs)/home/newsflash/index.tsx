@@ -6,14 +6,7 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from "react-native";
-import {
-  Text,
-  Card,
-  useTheme,
-  Divider,
-  Icon,
-  Chip,
-} from "react-native-paper";
+import { Text, Card, useTheme, Divider, Icon, Chip } from "react-native-paper";
 import { useDesign } from "../../../../contexts/designContext";
 import { useTabs } from "../../../../contexts/tabContext";
 import { useOverlay } from "../../../../contexts/overlayContext";
@@ -25,7 +18,7 @@ export default function Newsflash() {
   const tokens = useDesign();
   const { setHideTabBar } = useTabs();
   const { performRefresh } = useOverlay();
-  
+
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
@@ -54,24 +47,27 @@ export default function Newsflash() {
       title: "New Office Wellness Program",
       category: "Benefits",
       date: "May 15, 2026",
-      summary: "We are excited to announce a new wellness program starting next month, including gym memberships and mental health support.",
-      image: "https://picsum.photos/seed/wellness/800/400"
+      summary:
+        "We are excited to announce a new wellness program starting next month, including gym memberships and mental health support.",
+      image: "https://picsum.photos/seed/wellness/800/400",
     },
     {
       id: 2,
       title: "Quarterly Townhall Meeting",
       category: "Event",
       date: "May 12, 2026",
-      summary: "Join us this Friday for the Q2 Townhall meeting. We'll be discussing our growth strategy and upcoming projects.",
-      image: "https://picsum.photos/seed/townhall/800/400"
+      summary:
+        "Join us this Friday for the Q2 Townhall meeting. We'll be discussing our growth strategy and upcoming projects.",
+      image: "https://picsum.photos/seed/townhall/800/400",
     },
     {
       id: 3,
       title: "IT System Maintenance",
       category: "System",
       date: "May 10, 2026",
-      summary: "Scheduled maintenance for the internal HRMS portal will take place this Sunday from 2 AM to 6 AM.",
-    }
+      summary:
+        "Scheduled maintenance for the internal HRMS portal will take place this Sunday from 2 AM to 6 AM.",
+    },
   ];
 
   return (
@@ -82,8 +78,9 @@ export default function Newsflash() {
         scrollEventThrottle={16}
         contentContainerStyle={{
           flexGrow: 1,
-          paddingHorizontal: tokens.spacing.xl,
+          paddingHorizontal: tokens.spacing.lg,
           paddingBottom: tokens.spacing["3xl"],
+          gap: tokens.spacing.md,
         }}
         showsVerticalScrollIndicator={false}
       >
@@ -99,27 +96,59 @@ export default function Newsflash() {
           style={{
             backgroundColor: theme.colors.surface,
             borderRadius: tokens.radii.xl,
-            marginTop: tokens.spacing.md,
-            overflow: 'hidden'
+            overflow: "hidden",
           }}
         >
           <Card.Cover source={{ uri: newsItems[0].image }} />
           <Card.Content style={{ padding: tokens.spacing.lg }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: tokens.spacing.xs }}>
-              <Chip textStyle={{ fontSize: 10 }} style={{ height: 24, justifyContent: 'center' }}>{newsItems[0].category}</Chip>
-              <Text variant="labelSmall" style={{ color: theme.colors.onSurfaceVariant }}>{newsItems[0].date}</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: tokens.spacing.xs,
+              }}
+            >
+              <Chip
+                textStyle={{ fontSize: 10 }}
+                style={{ height: 24, justifyContent: "center" }}
+              >
+                {newsItems[0].category}
+              </Chip>
+              <Text
+                variant="labelSmall"
+                style={{ color: theme.colors.onSurfaceVariant }}
+              >
+                {newsItems[0].date}
+              </Text>
             </View>
-            <Text variant="titleLarge" style={{ fontWeight: 'bold' }}>{newsItems[0].title}</Text>
-            <Text variant="bodyMedium" style={{ marginTop: tokens.spacing.xs, color: theme.colors.onSurfaceVariant }}>
+            <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
+              {newsItems[0].title}
+            </Text>
+            <Text
+              variant="bodyMedium"
+              style={{
+                marginTop: tokens.spacing.xs,
+                color: theme.colors.onSurfaceVariant,
+              }}
+            >
               {newsItems[0].summary}
             </Text>
           </Card.Content>
         </Card>
 
         {/* Other News */}
-        <View style={{ marginTop: tokens.spacing.xl, gap: tokens.spacing.lg }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text variant="titleMedium" style={{ fontWeight: 'bold' }}>Previous Updates</Text>
+        <View style={{ gap: tokens.spacing.lg }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Text variant="titleMedium" style={{ fontWeight: "bold" }}>
+              Previous Updates
+            </Text>
             <TouchableOpacity onPress={handleRefresh}>
               <Icon source="sync" size={20} color={theme.colors.primary} />
             </TouchableOpacity>
@@ -135,12 +164,34 @@ export default function Newsflash() {
               }}
             >
               <Card.Content style={{ padding: tokens.spacing.md }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                   <Text variant="labelSmall" style={{ color: theme.colors.primary, fontWeight: 'bold' }}>{item.category.toUpperCase()}</Text>
-                   <Text variant="labelSmall" style={{ color: theme.colors.onSurfaceVariant }}>{item.date}</Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    marginBottom: 4,
+                  }}
+                >
+                  <Text
+                    variant="labelSmall"
+                    style={{ color: theme.colors.primary, fontWeight: "bold" }}
+                  >
+                    {item.category.toUpperCase()}
+                  </Text>
+                  <Text
+                    variant="labelSmall"
+                    style={{ color: theme.colors.onSurfaceVariant }}
+                  >
+                    {item.date}
+                  </Text>
                 </View>
-                <Text variant="titleMedium" style={{ fontWeight: 'bold' }}>{item.title}</Text>
-                <Text variant="bodySmall" numberOfLines={2} style={{ marginTop: 4, color: theme.colors.onSurfaceVariant }}>
+                <Text variant="titleMedium" style={{ fontWeight: "bold" }}>
+                  {item.title}
+                </Text>
+                <Text
+                  variant="bodySmall"
+                  numberOfLines={2}
+                  style={{ marginTop: 4, color: theme.colors.onSurfaceVariant }}
+                >
                   {item.summary}
                 </Text>
               </Card.Content>
