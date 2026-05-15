@@ -72,7 +72,7 @@ export default function Home() {
           paddingTop: tokens.spacing.md,
           paddingBottom: tokens.spacing["3xl"],
           paddingHorizontal: tokens.spacing.lg,
-          gap: tokens.spacing.xl
+          gap: tokens.spacing.md
         }}
         showsVerticalScrollIndicator={false}
       >
