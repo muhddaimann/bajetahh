@@ -33,9 +33,8 @@ export default function Attendance() {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
-    // We might want to show tab bar here depending on UX requirements
-    // For now, let's keep it visible (false) or follow main.tsx pattern
-    setHideTabBar(false);
+    setHideTabBar(true);
+    return () => setHideTabBar(false);
   }, []);
 
   const handleRefresh = async () => {

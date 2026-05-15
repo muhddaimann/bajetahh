@@ -28,7 +28,8 @@ export default function Performance() {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
-    setHideTabBar(false);
+    setHideTabBar(true);
+    return () => setHideTabBar(false);
   }, []);
 
   const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
