@@ -5,14 +5,17 @@ import {
   NativeScrollEvent,
   View,
 } from "react-native";
-import { useTheme, Text, Card } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 import { useDesign } from "../../../contexts/designContext";
 import ScrollTop from "../../../components/scrollTop";
 import { useTabs } from "../../../contexts/tabContext";
+import Head from "../../../components/head";
+import { router, useRouter } from "expo-router";
 
 export default function Home() {
   const theme = useTheme();
   const tokens = useDesign();
+  const router = useRouter();
   const { onScroll } = useTabs();
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -41,33 +44,13 @@ export default function Home() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        <View style={{ flexDirection: "row", gap: tokens.spacing.md }}>
-          <Card
-            mode="contained"
-            style={{ flex: 1, backgroundColor: theme.colors.primaryContainer }}
-          >
-            <Card.Content>
-              <Text variant="labelMedium">Shift Progress</Text>
-              <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
-                6h 45m
-              </Text>
-            </Card.Content>
-          </Card>
-          <Card
-            mode="contained"
-            style={{
-              flex: 1,
-              backgroundColor: theme.colors.secondaryContainer,
-            }}
-          >
-            <Card.Content>
-              <Text variant="labelMedium">Satisfaction</Text>
-              <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
-                98%
-              </Text>
-            </Card.Content>
-          </Card>
-        </View>
+        <Head
+          greeting="Good Morning"
+          username="Aiman Hakim"
+          designation="Customer Service Executive"
+          avatarText="AH"
+          onNotificationPress={() => router.push("home/newsflash")}
+        />
       </ScrollView>
 
       <ScrollTop visible={showScrollTop} onPress={scrollToTop} />
