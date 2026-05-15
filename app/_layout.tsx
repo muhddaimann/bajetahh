@@ -1,11 +1,12 @@
 import { Stack } from "expo-router";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import { DesignProvider } from "../contexts/designContext";
 import { ThemeProvider } from "../contexts/themeContext";
 import { OverlayProvider } from "../contexts/overlayContext";
 import { AuthProvider } from "../contexts/authContext";
 import { TokenProvider } from "../contexts/tokenContext";
 import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
+import Head from "expo-router/head";
 import {
   useFonts,
   SourceSansPro_400Regular,
@@ -13,8 +14,12 @@ import {
   SourceSansPro_700Bold,
 } from "@expo-google-fonts/source-sans-pro";
 import { useEffect } from "react";
-import { View, Platform } from "react-native";
+import { View, Platform, useWindowDimensions } from "react-native";
 import { useTheme } from "react-native-paper";
+import {
+  SafeAreaProvider,
+  SafeAreaView,
+} from "react-native-safe-area-context";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -52,6 +57,17 @@ export default function RootLayout() {
 
 function AppContent() {
   const theme = useTheme();
+  const { width } = useWindowDimensions();
+  const isMobileWidth = width <= 500;
+
+  useEffect(() => {
+    if (Platform.OS === "web") {
+      // Sync body background with theme for mobile browsers
+      document.body.style.backgroundColor = isMobileWidth
+        ? theme.colors.background
+        : theme.colors.surfaceVariant;
+    }
+  }, [theme.colors.background, theme.colors.surfaceVariant, isMobileWidth]);
 
   return (
     <View
@@ -64,7 +80,20 @@ function AppContent() {
         alignItems: "center",
       }}
     >
-      <View
+      <Head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        <meta name="theme-color" content={theme.colors.background} />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
+      </Head>
+      <StatusBar style={theme.dark ? "light" : "dark"} />
+      <SafeAreaView
         style={{
           flex: 1,
           width: "100%",
@@ -72,7 +101,7 @@ function AppContent() {
           backgroundColor: theme.colors.background,
           overflow: "hidden",
           ...(Platform.OS === "web" && {
-            shadowColor: "#000",
+            shadowColor: theme.colors.shadow,
             shadowOffset: { width: 0, height: 0 },
             shadowOpacity: 0.1,
             shadowRadius: 20,
@@ -90,7 +119,7 @@ function AppContent() {
             },
           }}
         />
-      </View>
+      </SafeAreaView>
     </View>
   );
 }
