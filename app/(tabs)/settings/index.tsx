@@ -24,11 +24,9 @@ export default function Settings() {
   const theme = useTheme();
   const tokens = useDesign();
   const { onScroll } = useTabs();
-  const { confirm, toast } = useOverlay();
+  const { toast } = useOverlay();
   const scrollRef = useRef<ScrollView | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [notifications, setNotifications] = useState(true);
-  const [biometrics, setBiometrics] = useState(false);
 
   const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offset = e.nativeEvent.contentOffset.y;
@@ -59,8 +57,6 @@ export default function Settings() {
           style={{
             backgroundColor: theme.colors.surface,
             borderRadius: tokens.radii.xl,
-            marginTop: tokens.spacing.md,
-            marginBottom: tokens.spacing.xl,
           }}
         >
           <Card.Content
@@ -122,32 +118,6 @@ export default function Settings() {
             }}
           >
             <List.Item
-              title="Push Notifications"
-              description="Receive updates on leave & news"
-              left={(props) => <List.Icon {...props} icon="bell-outline" />}
-              right={() => (
-                <Switch
-                  value={notifications}
-                  onValueChange={setNotifications}
-                  color={theme.colors.primary}
-                />
-              )}
-            />
-            <Divider />
-            <List.Item
-              title="Biometric Login"
-              description="Face ID or Fingerprint"
-              left={(props) => <List.Icon {...props} icon="fingerprint" />}
-              right={() => (
-                <Switch
-                  value={biometrics}
-                  onValueChange={setBiometrics}
-                  color={theme.colors.primary}
-                />
-              )}
-            />
-            <Divider />
-            <List.Item
               title="Language"
               description="English (US)"
               left={(props) => <List.Icon {...props} icon="translate" />}
@@ -158,7 +128,7 @@ export default function Settings() {
         </View>
 
         {/* Support Section */}
-        <View style={{ marginTop: tokens.spacing.xl, gap: tokens.spacing.md }}>
+        <View style={{ gap: tokens.spacing.md }}>
           <Text
             variant="titleMedium"
             style={{ fontWeight: "bold", marginLeft: 4 }}
