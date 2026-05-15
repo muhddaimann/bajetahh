@@ -68,6 +68,17 @@ function AppContent() {
       document.body.style.overscrollBehavior = "none";
       document.documentElement.style.overscrollBehavior = "none";
 
+      // 2. Register Service Worker for PWA
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').then(registration => {
+            console.log('SW registered: ', registration);
+          }).catch(registrationError => {
+            console.log('SW registration failed: ', registrationError);
+          });
+        });
+      }
+
       const color = isOverlayActive
         ? "#9c9ea0"
         : !isMobileWidth
