@@ -5,26 +5,20 @@ import {
   NativeScrollEvent,
   View,
 } from "react-native";
-import {
-  useTheme,
-  Text,
-  Card,
-  Avatar,
-  List,
-  Switch,
-  Divider,
-  Button,
-} from "react-native-paper";
+import { useTheme, Text, Card, List, Divider } from "react-native-paper";
 import { useDesign } from "../../../contexts/designContext";
 import { useTabs } from "../../../contexts/tabContext";
 import { useOverlay } from "../../../contexts/overlayContext";
 import ScrollTop from "../../../components/scrollTop";
+import Tail from "../../../components/tail";
+import { useRouter } from "expo-router";
 
 export default function Settings() {
   const theme = useTheme();
   const tokens = useDesign();
   const { onScroll } = useTabs();
   const { toast } = useOverlay();
+  const router = useRouter();
   const scrollRef = useRef<ScrollView | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
@@ -52,55 +46,13 @@ export default function Settings() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        <Card
-          mode="elevated"
-          style={{
-            backgroundColor: theme.colors.surface,
-            borderRadius: tokens.radii.xl,
-          }}
-        >
-          <Card.Content
-            style={{
-              padding: tokens.spacing.xl,
-              alignItems: "center",
-              gap: tokens.spacing.sm,
-            }}
-          >
-            <Avatar.Image
-              size={80}
-              source={{ uri: "https://picsum.photos/seed/agent/200" }}
-            />
-            <View style={{ alignItems: "center" }}>
-              <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
-                Agent Smith
-              </Text>
-              <Text
-                variant="bodyMedium"
-                style={{ color: theme.colors.onSurfaceVariant }}
-              >
-                Senior Customer Support
-              </Text>
-              <Text
-                variant="labelSmall"
-                style={{ color: theme.colors.primary, marginTop: 4 }}
-              >
-                Emp ID: #CS-9842
-              </Text>
-            </View>
-            <Button
-              mode="outlined"
-              onPress={() => toast("Profile editing coming soon")}
-              style={{
-                marginTop: tokens.spacing.sm,
-                borderRadius: tokens.radii.pill,
-              }}
-              compact
-            >
-              Edit Profile
-            </Button>
-          </Card.Content>
-        </Card>
-
+        <Tail
+          avatarText="AH"
+          username="Aiman Hakim"
+          staffId="CS1024"
+          designation="Customer Service Executive"
+          onUpdateProfilePress={() => router.push("settings/profile")}
+        />
         {/* Preferences Section */}
         <View style={{ gap: tokens.spacing.md }}>
           <Text

@@ -10,7 +10,7 @@ import { useDesign } from "../../../contexts/designContext";
 import ScrollTop from "../../../components/scrollTop";
 import { useTabs } from "../../../contexts/tabContext";
 import Head from "../../../components/head";
-import { router, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 export default function Home() {
   const theme = useTheme();
