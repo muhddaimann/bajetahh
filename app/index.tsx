@@ -14,6 +14,7 @@ import { useAuth } from "../contexts/authContext";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const theme = useTheme();
@@ -21,7 +22,7 @@ export default function Login() {
   const { signIn } = useAuth();
 
   const handleLogin = async () => {
-    if (!username || !password) return;
+    if (!username || !password || isSubmitting) return;
     
     setIsSubmitting(true);
     try {
@@ -174,7 +175,7 @@ export default function Login() {
                 mode="outlined"
                 value={password}
                 onChangeText={setPassword}
-                secureTextEntry
+                secureTextEntry={!showPassword}
                 returnKeyType="done"
                 onSubmitEditing={handleLogin}
                 outlineStyle={{
@@ -190,6 +191,13 @@ export default function Login() {
                     color={theme.colors.primary}
                   />
                 }
+                right={
+                  <TextInput.Icon
+                    icon={showPassword ? "eye-off" : "eye"}
+                    onPress={() => setShowPassword(!showPassword)}
+                    color={theme.colors.onSurfaceVariant}
+                  />
+                }
               />
             </View>
 
@@ -197,7 +205,6 @@ export default function Login() {
               <Button
                 mode="contained"
                 onPress={handleLogin}
-                loading={isSubmitting}
                 disabled={!username || !password || isSubmitting}
                 contentStyle={{
                   height: 56,
@@ -211,7 +218,7 @@ export default function Login() {
                   fontSize: 16,
                 }}
               >
-                {isSubmitting ? "Authenticating..." : "Sign In"}
+                Sign In
               </Button>
 
               <View style={{ 
