@@ -133,7 +133,7 @@ export default function Login() {
                     textAlign: "center",
                   }}
                 >
-                  Welcome Back
+                  Sign In
                 </Text>
 
                 <Text
@@ -144,7 +144,7 @@ export default function Login() {
                     lineHeight: 22,
                   }}
                 >
-                  Sign in to continue your HRMS workspace
+                  Authenticate to access your FAITH workspace
                 </Text>
               </View>
             </View>
