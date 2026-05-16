@@ -26,7 +26,7 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (!username || !password || isSubmitting) return;
-    
+
     setIsSubmitting(true);
     try {
       await signIn(username.trim(), password);
@@ -89,7 +89,7 @@ export default function Login() {
               maxWidth: 420,
               borderRadius: tokens.radii.xl,
               backgroundColor: theme.colors.surface,
-              padding: tokens.spacing["2xl",
+              padding: tokens.spacing.lg,
               gap: tokens.spacing.md,
               ...(Platform.OS === "web" && {
                 borderWidth: 1,
@@ -207,7 +207,9 @@ export default function Login() {
               />
             </View>
 
-            <View style={{ gap: tokens.spacing.xl }}>
+            <View
+              style={{ marginTop: tokens.spacing.md, gap: tokens.spacing.xl }}
+            >
               <Button
                 mode="contained"
                 onPress={handleLogin}
@@ -227,15 +229,17 @@ export default function Login() {
                 Authenticate to FAITH
               </Button>
 
-              <View style={{ 
-                alignItems: 'center'
-              }}>
-                <Text 
-                  variant="bodySmall" 
-                  style={{ 
+              <View
+                style={{
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  variant="bodySmall"
+                  style={{
                     color: theme.colors.onSurfaceVariant,
-                    textAlign: 'center',
-                    lineHeight: 18
+                    textAlign: "center",
+                    lineHeight: 18,
                   }}
                 >
                   Reach system admin if you need help signing in.
@@ -243,14 +247,19 @@ export default function Login() {
               </View>
             </View>
 
-            <View style={{ 
-              marginTop: tokens.spacing.xl, 
-              paddingTop: tokens.spacing.lg,
-              borderTopWidth: 1,
-              borderTopColor: theme.colors.surfaceVariant,
-              alignItems: 'center'
-            }}>
-              <Text variant="labelSmall" style={{ color: theme.colors.outline, textAlign: 'center' }}>
+            <View
+              style={{
+                marginTop: tokens.spacing.xl,
+                paddingTop: tokens.spacing.lg,
+                borderTopWidth: 1,
+                borderTopColor: theme.colors.surfaceVariant,
+                alignItems: "center",
+              }}
+            >
+              <Text
+                variant="labelSmall"
+                style={{ color: theme.colors.outline, textAlign: "center" }}
+              >
                 FAITH v1.0.0 • Secured Workspace
               </Text>
             </View>
