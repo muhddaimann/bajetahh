@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.error('Failed to load session', e);
       } finally {
         // Add a small delay for smoother transition
-        setTimeout(() => setIsLoading(false), 10000);
+        setTimeout(() => setIsLoading(false), 800);
       }
     };
     loadSession();
