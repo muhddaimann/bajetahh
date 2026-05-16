@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { router } from 'expo-router';
 import { useToken } from './tokenContext';
 import { useOverlay } from './overlayContext';
 
@@ -39,7 +38,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   
   const { getToken, saveToken, deleteToken } = useToken();
-  const { alert, confirm, toast, showLoader, hideLoader } = useOverlay();
+  const { confirm, toast, showLoader, hideLoader } = useOverlay();
 
   useEffect(() => {
     const loadSession = async () => {
@@ -52,7 +51,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.error('Failed to load session', e);
       } finally {
         // Add a small delay for smoother transition
-        setTimeout(() => setIsLoading(false), 500);
+        setTimeout(() => setIsLoading(false), 10000);
       }
     };
     loadSession();
@@ -67,21 +66,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         await saveToken(username);
         setUser(DUMMY_USER);
         hideLoader();
-        toast({ message: `Success! Welcome back, ${DUMMY_USER.name}.`, variant: 'success' });
+        toast({ message: `Welcome back, ${DUMMY_USER.name}.`, variant: 'success' });
         return true;
       } catch (e) {
         hideLoader();
-        alert({ 
-          title: 'System Error', 
-          message: 'Secure storage failed. Please check your device settings.' 
+        toast({ 
+          message: 'Secure storage failed. Please check your device settings.', 
+          variant: 'error' 
         });
         return false;
       }
     } else {
       hideLoader();
-      alert({ 
-        title: 'Login Failed', 
-        message: 'Invalid username or password. Please try again.' 
+      toast({ 
+        message: 'Invalid username or password. Please try again.', 
+        variant: 'error' 
       });
       return false;
     }
@@ -97,12 +96,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (e) {
       hideLoader();
       console.error('Failed to delete session', e);
-      alert({ 
-        title: 'Error', 
-        message: 'Could not complete sign out. Please try again.' 
+      toast({ 
+        message: 'Could not complete sign out. Please try again.', 
+        variant: 'error' 
       });
     }
-  }, [deleteToken, alert, showLoader, hideLoader]);
+  }, [deleteToken, toast, showLoader, hideLoader]);
 
   const signOut = useCallback((force = false) => {
     if (force) {
