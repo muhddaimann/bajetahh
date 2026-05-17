@@ -13,6 +13,7 @@ import Head from "../../../components/head";
 import SectionHeader from "../../../components/section";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../../contexts/authContext";
+import AttendanceCard from "../../../components/attendance/attendanceCard";
 
 export default function Home() {
   const theme = useTheme();
@@ -54,6 +55,7 @@ export default function Home() {
           avatarText={user?.avatarText || "U"}
           onNotificationPress={() => router.push("home/newsflash")}
         />
+        <AttendanceCard />
 
         <SectionHeader
           icon="calendar-check"
