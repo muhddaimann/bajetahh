@@ -36,7 +36,7 @@ export default function AttendanceCard() {
         backgroundColor: status.cardColor,
         borderRadius: 28,
         padding: tokens.spacing.lg,
-        gap: tokens.spacing.xl,
+        gap: tokens.spacing.md,
         overflow: "hidden",
       }}
     >
@@ -82,7 +82,7 @@ export default function AttendanceCard() {
       >
         <View style={{ flex: 1 }}>
           <Text
-            variant="headlineSmall"
+            variant="titleLarge"
             style={{
               color: colors.onPrimary,
               fontWeight: "800",
