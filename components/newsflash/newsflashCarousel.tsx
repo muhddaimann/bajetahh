@@ -1,67 +1,46 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  View,
-  FlatList,
-  Dimensions,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-} from "react-native";
-import { useTheme } from "react-native-paper";
+import React, { useRef, useState, useEffect } from "react";
+import { View, ScrollView, Dimensions, Pressable } from "react-native";
+import { Text, useTheme } from "react-native-paper";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { useDesign } from "../../contexts/designContext";
-import { newsflashes } from "../../constants/newsflash";
-import NewsflashCard from "./newsflashCard";
+import { newsflashes, newsflashPriorities } from "../../constants/newsflash";
 
 const { width } = Dimensions.get("window");
 
 const SIDE_PADDING = 24;
 const SPACING = 16;
 
-const CARD_WIDTH = width - 120;
-const ITEM_SIZE = CARD_WIDTH + SPACING;
+const CARD_WIDTH = width - SIDE_PADDING * 2 - 32;
 
 export default function NewsflashCarousel() {
   const { colors } = useTheme();
   const tokens = useDesign();
+  const router = useRouter();
 
-  const flatListRef = useRef<FlatList>(null);
+  const scrollRef = useRef<ScrollView>(null);
 
-  const baseData = newsflashes.slice(0, 3);
-
-  const carouselData = [...baseData, ...baseData];
+  const carouselData = newsflashes.slice(0, 3);
 
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const [acknowledgedIds, setAcknowledgedIds] = useState<number[]>([]);
+
   useEffect(() => {
     const interval = setInterval(() => {
-      const nextIndex = activeIndex + 1;
+      const nextIndex =
+        activeIndex >= carouselData.length - 1 ? 0 : activeIndex + 1;
 
-      flatListRef.current?.scrollToOffset({
-        offset: nextIndex * ITEM_SIZE,
+      scrollRef.current?.scrollTo({
+        x: nextIndex * (CARD_WIDTH + SPACING),
         animated: true,
       });
 
       setActiveIndex(nextIndex);
-    }, 4500);
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [activeIndex]);
-
-  const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const index = Math.round(e.nativeEvent.contentOffset.x / ITEM_SIZE);
-
-    setActiveIndex(index);
-
-    if (index >= baseData.length) {
-      setTimeout(() => {
-        flatListRef.current?.scrollToOffset({
-          offset: 0,
-          animated: false,
-        });
-
-        setActiveIndex(0);
-      }, 200);
-    }
-  };
 
   return (
     <View
@@ -69,67 +48,209 @@ export default function NewsflashCarousel() {
         gap: tokens.spacing.md,
       }}
     >
-      <FlatList
-        ref={flatListRef}
-        data={carouselData}
-        keyExtractor={(_, index) => index.toString()}
+      <ScrollView
+        ref={scrollRef}
         horizontal
-        showsHorizontalScrollIndicator={false}
-        decelerationRate="fast"
-        snapToInterval={ITEM_SIZE}
+        scrollEnabled={false}
+        snapToInterval={CARD_WIDTH + SPACING}
         snapToAlignment="start"
+        decelerationRate="fast"
         disableIntervalMomentum
-        bounces={false}
+        showsHorizontalScrollIndicator={false}
         contentContainerStyle={{
-          paddingLeft: SIDE_PADDING,
-          paddingRight: SIDE_PADDING + 32,
+          paddingHorizontal: SIDE_PADDING,
+          gap: SPACING,
         }}
-        ItemSeparatorComponent={() => <View style={{ width: SPACING }} />}
-        onMomentumScrollEnd={handleScroll}
-        renderItem={({ item, index }) => {
-          const visibleIndex = index % baseData.length;
+      >
+        {carouselData.map((item) => {
+          const priority = newsflashPriorities[item.priority];
 
-          const active = visibleIndex === activeIndex % baseData.length;
+          const acknowledged = acknowledgedIds.includes(item.id);
 
           return (
-            <View
-              style={{
-                width: CARD_WIDTH,
-                transform: [{ scale: active ? 1 : 0.94 }],
-                opacity: active ? 1 : 0.6,
+            <Pressable
+              key={item.id}
+              onPress={() => {
+                if (!acknowledged) {
+                  setAcknowledgedIds((prev) => [...prev, item.id]);
+                }
               }}
+              style={({ pressed }) => ({
+                width: CARD_WIDTH,
+                opacity: pressed ? 0.92 : 1,
+              })}
             >
-              <NewsflashCard newsflash={item} />
-            </View>
+              <View
+                style={{
+                  backgroundColor: colors.surface,
+                  opacity: acknowledged ? 0.72 : 1,
+                  borderRadius: 32,
+                  padding: tokens.spacing.lg,
+                  gap: tokens.spacing.lg,
+                  overflow: "hidden",
+                  borderWidth: 1,
+                  borderColor: priority.color + "25",
+                }}
+              >
+                <View
+                  style={{
+                    position: "absolute",
+                    top: -18,
+                    right: -10,
+                    opacity: 0.08,
+                    transform: [
+                      {
+                        rotate: "-12deg",
+                      },
+                    ],
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name={priority.icon}
+                    size={140}
+                    color={priority.color}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  <View
+                    style={{
+                      paddingHorizontal: 10,
+                      paddingVertical: 6,
+                      borderRadius: 999,
+                      backgroundColor: colors.surfaceVariant,
+                    }}
+                  >
+                    <Text
+                      variant="labelSmall"
+                      style={{
+                        fontWeight: "700",
+                        color: colors.onSurfaceVariant,
+                      }}
+                    >
+                      {item.type}
+                    </Text>
+                  </View>
+
+                  <View
+                    style={{
+                      paddingHorizontal: 10,
+                      paddingVertical: 6,
+                      borderRadius: 999,
+                      backgroundColor: priority.color + "18",
+                    }}
+                  >
+                    <Text
+                      variant="labelSmall"
+                      style={{
+                        fontWeight: "800",
+                        color: priority.color,
+                      }}
+                    >
+                      {item.priority}
+                    </Text>
+                  </View>
+                </View>
+
+                <View
+                  style={{
+                    gap: 10,
+                  }}
+                >
+                  <Text
+                    variant="titleMedium"
+                    style={{
+                      fontWeight: "800",
+                      lineHeight: 26,
+                    }}
+                  >
+                    {item.title}
+                  </Text>
+
+                  <Text
+                    variant="bodyMedium"
+                    numberOfLines={2}
+                    ellipsizeMode="tail"
+                    style={{
+                      color: colors.onSurfaceVariant,
+                      lineHeight: 22,
+                    }}
+                  >
+                    {item.content}
+                  </Text>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text
+                    variant="bodySmall"
+                    style={{
+                      color: colors.onSurfaceVariant,
+                    }}
+                  >
+                    {acknowledged ? "Acknowledged" : item.timestamp}
+                  </Text>
+
+                  <MaterialCommunityIcons
+                    name={acknowledged ? "check-all" : "gesture-tap"}
+                    size={16}
+                    color={
+                      acknowledged ? colors.onSurfaceVariant : colors.primary
+                    }
+                  />
+                </View>
+              </View>
+            </Pressable>
           );
-        }}
-      />
+        })}
+      </ScrollView>
 
       <View
         style={{
+          paddingHorizontal: tokens.spacing.lg,
           flexDirection: "row",
-          justifyContent: "center",
           alignItems: "center",
-          gap: 8,
+          justifyContent: "center",
+          flexWrap: "wrap",
+          gap: 4,
         }}
       >
-        {baseData.map((_, index) => {
-          const active = index === activeIndex % baseData.length;
+        <Text
+          variant="bodySmall"
+          style={{
+            color: colors.onSurfaceVariant,
+          }}
+        >
+          Showing latest 3 memos.
+        </Text>
 
-          return (
-            <View
-              key={index}
-              style={{
-                width: active ? 24 : 6,
-                height: 6,
-                borderRadius: 999,
-                backgroundColor: active
-                  ? colors.primary
-                  : colors.surfaceVariant,
-              }}
-            />
-          );
-        })}
+        <Pressable
+          onPress={() => router.push("/home/newsflash")}
+          style={({ pressed }) => ({
+            opacity: pressed ? 0.7 : 1,
+          })}
+        >
+          <Text
+            variant="bodySmall"
+            style={{
+              color: colors.primary,
+              fontWeight: "700",
+            }}
+          >
+            View all here
+          </Text>
+        </Pressable>
       </View>
     </View>
   );

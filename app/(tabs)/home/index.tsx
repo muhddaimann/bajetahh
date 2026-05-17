@@ -58,6 +58,8 @@ export default function Home() {
         />
         <AttendanceCard />
 
+        <NewsflashCarousel />
+
         <SectionHeader
           icon="calendar-check"
           title="Leave"
@@ -65,15 +67,6 @@ export default function Home() {
           actionLabel="See All"
           actionRoute="/leave"
         />
-
-        <SectionHeader
-          icon="newspaper"
-          title="News Flash"
-          subtitle="Latest company updates"
-          actionLabel="See All"
-          actionRoute="/home/newsflash"
-        />
-        <NewsflashCarousel />
 
         <SectionHeader
           icon="door-sliding"
