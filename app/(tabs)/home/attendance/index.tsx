@@ -20,7 +20,9 @@ import { useTabs } from "../../../../contexts/tabContext";
 import { useOverlay } from "../../../../contexts/overlayContext";
 import Header from "../../../../components/header";
 import ScrollTop from "../../../../components/scrollTop";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AttendanceOverview from "../../../../components/attendance/attendaceOverview";
+import AttendanceInsight from "../../../../components/attendance/attendaceInsight";
 
 export default function Attendance() {
   const theme = useTheme();
@@ -103,34 +105,63 @@ export default function Attendance() {
             <View
               style={{
                 flexDirection: "row",
+                alignItems: "center",
                 backgroundColor: theme.colors.surfaceVariant,
                 borderRadius: 999,
-                padding: 4,
-                gap: 4,
+                padding: 3,
+                gap: 2,
+                borderWidth: 1,
+                borderColor: `${theme.colors.outline}20`,
               }}
             >
-              {["Weekly", "Monthly"].map((item) => {
-                const active = view === item;
+              {[
+                {
+                  key: "Weekly",
+                  icon: "view-week-outline",
+                  label: "Weekly",
+                },
+                {
+                  key: "Monthly",
+                  icon: "calendar-blank-outline",
+                  label: "Monthly",
+                },
+              ].map((item) => {
+                const active = view === item.key;
+
                 return (
                   <TouchableOpacity
-                    key={item}
-                    onPress={() => setView(item as "Weekly" | "Monthly")}
+                    key={item.key}
+                    onPress={() => setView(item.key as "Weekly" | "Monthly")}
+                    activeOpacity={0.8}
                     style={{
-                      paddingHorizontal: 12,
-                      paddingVertical: 6,
+                      height: 36,
+                      paddingHorizontal: active ? 14 : 10,
                       borderRadius: 999,
-                      backgroundColor: active ? theme.colors.primary : "transparent",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexDirection: "row",
+                      backgroundColor: active
+                        ? theme.colors.primary
+                        : "transparent",
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontWeight: "700",
-                        color: active ? theme.colors.onPrimary : theme.colors.onSurface,
-                      }}
-                    >
-                      {item[0]}
-                    </Text>
+                    {active ? (
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          fontWeight: "700",
+                          color: theme.colors.onPrimary,
+                        }}
+                      >
+                        {item.label}
+                      </Text>
+                    ) : (
+                      <MaterialCommunityIcons
+                        name={item.icon as any}
+                        size={18}
+                        color={theme.colors.onSurfaceVariant}
+                      />
+                    )}
                   </TouchableOpacity>
                 );
               })}
@@ -138,6 +169,7 @@ export default function Attendance() {
           }
         />
         <AttendanceOverview view={view} />
+        <AttendanceInsight />
       </ScrollView>
 
       <ScrollTop visible={showScrollTop} onPress={scrollToTop} />
