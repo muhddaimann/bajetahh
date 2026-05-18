@@ -15,6 +15,7 @@ import { useRouter } from "expo-router";
 import { useAuth } from "../../../contexts/authContext";
 import AttendanceCard from "../../../components/attendance/attendanceCard";
 import NewsflashCarousel from "../../../components/newsflash/newsflashCarousel";
+import RowTwo from "../../../components/rowtwo";
 
 export default function Home() {
   const theme = useTheme();
@@ -68,12 +69,42 @@ export default function Home() {
           actionRoute="/leave"
         />
 
+        <RowTwo
+          left={{
+            icon: "clock-outline",
+            label: "Pending Leave",
+            value: "2",
+            color: "#F59E0B",
+          }}
+          right={{
+            icon: "briefcase-outline",
+            label: "Annual Balance",
+            value: "12",
+            color: "#10B981",
+          }}
+        />
+
         <SectionHeader
           icon="door-sliding"
           title="Room Booking"
           subtitle="Reserve meeting rooms"
           actionLabel="See All"
           actionRoute="/room-booking"
+        />
+
+        <RowTwo
+          left={{
+            icon: "door-open",
+            label: "Active Booking",
+            value: "3",
+            color: "#3B82F6",
+          }}
+          right={{
+            icon: "history",
+            label: "Booking History",
+            value: "18",
+            color: "#8B5CF6",
+          }}
         />
       </ScrollView>
 
