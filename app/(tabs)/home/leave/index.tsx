@@ -19,6 +19,8 @@ import { useTabs } from "../../../../contexts/tabContext";
 import { useOverlay } from "../../../../contexts/overlayContext";
 import Header from "../../../../components/header";
 import ScrollTop from "../../../../components/scrollTop";
+import RowTwo from "../../../../components/rowtwo";
+import LeaveList from "../../../../components/leave/leaveList";
 
 export default function Leave() {
   const theme = useTheme();
@@ -100,40 +102,6 @@ export default function Leave() {
     });
   };
 
-  const leaveBalances = [
-    {
-      title: "Annual",
-      used: 5,
-      total: 14,
-      icon: "calendar-star",
-      color: "#4CAF50",
-    },
-    {
-      title: "Medical",
-      used: 2,
-      total: 10,
-      icon: "medical-bag",
-      color: "#F44336",
-    },
-    { title: "Unpaid", used: 0, total: 0, icon: "cash-off", color: "#FF9800" },
-  ];
-
-  const recentApplications = [
-    {
-      type: "Annual Leave",
-      date: "May 20 - May 22",
-      status: "Approved",
-      days: 3,
-    },
-    { type: "Medical Leave", date: "May 05", status: "Approved", days: 1 },
-    {
-      type: "Annual Leave",
-      date: "Jun 15 - Jun 16",
-      status: "Pending",
-      days: 2,
-    },
-  ];
-
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <ScrollView
@@ -154,49 +122,23 @@ export default function Leave() {
           showBack
         />
 
-        {/* Leave Balances Grid */}
-        <View
-          style={{
-            flexDirection: "row",
-            gap: tokens.spacing.md,
+        <RowTwo
+          left={{
+            icon: "clock-outline",
+            label: "Pending Leave",
+            value: "0",
+            color: "#F59E0B",
           }}
-        >
-          {leaveBalances.map((item, index) => (
-            <Card
-              key={index}
-              mode="elevated"
-              style={{
-                flex: 1,
-                backgroundColor: theme.colors.surface,
-                borderRadius: tokens.radii.lg,
-              }}
-            >
-              <Card.Content
-                style={{ alignItems: "center", padding: tokens.spacing.md }}
-              >
-                <Icon source={item.icon} size={28} color={item.color} />
-                <Text
-                  variant="labelMedium"
-                  style={{ marginTop: tokens.spacing.xs }}
-                >
-                  {item.title}
-                </Text>
-                <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
-                  {item.total - item.used}
-                </Text>
-                <Text
-                  variant="labelSmall"
-                  style={{ color: theme.colors.onSurfaceVariant }}
-                >
-                  Left
-                </Text>
-              </Card.Content>
-            </Card>
-          ))}
-        </View>
+          right={{
+            icon: "briefcase-outline",
+            label: "Annual Balance",
+            value: "0",
+            color: "#10B981",
+          }}
+        />
 
         <Button
-          mode="contained"
+          mode="outlined"
           onPress={handleApplyLeave}
           style={{
             borderRadius: tokens.radii.pill,
@@ -205,61 +147,7 @@ export default function Leave() {
         >
           Apply for Leave
         </Button>
-
-        {/* History Section */}
-        <View style={{ gap: tokens.spacing.md }}>
-          <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
-            Recent Applications
-          </Text>
-
-          {recentApplications.map((app, index) => (
-            <Card
-              key={index}
-              mode="contained"
-              style={{
-                backgroundColor: theme.colors.surface,
-                borderRadius: tokens.radii.lg,
-              }}
-            >
-              <Card.Content
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <View>
-                  <Text variant="titleMedium">{app.type}</Text>
-                  <Text
-                    variant="bodySmall"
-                    style={{ color: theme.colors.onSurfaceVariant }}
-                  >
-                    {app.date} ({app.days} days)
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    backgroundColor:
-                      app.status === "Approved" ? "#E8F5E9" : "#FFF3E0",
-                    paddingHorizontal: 12,
-                    paddingVertical: 4,
-                    borderRadius: 12,
-                  }}
-                >
-                  <Text
-                    variant="labelLarge"
-                    style={{
-                      color: app.status === "Approved" ? "#2E7D32" : "#EF6C00",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {app.status}
-                  </Text>
-                </View>
-              </Card.Content>
-            </Card>
-          ))}
-        </View>
+        <LeaveList />
       </ScrollView>
 
       <ScrollTop visible={showScrollTop} onPress={scrollToTop} />

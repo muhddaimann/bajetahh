@@ -64,7 +64,7 @@ export default function Home() {
           title="Leave"
           subtitle="Manage leave applications"
           actionLabel="See All"
-          actionRoute="/leave"
+          actionRoute="home/leave"
         />
 
         <RowTwo
