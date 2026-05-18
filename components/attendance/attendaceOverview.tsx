@@ -1,100 +1,30 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
-import { Card, Text, useTheme } from "react-native-paper";
+import { Card, Text, useTheme, Avatar } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { design } from "../../constants/design";
+import {
+  AttendanceDay,
+  AttendanceStatus,
+  weeklyAttendanceData,
+  monthlyAttendanceData,
+} from "../../constants/attendance";
 
-type AttendanceStatus = "Present" | "Late" | "Absent" | "Leave" | "Weekend";
-
-type AttendanceDay = {
-  date: number;
-  day: string;
-  status: AttendanceStatus;
-  checkIn?: string;
-  checkOut?: string;
-  workingHours?: string;
-};
-
-const weeklyData: AttendanceDay[] = [
-  {
-    date: 18,
-    day: "Mon",
-    status: "Present",
-    checkIn: "8:55 AM",
-    checkOut: "5:30 PM",
-    workingHours: "8h 35m",
-  },
-  {
-    date: 19,
-    day: "Tue",
-    status: "Late",
-    checkIn: "9:12 AM",
-    checkOut: "5:30 PM",
-    workingHours: "8h 18m",
-  },
-  {
-    date: 20,
-    day: "Wed",
-    status: "Present",
-    checkIn: "8:47 AM",
-    checkOut: "5:34 PM",
-    workingHours: "8h 47m",
-  },
-  {
-    date: 21,
-    day: "Thu",
-    status: "Absent",
-  },
-  {
-    date: 22,
-    day: "Fri",
-    status: "Present",
-    checkIn: "8:58 AM",
-    checkOut: "5:28 PM",
-    workingHours: "8h 30m",
-  },
-  {
-    date: 23,
-    day: "Sat",
-    status: "Weekend",
-  },
-  {
-    date: 24,
-    day: "Sun",
-    status: "Weekend",
-  },
-];
-
-const monthlyData: AttendanceDay[] = Array.from({ length: 31 }).map(
-  (_, index) => ({
-    date: index + 1,
-    day: "",
-    status:
-      index % 7 === 5 || index % 7 === 6
-        ? "Weekend"
-        : index % 5 === 0
-          ? "Late"
-          : "Present",
-  }),
-);
-
-export default function AttendanceOverview() {
+export default function AttendanceOverview({ view }: { view: "Weekly" | "Monthly" }) {
   const theme = useTheme();
 
   const { spacing, radii, typography, sizes, elevation, opacity } = design;
 
-  const [view, setView] = useState<"Weekly" | "Monthly">("Weekly");
-
   const data = useMemo(
-    () => (view === "Weekly" ? weeklyData : monthlyData),
+    () => (view === "Weekly" ? weeklyAttendanceData : monthlyAttendanceData),
     [view],
   );
 
-  const [selected, setSelected] = useState<AttendanceDay>(weeklyData[0]);
+  const [selected, setSelected] = useState<AttendanceDay>(weeklyAttendanceData[0]);
 
   useEffect(() => {
     setSelected(data[0]);
-  }, [view]);
+  }, [view, data]);
 
   const firstDayOffset = 4;
 
@@ -103,7 +33,7 @@ export default function AttendanceOverview() {
       id: `empty-${index}`,
       empty: true,
     })),
-    ...monthlyData.map((item) => ({
+    ...monthlyAttendanceData.map((item) => ({
       ...item,
       empty: false,
     })),
@@ -129,291 +59,188 @@ export default function AttendanceOverview() {
   return (
     <Card
       style={{
-        borderRadius: radii["2xl"],
+        borderRadius: 28,
         overflow: "hidden",
         elevation: elevation.level1,
+        backgroundColor: theme.colors.surface,
       }}
     >
-      <Card.Content
+      {/* Top Section - Status Detail (Glassmorphism Style) */}
+      <View
         style={{
+          backgroundColor: getStatusColor(selected.status),
           padding: spacing.lg,
-          gap: spacing.lg,
+          gap: spacing.md,
+          overflow: "hidden",
         }}
       >
+        {/* Background Decorative Icons */}
+        <View
+          style={{
+            position: "absolute",
+            top: -30,
+            right: -10,
+            opacity: 0.08,
+            transform: [{ rotate: "-12deg" }],
+          }}
+        >
+          <MaterialCommunityIcons
+            name={
+              selected.status === "Present"
+                ? "check-decagram"
+                : selected.status === "Late"
+                ? "clock-alert"
+                : selected.status === "Absent"
+                ? "close-octagon"
+                : selected.status === "Weekend"
+                ? "sofa"
+                : "calendar"
+            }
+            size={140}
+            color="#FFF"
+          />
+        </View>
+
+        <View
+          style={{
+            position: "absolute",
+            bottom: -20,
+            left: -20,
+            opacity: 0.05,
+            transform: [{ rotate: "8deg" }],
+          }}
+        >
+          <MaterialCommunityIcons
+            name="clock-outline"
+            size={120}
+            color="#FFF"
+          />
+        </View>
+
         <View
           style={{
             flexDirection: "row",
-            alignItems: "center",
+            alignItems: "flex-start",
             justifyContent: "space-between",
           }}
         >
-          <View
-            style={{
-              gap: spacing.xxs,
-            }}
-          >
+          <View style={{ flex: 1 }}>
             <Text
+              variant="titleLarge"
               style={{
-                fontSize: typography.sizes.xs,
-                fontWeight: typography.weights.semibold,
-                opacity: typography.opacities.muted,
-                letterSpacing: 0.8,
+                color: "#FFF",
+                fontWeight: "800",
               }}
             >
-              ATTENDANCE OVERVIEW
+              {selected.day
+                ? `${selected.day}, ${selected.date} May`
+                : `${selected.date} May`}
             </Text>
 
-            <Text
+            <View
               style={{
-                fontSize: typography.sizes.lg,
-                fontWeight: typography.weights.bold,
+                alignSelf: "flex-start",
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+                borderRadius: radii.full,
+                backgroundColor: "rgba(255,255,255,0.15)",
+                marginTop: 8,
               }}
             >
-              {view === "Weekly" ? "18/5 - 24/5" : "May 2026"}
-            </Text>
-          </View>
-
-          <View
-            style={{
-              flexDirection: "row",
-              backgroundColor: theme.colors.surfaceVariant,
-              borderRadius: radii.full,
-              padding: spacing.xxs,
-              gap: spacing.xxs,
-            }}
-          >
-            {["Weekly", "Monthly"].map((item) => {
-              const active = view === item;
-
-              return (
-                <Pressable
-                  key={item}
-                  onPress={() => setView(item as "Weekly" | "Monthly")}
-                  style={{
-                    minHeight: sizes.touch.minHeight,
-                    paddingHorizontal: spacing.md,
-                    borderRadius: radii.full,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: active
-                      ? theme.colors.primary
-                      : "transparent",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: typography.sizes.sm,
-                      fontWeight: typography.weights.semibold,
-                      color: active
-                        ? theme.colors.onPrimary
-                        : theme.colors.onSurface,
-                    }}
-                  >
-                    {item}
-                  </Text>
-                </Pressable>
-              );
-            })}
+              <Text
+                variant="labelSmall"
+                style={{
+                  color: "#FFF",
+                  fontWeight: "700",
+                }}
+              >
+                {selected.status.toUpperCase()}
+              </Text>
+            </View>
           </View>
         </View>
 
         <View
           style={{
-            borderRadius: radii.xl,
-            padding: spacing.lg,
-            backgroundColor: theme.colors.primary,
+            flexDirection: "row",
+            gap: spacing.sm,
+            marginTop: spacing.xs,
           }}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-            }}
-          >
+          {[
+            { label: "Check In", value: selected.checkIn || "--" },
+            { label: "Check Out", value: selected.checkOut || "--" },
+            { label: "Hours", value: selected.workingHours || "--" },
+          ].map((item, idx) => (
             <View
+              key={idx}
               style={{
                 flex: 1,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: typography.sizes.xs,
-                  fontWeight: typography.weights.semibold,
-                  color: theme.colors.onPrimary,
-                  opacity: 0.7,
-                  letterSpacing: 0.6,
-                }}
-              >
-                TODAY STATUS
-              </Text>
-
-              <Text
-                style={{
-                  marginTop: spacing.sm,
-                  fontSize: typography.sizes["2xl"],
-                  fontWeight: typography.weights.bold,
-                  color: theme.colors.onPrimary,
-                }}
-              >
-                {selected.status}
-              </Text>
-
-              <Text
-                style={{
-                  marginTop: spacing.xxs,
-                  fontSize: typography.sizes.sm,
-                  color: theme.colors.onPrimary,
-                  opacity: typography.opacities.muted,
-                }}
-              >
-                {selected.day
-                  ? `${selected.day}, ${selected.date} May`
-                  : `${selected.date} May`}
-              </Text>
-            </View>
-
-            <View
-              style={{
-                width: spacing["3xl"],
-                height: spacing["3xl"],
-                borderRadius: radii.full,
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: `rgba(255,255,255,${opacity.focus})`,
-              }}
-            >
-              <MaterialCommunityIcons
-                name={
-                  selected.status === "Present"
-                    ? "check-decagram"
-                    : selected.status === "Late"
-                      ? "clock-alert"
-                      : selected.status === "Absent"
-                        ? "close-octagon"
-                        : selected.status === "Weekend"
-                          ? "sofa"
-                          : "calendar"
-                }
-                size={sizes.icon.lg}
-                color={theme.colors.onPrimary}
-              />
-            </View>
-          </View>
-
-          <View
-            style={{
-              flexDirection: "row",
-              gap: spacing.sm,
-              marginTop: spacing.lg,
-            }}
-          >
-            <View
-              style={{
-                flex: 1,
-                borderRadius: radii.lg,
+                backgroundColor: "rgba(255,255,255,0.1)",
+                borderRadius: radii.xl,
                 padding: spacing.md,
-                backgroundColor: `rgba(255,255,255,${opacity.focus})`,
+                gap: 4,
               }}
             >
               <Text
+                variant="bodySmall"
                 style={{
-                  fontSize: typography.sizes.xs,
-                  color: theme.colors.onPrimary,
-                  opacity: typography.opacities.muted,
+                  color: "rgba(255,255,255,0.7)",
                 }}
               >
-                Check In
+                {item.label}
               </Text>
 
               <Text
+                variant="titleSmall"
                 style={{
-                  marginTop: spacing.xxs,
-                  fontSize: typography.sizes.md,
-                  fontWeight: typography.weights.bold,
-                  color: theme.colors.onPrimary,
+                  color: "#FFF",
+                  fontWeight: "800",
                 }}
               >
-                {selected.checkIn || "--"}
+                {item.value}
               </Text>
             </View>
-
-            <View
-              style={{
-                flex: 1,
-                borderRadius: radii.lg,
-                padding: spacing.md,
-                backgroundColor: `rgba(255,255,255,${opacity.focus})`,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: typography.sizes.xs,
-                  color: theme.colors.onPrimary,
-                  opacity: typography.opacities.muted,
-                }}
-              >
-                Working Hours
-              </Text>
-
-              <Text
-                style={{
-                  marginTop: spacing.xxs,
-                  fontSize: typography.sizes.md,
-                  fontWeight: typography.weights.bold,
-                  color: theme.colors.onPrimary,
-                }}
-              >
-                {selected.workingHours || "--"}
-              </Text>
-            </View>
-          </View>
+          ))}
         </View>
+      </View>
 
+      {/* Bottom Section - Interactive Selection (Calendar/List) */}
+      <View style={{ padding: spacing.md }}>
         {view === "Weekly" ? (
           <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              gap: spacing.xs,
-            }}
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            {weeklyData.map((item) => {
+            {weeklyAttendanceData.map((item) => {
               const active = selected.date === item.date;
-
               return (
                 <Pressable
                   key={item.date}
                   onPress={() => setSelected(item)}
                   style={{
                     flex: 1,
-                    minHeight: 88,
-                    borderRadius: radii.xl,
                     alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: active
-                      ? theme.colors.primary
-                      : theme.colors.surfaceVariant,
+                    paddingVertical: spacing.md,
+                    borderRadius: radii.xl,
+                    backgroundColor: active ? theme.colors.primary : "transparent",
                   }}
                 >
                   <Text
                     style={{
-                      fontSize: typography.sizes.xs,
-                      fontWeight: typography.weights.med,
-                      opacity: active ? 0.9 : 0.5,
+                      fontSize: 12,
+                      fontWeight: "600",
                       color: active
                         ? theme.colors.onPrimary
-                        : theme.colors.onSurface,
+                        : theme.colors.onSurfaceVariant,
                     }}
                   >
-                    {item.day}
+                    {item.day.toUpperCase()}
                   </Text>
-
                   <Text
                     style={{
-                      marginTop: spacing.xs,
-                      fontSize: typography.sizes.md,
-                      fontWeight: typography.weights.bold,
+                      fontSize: 18,
+                      fontWeight: "800",
+                      marginTop: 4,
                       color: active
                         ? theme.colors.onPrimary
                         : theme.colors.onSurface,
@@ -421,13 +248,12 @@ export default function AttendanceOverview() {
                   >
                     {item.date}
                   </Text>
-
                   <View
                     style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: radii.full,
-                      marginTop: spacing.sm,
+                      width: 6,
+                      height: 6,
+                      borderRadius: 3,
+                      marginTop: 8,
                       backgroundColor: active
                         ? theme.colors.onPrimary
                         : getStatusColor(item.status),
@@ -438,73 +264,26 @@ export default function AttendanceOverview() {
             })}
           </View>
         ) : (
-          <View
-            style={{
-              gap: spacing.sm,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-              }}
-            >
-              {["M", "T", "W", "T", "F", "S", "S"].map((day, index) => (
+          <View style={{ gap: spacing.md }}>
+            <View style={{ flexDirection: "row" }}>
+              {["M", "T", "W", "T", "F", "S", "S"].map((day, i) => (
                 <View
-                  key={`${day}-${index}`}
-                  style={{
-                    width: `${100 / 7}%`,
-                    alignItems: "center",
-                    marginBottom: spacing.xs,
-                  }}
+                  key={i}
+                  style={{ width: `${100 / 7}%`, alignItems: "center" }}
                 >
                   <Text
-                    style={{
-                      fontSize: typography.sizes.xs,
-                      fontWeight: typography.weights.med,
-                      opacity: typography.opacities.muted,
-                    }}
+                    variant="labelSmall"
+                    style={{ opacity: 0.5, fontWeight: "700" }}
                   >
                     {day}
                   </Text>
                 </View>
               ))}
             </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                flexWrap: "wrap",
-              }}
-            >
-              {calendarData.map((item: any, index) => {
-                if (item.empty) {
-                  return (
-                    <View
-                      key={`empty-${index}`}
-                      style={{
-                        width: `${100 / 7}%`,
-                        padding: spacing.xxs,
-                      }}
-                    >
-                      <View
-                        style={{
-                          aspectRatio: 1,
-                        }}
-                      />
-                    </View>
-                  );
-                }
-
-                const active = selected.date === item.date;
-
-                return (
-                  <View
-                    key={`date-${item.date}`}
-                    style={{
-                      width: `${100 / 7}%`,
-                      padding: spacing.xxs,
-                    }}
-                  >
+            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+              {calendarData.map((item: any, index) => (
+                <View key={index} style={{ width: `${100 / 7}%`, padding: 2 }}>
+                  {!item.empty ? (
                     <Pressable
                       onPress={() => setSelected(item)}
                       style={{
@@ -512,42 +291,46 @@ export default function AttendanceOverview() {
                         borderRadius: radii.lg,
                         alignItems: "center",
                         justifyContent: "center",
-                        backgroundColor: active
-                          ? theme.colors.primary
-                          : theme.colors.surfaceVariant,
+                        backgroundColor:
+                          selected.date === item.date
+                            ? theme.colors.primary
+                            : theme.colors.surfaceVariant,
                       }}
                     >
                       <Text
                         style={{
-                          fontSize: typography.sizes.sm,
-                          fontWeight: typography.weights.bold,
-                          color: active
-                            ? theme.colors.onPrimary
-                            : theme.colors.onSurface,
+                          fontSize: 14,
+                          fontWeight: "700",
+                          color:
+                            selected.date === item.date
+                              ? theme.colors.onPrimary
+                              : theme.colors.onSurface,
                         }}
                       >
                         {item.date}
                       </Text>
-
                       <View
                         style={{
-                          width: 5,
-                          height: 5,
-                          borderRadius: radii.full,
-                          marginTop: spacing.xxs,
-                          backgroundColor: active
-                            ? theme.colors.onPrimary
-                            : getStatusColor(item.status),
+                          width: 4,
+                          height: 4,
+                          borderRadius: 2,
+                          marginTop: 4,
+                          backgroundColor:
+                            selected.date === item.date
+                              ? theme.colors.onPrimary
+                              : getStatusColor(item.status),
                         }}
                       />
                     </Pressable>
-                  </View>
-                );
-              })}
+                  ) : (
+                    <View style={{ aspectRatio: 1 }} />
+                  )}
+                </View>
+              ))}
             </View>
           </View>
         )}
-      </Card.Content>
+      </View>
     </Card>
   );
 }

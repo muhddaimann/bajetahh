@@ -31,6 +31,7 @@ export default function Attendance() {
   const [clockInTime, setClockInTime] = useState<string | null>(null);
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [view, setView] = useState<"Weekly" | "Monthly">("Weekly");
 
   useEffect(() => {
     setHideTabBar(true);
@@ -80,13 +81,6 @@ export default function Attendance() {
     scrollViewRef.current?.scrollTo({ y: 0, animated: true });
   };
 
-  const attendanceHistory = [
-    { date: "May 14", in: "08:55 AM", out: "06:05 PM", status: "On Time" },
-    { date: "May 13", in: "09:02 AM", out: "06:10 PM", status: "Late" },
-    { date: "May 12", in: "08:45 AM", out: "06:00 PM", status: "On Time" },
-    { date: "May 11", in: "08:50 AM", out: "06:15 PM", status: "On Time" },
-  ];
-
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <ScrollView
@@ -105,8 +99,45 @@ export default function Attendance() {
           title="Attendance"
           subtitle="Track your daily presence"
           showBack
+          rightSlot={
+            <View
+              style={{
+                flexDirection: "row",
+                backgroundColor: theme.colors.surfaceVariant,
+                borderRadius: 999,
+                padding: 4,
+                gap: 4,
+              }}
+            >
+              {["Weekly", "Monthly"].map((item) => {
+                const active = view === item;
+                return (
+                  <TouchableOpacity
+                    key={item}
+                    onPress={() => setView(item as "Weekly" | "Monthly")}
+                    style={{
+                      paddingHorizontal: 12,
+                      paddingVertical: 6,
+                      borderRadius: 999,
+                      backgroundColor: active ? theme.colors.primary : "transparent",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        fontWeight: "700",
+                        color: active ? theme.colors.onPrimary : theme.colors.onSurface,
+                      }}
+                    >
+                      {item[0]}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          }
         />
-        <AttendanceOverview />
+        <AttendanceOverview view={view} />
       </ScrollView>
 
       <ScrollTop visible={showScrollTop} onPress={scrollToTop} />

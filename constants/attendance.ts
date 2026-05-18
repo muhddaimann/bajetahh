@@ -2,6 +2,17 @@
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+export type AttendanceStatus = "Present" | "Late" | "Absent" | "Leave" | "Weekend";
+
+export type AttendanceDay = {
+  date: number;
+  day: string;
+  status: AttendanceStatus;
+  checkIn?: string;
+  checkOut?: string;
+  workingHours?: string;
+};
+
 export const attendance = {
   department: "CelcomDigi Project",
   shiftStart: "9:00 AM",
@@ -64,3 +75,66 @@ export const attendanceStatuses: Record<
     showShift: false,
   },
 };
+
+export const weeklyAttendanceData: AttendanceDay[] = [
+  {
+    date: 18,
+    day: "Mon",
+    status: "Present",
+    checkIn: "8:55 AM",
+    checkOut: "5:30 PM",
+    workingHours: "8h 35m",
+  },
+  {
+    date: 19,
+    day: "Tue",
+    status: "Late",
+    checkIn: "9:12 AM",
+    checkOut: "5:30 PM",
+    workingHours: "8h 18m",
+  },
+  {
+    date: 20,
+    day: "Wed",
+    status: "Present",
+    checkIn: "8:47 AM",
+    checkOut: "5:34 PM",
+    workingHours: "8h 47m",
+  },
+  {
+    date: 21,
+    day: "Thu",
+    status: "Absent",
+  },
+  {
+    date: 22,
+    day: "Fri",
+    status: "Present",
+    checkIn: "8:58 AM",
+    checkOut: "5:28 PM",
+    workingHours: "8h 30m",
+  },
+  {
+    date: 23,
+    day: "Sat",
+    status: "Weekend",
+  },
+  {
+    date: 24,
+    day: "Sun",
+    status: "Weekend",
+  },
+];
+
+export const monthlyAttendanceData: AttendanceDay[] = Array.from({ length: 31 }).map(
+  (_, index) => ({
+    date: index + 1,
+    day: "",
+    status:
+      index % 7 === 5 || index % 7 === 6
+        ? "Weekend"
+        : index % 5 === 0
+          ? "Late"
+          : "Present",
+  }),
+);
