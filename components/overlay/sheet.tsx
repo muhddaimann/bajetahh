@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   View,
   TouchableWithoutFeedback,
@@ -27,8 +27,6 @@ export function OverlaySheet({ visible, title, content, onDismiss }: Props) {
   const tokens = useDesign();
   const insets = useSafeAreaInsets();
 
-  const [contentHeight, setContentHeight] = useState(0);
-
   const pan = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
 
@@ -46,9 +44,7 @@ export function OverlaySheet({ visible, title, content, onDismiss }: Props) {
       },
 
       onPanResponderMove: (_, gestureState) => {
-        if (gestureState.dy < 0) {
-          pan.setValue(gestureState.dy * 0.08);
-        } else {
+        if (gestureState.dy > 0) {
           pan.setValue(gestureState.dy);
         }
       },
@@ -146,10 +142,12 @@ export function OverlaySheet({ visible, title, content, onDismiss }: Props) {
         >
           <View
             style={{
-              overflow: "hidden",
               backgroundColor: theme.colors.surface,
               borderTopLeftRadius: tokens.radii["2xl"],
               borderTopRightRadius: tokens.radii["2xl"],
+              overflow: "hidden",
+              paddingBottom: 1000,
+              marginBottom: -1000,
 
               ...(Platform.OS === "ios"
                 ? {
@@ -167,10 +165,6 @@ export function OverlaySheet({ visible, title, content, onDismiss }: Props) {
             }}
           >
             <View
-              onLayout={(e) => {
-                const h = e.nativeEvent.layout.height;
-                if (h > 0) setContentHeight(h);
-              }}
               style={{
                 maxHeight: maxSheetHeight,
               }}
@@ -210,6 +204,7 @@ export function OverlaySheet({ visible, title, content, onDismiss }: Props) {
                 showsVerticalScrollIndicator={false}
                 bounces={false}
                 overScrollMode="never"
+                scrollEventThrottle={16}
                 contentContainerStyle={{
                   paddingHorizontal: tokens.spacing.xl,
                   paddingBottom: tokens.spacing.xl + insets.bottom,
