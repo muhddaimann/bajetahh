@@ -89,7 +89,7 @@ export default function Home() {
           title="Room Booking"
           subtitle="Reserve meeting rooms"
           actionLabel="See All"
-          actionRoute="/room-booking"
+          actionRoute="home/room"
         />
 
         <RowTwo
