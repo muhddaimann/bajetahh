@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(DUMMY_USER);
         hideLoader();
         toast({
-          message: `Authenticated successfully. Welcome, ${DUMMY_USER.name}!`,
+          message: `Welcome, ${DUMMY_USER.name}!`,
           variant: "success",
         });
         return true;
