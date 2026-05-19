@@ -36,51 +36,61 @@ const DUMMY_USER: User = {
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  
   const { getToken, saveToken, deleteToken } = useToken();
   const { confirm, toast, showLoader, hideLoader } = useOverlay();
 
   useEffect(() => {
     const loadSession = async () => {
+      showLoader("Initializing session...");
       try {
         const savedUsername = await getToken();
         if (savedUsername === DUMMY_USER.username) {
           setUser(DUMMY_USER);
+          toast({
+            message: `Welcome back, ${DUMMY_USER.name}`,
+            variant: "success",
+          });
         }
       } catch (e) {
-        console.error('Failed to load session', e);
+        console.error("Failed to load session", e);
       } finally {
         // Add a small delay for smoother transition
-        setTimeout(() => setIsLoading(false), 800);
+        setTimeout(() => {
+          hideLoader();
+          setIsLoading(false);
+        }, 800);
       }
     };
     loadSession();
   }, []);
 
   const signIn = async (username: string, password: string) => {
-    showLoader("Signing you in...");
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    showLoader("Authenticating...");
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    if (username === DUMMY_USER.username && password === '123') {
+    if (username === DUMMY_USER.username && password === "123") {
       try {
         await saveToken(username);
         setUser(DUMMY_USER);
         hideLoader();
-        toast({ message: `Welcome back, ${DUMMY_USER.name}.`, variant: 'success' });
+        toast({
+          message: `Authenticated successfully. Welcome, ${DUMMY_USER.name}!`,
+          variant: "success",
+        });
         return true;
       } catch (e) {
         hideLoader();
-        toast({ 
-          message: 'Secure storage failed. Please check your device settings.', 
-          variant: 'error' 
+        toast({
+          message: "Secure storage failed. Please check your device settings.",
+          variant: "error",
         });
         return false;
       }
     } else {
       hideLoader();
-      toast({ 
-        message: 'Invalid username or password. Please try again.', 
-        variant: 'error' 
+      toast({
+        message: "Invalid username or password. Please try again.",
+        variant: "error",
       });
       return false;
     }

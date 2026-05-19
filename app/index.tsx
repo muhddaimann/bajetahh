@@ -17,9 +17,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const passwordRef = useRef<RNTextInput>(null);
-
   const theme = useTheme();
   const tokens = useDesign();
   const { signIn } = useAuth();

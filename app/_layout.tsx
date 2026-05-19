@@ -123,9 +123,12 @@ function AppContent({ fontsLoaded }: { fontsLoaded: boolean }) {
   // Prevent rendering the stack until auth state is determined to avoid layout flashes
   if (!fontsLoaded || isAuthLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: theme.colors.background }}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-      </View>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: theme.colors.background,
+        }}
+      />
     );
   }
 
