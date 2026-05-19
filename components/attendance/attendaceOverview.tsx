@@ -12,6 +12,7 @@ import {
 
 export default function AttendanceOverview({ view }: { view: "Weekly" | "Monthly" }) {
   const theme = useTheme();
+  const today = 19; // Today's date based on session context
 
   const { spacing, radii, typography, sizes, elevation, opacity } = design;
 
@@ -20,10 +21,16 @@ export default function AttendanceOverview({ view }: { view: "Weekly" | "Monthly
     [view],
   );
 
-  const [selected, setSelected] = useState<AttendanceDay>(weeklyAttendanceData[0]);
+  const [selected, setSelected] = useState<AttendanceDay>(() => {
+    return (
+      weeklyAttendanceData.find((item) => item.date === today) ||
+      weeklyAttendanceData[0]
+    );
+  });
 
   useEffect(() => {
-    setSelected(data[0]);
+    const todayItem = data.find((item) => item.date === today);
+    setSelected(todayItem || data[0]);
   }, [view, data]);
 
   const firstDayOffset = 4;
@@ -209,57 +216,72 @@ export default function AttendanceOverview({ view }: { view: "Weekly" | "Monthly
       <View style={{ padding: spacing.md }}>
         {view === "Weekly" ? (
           <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              gap: spacing.sm,
+            }}
           >
             {weeklyAttendanceData.map((item) => {
               const active = selected.date === item.date;
+              const isToday = item.date === today;
               return (
-                <Pressable
+                <View
                   key={item.date}
-                  onPress={() => setSelected(item)}
-                  style={{
-                    flex: 1,
-                    alignItems: "center",
-                    paddingVertical: spacing.md,
-                    borderRadius: radii.xl,
-                    backgroundColor: active ? theme.colors.primary : "transparent",
-                  }}
+                  style={{ flex: 1, alignItems: "center", gap: spacing.xs }}
                 >
                   <Text
                     style={{
                       fontSize: 12,
-                      fontWeight: "600",
-                      color: active
-                        ? theme.colors.onPrimary
+                      fontWeight: isToday ? "900" : "700",
+                      color: isToday
+                        ? theme.colors.primary
                         : theme.colors.onSurfaceVariant,
+                      opacity: isToday ? 1 : 0.6,
                     }}
                   >
-                    {item.day.toUpperCase()}
+                    {item.day.charAt(0).toUpperCase()}
                   </Text>
-                  <Text
+                  <Pressable
+                    onPress={() => setSelected(item)}
                     style={{
-                      fontSize: 18,
-                      fontWeight: "800",
-                      marginTop: 4,
-                      color: active
-                        ? theme.colors.onPrimary
-                        : theme.colors.onSurface,
-                    }}
-                  >
-                    {item.date}
-                  </Text>
-                  <View
-                    style={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: 3,
-                      marginTop: 8,
+                      width: "100%",
+                      alignItems: "center",
+                      paddingVertical: spacing.md,
+                      borderRadius: radii.xl,
                       backgroundColor: active
-                        ? theme.colors.onPrimary
-                        : getStatusColor(item.status),
+                        ? theme.colors.primary
+                        : theme.colors.background,
+                      borderWidth: isToday ? 2 : 0,
+                      borderColor: active
+                        ? "rgba(255,255,255,0.5)"
+                        : theme.colors.primary,
                     }}
-                  />
-                </Pressable>
+                  >
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        fontWeight: "800",
+                        color: active
+                          ? theme.colors.onPrimary
+                          : theme.colors.onSurface,
+                      }}
+                    >
+                      {item.date}
+                    </Text>
+                    <View
+                      style={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: 3,
+                        marginTop: 8,
+                        backgroundColor: active
+                          ? theme.colors.onPrimary
+                          : getStatusColor(item.status),
+                      }}
+                    />
+                  </Pressable>
+                </View>
               );
             })}
           </View>
@@ -281,52 +303,58 @@ export default function AttendanceOverview({ view }: { view: "Weekly" | "Monthly
               ))}
             </View>
             <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-              {calendarData.map((item: any, index) => (
-                <View key={index} style={{ width: `${100 / 7}%`, padding: 2 }}>
-                  {!item.empty ? (
-                    <Pressable
-                      onPress={() => setSelected(item)}
-                      style={{
-                        aspectRatio: 1,
-                        borderRadius: radii.lg,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        backgroundColor:
-                          selected.date === item.date
-                            ? theme.colors.primary
-                            : theme.colors.surfaceVariant,
-                      }}
-                    >
-                      <Text
+              {calendarData.map((item: any, index) => {
+                const isToday = !item.empty && item.date === today;
+                const active = !item.empty && selected.date === item.date;
+
+                return (
+                  <View key={index} style={{ width: `${100 / 7}%`, padding: 2 }}>
+                    {!item.empty ? (
+                      <Pressable
+                        onPress={() => setSelected(item)}
                         style={{
-                          fontSize: 14,
-                          fontWeight: "700",
-                          color:
-                            selected.date === item.date
-                              ? theme.colors.onPrimary
-                              : theme.colors.onSurface,
+                          aspectRatio: 1,
+                          borderRadius: radii.lg,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          backgroundColor: active
+                            ? theme.colors.primary
+                            : theme.colors.background,
+                          borderWidth: isToday ? 2 : 0,
+                          borderColor: active
+                            ? "rgba(255,255,255,0.5)"
+                            : theme.colors.primary,
                         }}
                       >
-                        {item.date}
-                      </Text>
-                      <View
-                        style={{
-                          width: 4,
-                          height: 4,
-                          borderRadius: 2,
-                          marginTop: 4,
-                          backgroundColor:
-                            selected.date === item.date
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontWeight: "700",
+                            color: active
+                              ? theme.colors.onPrimary
+                              : theme.colors.onSurface,
+                          }}
+                        >
+                          {item.date}
+                        </Text>
+                        <View
+                          style={{
+                            width: 4,
+                            height: 4,
+                            borderRadius: 2,
+                            marginTop: 4,
+                            backgroundColor: active
                               ? theme.colors.onPrimary
                               : getStatusColor(item.status),
-                        }}
-                      />
-                    </Pressable>
-                  ) : (
-                    <View style={{ aspectRatio: 1 }} />
-                  )}
-                </View>
-              ))}
+                          }}
+                        />
+                      </Pressable>
+                    ) : (
+                      <View style={{ aspectRatio: 1 }} />
+                    )}
+                  </View>
+                );
+              })}
             </View>
           </View>
         )}

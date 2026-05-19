@@ -31,11 +31,13 @@ export function DatePickerContent({
   const { spacing, radii, typography } = tokens;
 
   const today = new Date();
+
   const [currentMonth, setCurrentMonth] = useState(
     new Date(today.getFullYear(), today.getMonth(), 1),
   );
 
   const [tempSingle, setTempSingle] = useState<Date | null>(value || null);
+
   const [tempRange, setTempRange] = useState<{
     start: Date | null;
     end: Date | null;
@@ -58,20 +60,27 @@ export function DatePickerContent({
     const month = currentMonth.getMonth();
     const firstDay = new Date(year, month, 1);
     const totalDays = new Date(year, month + 1, 0).getDate();
+
     let startOffset = firstDay.getDay() - 1;
+
     if (startOffset < 0) startOffset = 6;
+
     const result = [];
+
     for (let i = 0; i < startOffset; i++) {
       result.push(null);
     }
+
     for (let day = 1; day <= totalDays; day++) {
       result.push(new Date(year, month, day));
     }
+
     return result;
   }, [currentMonth]);
 
   const isSameDay = (a?: Date | null, b?: Date | null) => {
     if (!a || !b) return false;
+
     return (
       a.getDate() === b.getDate() &&
       a.getMonth() === b.getMonth() &&
@@ -81,6 +90,7 @@ export function DatePickerContent({
 
   const isInRange = (date: Date) => {
     if (!tempRange.start || !tempRange.end) return false;
+
     return date >= tempRange.start && date <= tempRange.end;
   };
 
@@ -91,111 +101,174 @@ export function DatePickerContent({
     }
 
     if (!tempRange.start || (tempRange.start && tempRange.end)) {
-      setTempRange({ start: date, end: null });
+      setTempRange({
+        start: date,
+        end: null,
+      });
+
       return;
     }
 
     if (date < tempRange.start) {
-      setTempRange({ start: date, end: tempRange.start });
+      setTempRange({
+        start: date,
+        end: tempRange.start,
+      });
+
       return;
     }
 
-    setTempRange({ start: tempRange.start, end: date });
+    setTempRange({
+      start: tempRange.start,
+      end: date,
+    });
   };
 
   const handleConfirm = () => {
     if (variant === "single" && tempSingle) {
       onChange?.(tempSingle);
     }
+
     if (variant === "range") {
       onRangeChange?.(tempRange);
     }
+
     onConfirm?.();
   };
 
   const weekDays = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
   return (
-    <View style={{ gap: spacing.lg }}>
+    <View style={{ gap: spacing.xl }}>
+      <View
+        style={{
+          padding: spacing.lg,
+          borderRadius: radii["2xl"],
+          backgroundColor: theme.colors.surfaceVariant,
+          gap: spacing.md,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() =>
+              setCurrentMonth(
+                new Date(
+                  currentMonth.getFullYear(),
+                  currentMonth.getMonth() - 1,
+                  1,
+                ),
+              )
+            }
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: radii.full,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: theme.colors.surface,
+            }}
+          >
+            <MaterialCommunityIcons
+              name="chevron-left"
+              size={20}
+              color={theme.colors.onSurface}
+            />
+          </TouchableOpacity>
+
+          <View style={{ alignItems: "center", gap: 2 }}>
+            <Text
+              style={{
+                fontSize: typography.sizes.lg,
+                fontWeight: typography.weights.bold,
+                color: theme.colors.onSurface,
+              }}
+            >
+              {monthLabel}
+            </Text>
+
+            <Text
+              style={{
+                fontSize: typography.sizes.sm,
+                color: theme.colors.onSurfaceVariant,
+              }}
+            >
+              {variant === "single"
+                ? tempSingle
+                  ? tempSingle.toLocaleDateString("en-US", {
+                      weekday: "long",
+                      day: "numeric",
+                      month: "short",
+                    })
+                  : "Select a date"
+                : tempRange.start && tempRange.end
+                  ? `${tempRange.start.toLocaleDateString("en-US", {
+                      day: "numeric",
+                      month: "short",
+                    })} - ${tempRange.end.toLocaleDateString("en-US", {
+                      day: "numeric",
+                      month: "short",
+                    })}`
+                  : "Select range"}
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() =>
+              setCurrentMonth(
+                new Date(
+                  currentMonth.getFullYear(),
+                  currentMonth.getMonth() + 1,
+                  1,
+                ),
+              )
+            }
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: radii.full,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: theme.colors.surface,
+            }}
+          >
+            <MaterialCommunityIcons
+              name="chevron-right"
+              size={20}
+              color={theme.colors.onSurface}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <View
         style={{
           flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
+          paddingHorizontal: spacing.xs,
         }}
       >
-        <TouchableOpacity
-          activeOpacity={0.85}
-          onPress={() =>
-            setCurrentMonth(
-              new Date(
-                currentMonth.getFullYear(),
-                currentMonth.getMonth() - 1,
-                1,
-              ),
-            )
-          }
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: radii.full,
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: theme.colors.surfaceVariant,
-          }}
-        >
-          <MaterialCommunityIcons
-            name="chevron-left"
-            size={20}
-            color={theme.colors.onSurface}
-          />
-        </TouchableOpacity>
-
-        <Text
-          style={{
-            fontSize: typography.sizes.md,
-            fontWeight: typography.weights.bold,
-          }}
-        >
-          {monthLabel}
-        </Text>
-
-        <TouchableOpacity
-          activeOpacity={0.85}
-          onPress={() =>
-            setCurrentMonth(
-              new Date(
-                currentMonth.getFullYear(),
-                currentMonth.getMonth() + 1,
-                1,
-              ),
-            )
-          }
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: radii.full,
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: theme.colors.surfaceVariant,
-          }}
-        >
-          <MaterialCommunityIcons
-            name="chevron-right"
-            size={20}
-            color={theme.colors.onSurface}
-          />
-        </TouchableOpacity>
-      </View>
-
-      <View style={{ flexDirection: "row" }}>
         {weekDays.map((item) => (
-          <View key={item} style={{ flex: 1, alignItems: "center" }}>
+          <View
+            key={item}
+            style={{
+              flex: 1,
+              alignItems: "center",
+            }}
+          >
             <Text
               style={{
                 fontSize: typography.sizes.xs,
-                opacity: typography.opacities.muted,
-                fontWeight: typography.weights.semibold,
+                color: theme.colors.onSurfaceVariant,
+                fontWeight: typography.weights.bold,
+                letterSpacing: 0.6,
+                textTransform: "uppercase",
               }}
             >
               {item}
@@ -216,7 +289,10 @@ export function DatePickerContent({
             return (
               <View
                 key={`empty-${index}`}
-                style={{ width: `${100 / 7}%`, aspectRatio: 1 }}
+                style={{
+                  width: `${100 / 7}%`,
+                  aspectRatio: 1,
+                }}
               />
             );
           }
@@ -229,68 +305,136 @@ export function DatePickerContent({
 
           const inRange = variant === "range" && isInRange(date);
 
+          const isToday = isSameDay(today, date);
+
+          const isRangeStart = isSameDay(tempRange.start, date);
+
+          const isRangeEnd = isSameDay(tempRange.end, date);
+
           return (
             <View
               key={date.toISOString()}
-              style={{ width: `${100 / 7}%`, alignItems: "center" }}
+              style={{
+                width: `${100 / 7}%`,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              <TouchableOpacity
-                activeOpacity={0.85}
-                onPress={() => handleSelect(date)}
+              <View
                 style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: radii.full,
-                  alignItems: "center",
+                  width: "100%",
+                  height: 48,
                   justifyContent: "center",
-                  backgroundColor: selected
-                    ? theme.colors.primary
-                    : inRange
-                      ? `${theme.colors.primary}12`
+                  alignItems:
+                    isRangeStart || selected
+                      ? "flex-start"
+                      : isRangeEnd
+                        ? "flex-end"
+                        : "center",
+                  backgroundColor:
+                    inRange && !selected
+                      ? `${theme.colors.primary}14`
                       : "transparent",
+                  borderTopLeftRadius:
+                    isRangeStart || selected ? radii.full : 0,
+                  borderBottomLeftRadius:
+                    isRangeStart || selected ? radii.full : 0,
+                  borderTopRightRadius:
+                    isRangeEnd || selected ? radii.full : 0,
+                  borderBottomRightRadius:
+                    isRangeEnd || selected ? radii.full : 0,
                 }}
               >
-                <Text
+                <TouchableOpacity
+                  activeOpacity={0.85}
+                  onPress={() => handleSelect(date)}
                   style={{
-                    fontSize: typography.sizes.sm,
-                    fontWeight: selected
-                      ? typography.weights.bold
-                      : typography.weights.med,
-                    color: selected
-                      ? theme.colors.onPrimary
-                      : theme.colors.onSurface,
-                    opacity: inRange && !selected ? 0.9 : 1,
+                    width: 44,
+                    height: 44,
+                    borderRadius: radii.full,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: selected
+                      ? theme.colors.primary
+                      : isToday
+                        ? `${theme.colors.primary}16`
+                        : theme.colors.surfaceVariant,
+                    borderWidth: isToday && !selected ? 1.5 : 0,
+                    borderColor: theme.colors.primary,
                   }}
                 >
-                  {date.getDate()}
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    style={{
+                      fontSize: typography.sizes.sm,
+                      fontWeight: selected
+                        ? typography.weights.bold
+                        : typography.weights.semibold,
+                      color: selected
+                        ? theme.colors.onPrimary
+                        : theme.colors.onSurface,
+                    }}
+                  >
+                    {date.getDate()}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           );
         })}
       </View>
 
-      <TouchableOpacity
-        activeOpacity={0.85}
-        onPress={handleConfirm}
+      <View
         style={{
-          height: 52,
-          borderRadius: radii.full,
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: theme.colors.primary,
+          flexDirection: "row",
+          gap: spacing.sm,
         }}
       >
-        <Text
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={onConfirm}
           style={{
-            fontSize: typography.sizes.md,
-            fontWeight: typography.weights.bold,
-            color: theme.colors.onPrimary,
+            flex: 1,
+            height: 52,
+            borderRadius: radii.full,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: theme.colors.surfaceVariant,
           }}
         >
-          Confirm Selection
-        </Text>
-      </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: typography.sizes.md,
+              fontWeight: typography.weights.semibold,
+              color: theme.colors.onSurface,
+            }}
+          >
+            Cancel
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={handleConfirm}
+          style={{
+            flex: 1,
+            height: 52,
+            borderRadius: radii.full,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: theme.colors.primary,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: typography.sizes.md,
+              fontWeight: typography.weights.bold,
+              color: theme.colors.onPrimary,
+            }}
+          >
+            Apply
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -319,6 +463,7 @@ export default function DatePicker({
 }: Props) {
   const theme = useTheme();
   const tokens = useDesign();
+
   const { spacing, radii } = tokens;
 
   return (
@@ -333,7 +478,7 @@ export default function DatePicker({
           overflow: "hidden",
         }}
       >
-        <View style={{ padding: spacing.lg }}>
+        <View style={{ padding: spacing.xl }}>
           <DatePickerContent
             variant={variant}
             value={value}
