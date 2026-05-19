@@ -11,6 +11,7 @@ import { useTabs } from "../../../../contexts/tabContext";
 import Header from "../../../../components/header";
 import ScrollTop from "../../../../components/scrollTop";
 import RoomBento from "../../../../components/room/roomBento";
+import RoomList from "../../../../components/room/roomList";
 
 export default function Room() {
   const theme = useTheme();
@@ -34,7 +35,6 @@ export default function Room() {
     scrollViewRef.current?.scrollTo({ y: 0, animated: true });
   };
 
-
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <ScrollView
@@ -54,7 +54,8 @@ export default function Room() {
           subtitle="Check availability and manage reservations"
           showBack
         />
-        <RoomBento/>
+        <RoomBento />
+        <RoomList />
       </ScrollView>
 
       <ScrollTop visible={showScrollTop} onPress={scrollToTop} />
