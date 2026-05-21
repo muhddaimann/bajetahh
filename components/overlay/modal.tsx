@@ -125,6 +125,16 @@ export function OverlayModal({
                 borderRadius: tokens.radii["2xl"],
               }}
             >
+              {/* Accent Indicator */}
+              <View
+                style={{
+                  height: 4,
+                  width: "100%",
+                  backgroundColor: theme.colors.primary,
+                  opacity: 0.8,
+                }}
+              />
+
               <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{

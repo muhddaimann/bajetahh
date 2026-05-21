@@ -183,7 +183,7 @@ export function OverlaySheet({ visible, title, content, onDismiss }: Props) {
                     width: 42,
                     height: 5,
                     borderRadius: tokens.radii.full,
-                    backgroundColor: theme.colors.outlineVariant,
+                    backgroundColor: theme.colors.primary,
                   }}
                 />
 

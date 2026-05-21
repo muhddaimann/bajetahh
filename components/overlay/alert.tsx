@@ -131,6 +131,16 @@ export function OverlayAlert({
                 overflow: "hidden",
               }}
             >
+              {/* Accent Indicator */}
+              <View
+                style={{
+                  height: 4,
+                  width: "100%",
+                  backgroundColor: theme.colors.primary,
+                  opacity: 0.8,
+                }}
+              />
+
               <View
                 style={{
                   paddingVertical: tokens.spacing.lg,
@@ -207,16 +217,6 @@ export function OverlayAlert({
                   {buttonText}
                 </Button>
               </View>
-
-              {/* Accent Indicator */}
-              <View
-                style={{
-                  height: 4,
-                  width: "100%",
-                  backgroundColor: theme.colors.primary,
-                  opacity: 0.8,
-                }}
-              />
             </View>
           </Surface>
         </Animated.View>

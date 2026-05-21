@@ -143,6 +143,16 @@ export function OverlayConfirm({
                 overflow: "hidden",
               }}
             >
+              {/* Accent Indicator */}
+              <View
+                style={{
+                  height: 4,
+                  width: "100%",
+                  backgroundColor: accentColor,
+                  opacity: 0.8,
+                }}
+              />
+
               <View
                 style={{
                   paddingTop: tokens.spacing.lg,
@@ -249,16 +259,6 @@ export function OverlayConfirm({
                   </Button>
                 </View>
               </View>
-
-              {/* Accent Indicator */}
-              <View
-                style={{
-                  height: 4,
-                  width: "100%",
-                  backgroundColor: accentColor,
-                  opacity: 0.8,
-                }}
-              />
             </View>
           </Surface>
         </Animated.View>
