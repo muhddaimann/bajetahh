@@ -43,10 +43,6 @@
 │  └─ tokenContext.tsx
 ├─ dist/
 │  ├─ _expo/
-│  │  └─ static/
-│  │     └─ js/
-│  │        └─ web/
-│  │           └─ entry-5bb03a30921cf06192472e2d7aeea510.js
 │  ├─ assets/
 │  ├─ favicon.ico
 │  ├─ index.html

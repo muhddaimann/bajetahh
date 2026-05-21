@@ -3,34 +3,26 @@ import { View, TouchableOpacity } from "react-native";
 import { Text, useTheme, Avatar, Divider } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useDesign } from "../../contexts/designContext";
+import { useAuth } from "../../contexts/authContext";
 
 type HeaderProps = {
-  avatarText?: string;
-  username?: string;
-  staffId?: string;
-  designation?: string;
   onUpdateProfilePress?: () => void;
 };
 
-export default function Header({
-  avatarText = "??",
-  username = "Guest User",
-  staffId = "N/A",
-  designation = "No Designation",
-  onUpdateProfilePress,
-}: HeaderProps) {
+export default function Header({ onUpdateProfilePress }: HeaderProps) {
   const theme = useTheme();
   const tokens = useDesign();
+  const { user } = useAuth();
 
   const details = [
     {
       label: "Full Name",
-      value: "Aiman Hakim Bin Mohd",
+      value: user?.name || "Guest User",
       icon: "account-box-outline",
     },
     {
       label: "Email Address",
-      value: "daiman@company.com",
+      value: `${user?.username || "user"}@company.com`,
       icon: "email-outline",
     },
     { label: "Contact Number", value: "+6012 345 6789", icon: "phone-outline" },
@@ -86,7 +78,7 @@ export default function Header({
           >
             <Avatar.Text
               size={100}
-              label={avatarText}
+              label={user?.avatarText || "??"}
               style={{
                 backgroundColor: theme.colors.primaryContainer,
               }}
@@ -107,7 +99,7 @@ export default function Header({
                 letterSpacing: -1,
               }}
             >
-              {username}
+              {user?.username || "Guest"}
 
               <Text
                 style={{
@@ -118,8 +110,19 @@ export default function Header({
                 }}
               >
                 {" "}
-                #{staffId}
+                #{user?.staffId || "N/A"}
               </Text>
+            </Text>
+
+            <Text
+              variant="labelLarge"
+              style={{
+                color: theme.colors.onSurfaceVariant,
+                fontWeight: "700",
+                marginTop: -4,
+              }}
+            >
+              {user?.designation || "No Designation"}
             </Text>
           </View>
         </View>

@@ -4,15 +4,17 @@ import { Button, Card, TextInput, useTheme } from "react-native-paper";
 import Header from "../../../components/shared/header";
 import { useDesign } from "../../../contexts/designContext";
 import { useTabs } from "../../../contexts/tabContext";
+import { useAuth } from "../../../contexts/authContext";
 
 export default function Update() {
   const theme = useTheme();
   const tokens = useDesign();
   const { setHideTabBar } = useTabs();
+  const { user } = useAuth();
 
   const INITIAL_VALUES = {
-    nickname: "Daiman",
-    email: "daiman@company.com",
+    nickname: user?.name || "User",
+    email: `${user?.username || "user"}@company.com`,
     contact: "+60123456789",
     address1: "Jalan Bukit Bintang",
     address2: "Residensi Premium",

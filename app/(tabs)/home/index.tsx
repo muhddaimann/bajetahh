@@ -48,9 +48,6 @@ export default function Home() {
       >
         <Head
           greeting="Good Morning"
-          username={user?.name || "User"}
-          designation={user?.designation || ""}
-          avatarText={user?.avatarText || "U"}
           onNotificationPress={() => router.push("home/newsflash")}
         />
       </ScrollView>

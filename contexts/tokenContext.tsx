@@ -1,6 +1,4 @@
 import React, { createContext, useContext } from 'react';
-import * as SecureStore from 'expo-secure-store';
-import { Platform } from 'react-native';
 
 type TokenContextType = {
   getToken: () => Promise<string | null>;
@@ -12,8 +10,6 @@ const TokenContext = createContext<TokenContextType | undefined>(undefined);
 
 const TOKEN_KEY = 'user_token';
 
-const isWeb = Platform.OS === 'web';
-
 export const useToken = () => {
   const context = useContext(TokenContext);
   if (!context) throw new Error('useToken must be used within a TokenProvider');
@@ -23,10 +19,7 @@ export const useToken = () => {
 export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
   const getToken = async () => {
     try {
-      if (isWeb) {
-        return localStorage.getItem(TOKEN_KEY);
-      }
-      return await SecureStore.getItemAsync(TOKEN_KEY);
+      return localStorage.getItem(TOKEN_KEY);
     } catch (e) {
       console.error('Failed to get token', e);
       return null;
@@ -35,11 +28,7 @@ export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
 
   const saveToken = async (token: string) => {
     try {
-      if (isWeb) {
-        localStorage.setItem(TOKEN_KEY, token);
-        return;
-      }
-      await SecureStore.setItemAsync(TOKEN_KEY, token);
+      localStorage.setItem(TOKEN_KEY, token);
     } catch (e) {
       console.error('Failed to save token', e);
     }
@@ -47,11 +36,7 @@ export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
 
   const deleteToken = async () => {
     try {
-      if (isWeb) {
-        localStorage.removeItem(TOKEN_KEY);
-        return;
-      }
-      await SecureStore.deleteItemAsync(TOKEN_KEY);
+      localStorage.removeItem(TOKEN_KEY);
     } catch (e) {
       console.error('Failed to delete token', e);
     }

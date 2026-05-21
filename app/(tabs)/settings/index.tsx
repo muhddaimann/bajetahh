@@ -10,7 +10,7 @@ import { useDesign } from "../../../contexts/designContext";
 import { useTabs } from "../../../contexts/tabContext";
 import { useAuth } from "../../../contexts/authContext";
 import ScrollTop from "../../../components/shared/scrollTop";
-import Tail from "../../../components/settings/header";
+import Header from "../../../components/settings/header";
 import { useRouter } from "expo-router";
 
 export default function Settings() {
@@ -58,11 +58,7 @@ export default function Settings() {
           gap: tokens.spacing.lg,
         }}
       >
-        <Tail
-          username={user?.name}
-          designation={user?.designation}
-          staffId={user?.staffId}
-          avatarText={user?.avatarText}
+        <Header
           onUpdateProfilePress={() => router.push("settings/update")}
         />
       </ScrollView>

@@ -11,6 +11,7 @@ import {
 import { Text, TextInput, Button, useTheme } from "react-native-paper";
 import { useDesign } from "../contexts/designContext";
 import { useAuth } from "../contexts/authContext";
+import { DUMMY_STAFF, DUMMY_MANAGER } from "../constants/user";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -21,6 +22,11 @@ export default function Login() {
   const theme = useTheme();
   const tokens = useDesign();
   const { signIn } = useAuth();
+
+  const handleQuickSelect = (user: string, pass: string) => {
+    setUsername(user);
+    setPassword(pass);
+  };
 
   const handleLogin = async () => {
     if (!username || !password || isSubmitting) return;
@@ -88,7 +94,7 @@ export default function Login() {
               borderRadius: tokens.radii.xl,
               backgroundColor: theme.colors.surface,
               padding: tokens.spacing.lg,
-              gap: tokens.spacing.md,
+              gap: tokens.spacing.lg,
               ...(Platform.OS === "web" && {
                 borderWidth: 1,
                 borderColor: theme.colors.outlineVariant,
@@ -102,14 +108,14 @@ export default function Login() {
             <View
               style={{
                 alignItems: "center",
-                gap: tokens.spacing.xl,
+                gap: tokens.spacing.md,
               }}
             >
               <Image
                 source={require("../assets/img/logo.png")}
                 style={{
-                  width: 140,
-                  height: 140,
+                  width: 100,
+                  height: 100,
                   resizeMode: "contain",
                 }}
               />
@@ -121,7 +127,7 @@ export default function Login() {
                 }}
               >
                 <Text
-                  variant="headlineMedium"
+                  variant="headlineSmall"
                   style={{
                     fontWeight: "800",
                     textAlign: "center",
@@ -132,14 +138,13 @@ export default function Login() {
                 </Text>
 
                 <Text
-                  variant="bodyMedium"
+                  variant="bodySmall"
                   style={{
                     textAlign: "center",
                     color: theme.colors.onSurfaceVariant,
-                    lineHeight: 22,
                   }}
                 >
-                  Authenticate to access your FAITH workspace
+                  Enter credentials or select a role to auto-fill
                 </Text>
               </View>
             </View>
@@ -205,62 +210,90 @@ export default function Login() {
               />
             </View>
 
-            <View
-              style={{ marginTop: tokens.spacing.md, gap: tokens.spacing.xl }}
+            <Button
+              mode="contained"
+              onPress={handleLogin}
+              disabled={!username || !password || isSubmitting}
+              contentStyle={{
+                height: 56,
+              }}
+              style={{
+                borderRadius: tokens.radii.lg,
+                elevation: 2,
+              }}
+              labelStyle={{
+                fontWeight: "700",
+                fontSize: 16,
+              }}
             >
-              <Button
-                mode="contained"
-                onPress={handleLogin}
-                disabled={!username || !password || isSubmitting}
-                contentStyle={{
-                  height: 56,
-                }}
-                style={{
-                  borderRadius: tokens.radii.lg,
-                  elevation: 2,
-                }}
-                labelStyle={{
-                  fontWeight: "700",
-                  fontSize: 16,
-                }}
-              >
-                Authenticate to FAITH
-              </Button>
-
-              <View
-                style={{
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  variant="bodySmall"
-                  style={{
-                    color: theme.colors.onSurfaceVariant,
-                    textAlign: "center",
-                    lineHeight: 18,
-                  }}
-                >
-                  Reach system admin if you need help signing in.
-                </Text>
-              </View>
-            </View>
+              Authenticate to FAITH
+            </Button>
 
             <View
               style={{
-                marginTop: tokens.spacing.xl,
-                paddingTop: tokens.spacing.lg,
-                borderTopWidth: 1,
-                borderTopColor: theme.colors.surfaceVariant,
                 alignItems: "center",
               }}
             >
               <Text
-                variant="labelSmall"
-                style={{ color: theme.colors.outline, textAlign: "center" }}
+                variant="bodySmall"
+                style={{
+                  color: theme.colors.onSurfaceVariant,
+                  textAlign: "center",
+                }}
               >
-                This is dummy PWA version of FAITH. Username: user | Password:
-                123 to continue.
+                Reach system admin if you need help signing in.
               </Text>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                gap: tokens.spacing.sm,
+              }}
+            >
+              <Button
+                mode="outlined"
+                onPress={() => handleQuickSelect(DUMMY_STAFF.username, "123")}
+                style={{
+                  flex: 1,
+                  borderRadius: tokens.radii.lg,
+                  borderColor: theme.colors.outline,
+                }}
+                contentStyle={{
+                  height: 64,
+                }}
+              >
+                <View style={{ alignItems: "center" }}>
+                  <Text
+                    variant="labelLarge"
+                    style={{ fontWeight: "700", color: theme.colors.primary }}
+                  >
+                    Staff
+                  </Text>
+                </View>
+              </Button>
+
+              <Button
+                mode="outlined"
+                onPress={() => handleQuickSelect(DUMMY_MANAGER.username, "456")}
+                style={{
+                  flex: 1,
+                  borderRadius: tokens.radii.lg,
+                  borderColor: theme.colors.outline,
+                }}
+                contentStyle={{
+                  height: 64,
+                }}
+              >
+                <View style={{ alignItems: "center" }}>
+                  <Text
+                    variant="labelLarge"
+                    style={{ fontWeight: "700", color: theme.colors.secondary }}
+                  >
+                    Manager
+                  </Text>
+                </View>
+              </Button>
             </View>
           </View>
         </View>

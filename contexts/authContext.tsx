@@ -1,14 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useToken } from './tokenContext';
 import { useOverlay } from './overlayContext';
-
-type User = {
-  username: string;
-  name: string;
-  staffId: string;
-  designation: string;
-  avatarText: string;
-};
+import { User, DUMMY_STAFF, DUMMY_MANAGER } from '../constants/user';
 
 type AuthContextType = {
   user: User | null;
@@ -25,14 +18,6 @@ export const useAuth = () => {
   return context;
 };
 
-const DUMMY_USER: User = {
-  username: 'user',
-  name: 'Aiman Hakim',
-  staffId: 'CS1024',
-  designation: 'Customer Service Executive',
-  avatarText: 'AH',
-};
-
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,10 +29,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       showLoader("Initializing session...");
       try {
         const savedUsername = await getToken();
-        if (savedUsername === DUMMY_USER.username) {
-          setUser(DUMMY_USER);
+        if (savedUsername === DUMMY_STAFF.username) {
+          setUser(DUMMY_STAFF);
           toast({
-            message: `Welcome back, ${DUMMY_USER.name}`,
+            message: `Welcome back, ${DUMMY_STAFF.name}`,
+            variant: "success",
+          });
+        } else if (savedUsername === DUMMY_MANAGER.username) {
+          setUser(DUMMY_MANAGER);
+          toast({
+            message: `Welcome back, ${DUMMY_MANAGER.name}`,
             variant: "success",
           });
         }
@@ -68,20 +59,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     showLoader("Authenticating...");
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    if (username === DUMMY_USER.username && password === "123") {
+    let authenticatedUser: User | null = null;
+
+    if (username === DUMMY_STAFF.username && password === "123") {
+      authenticatedUser = DUMMY_STAFF;
+    } else if (username === DUMMY_MANAGER.username && password === "456") {
+      authenticatedUser = DUMMY_MANAGER;
+    }
+
+    if (authenticatedUser) {
       try {
         await saveToken(username);
-        setUser(DUMMY_USER);
+        setUser(authenticatedUser);
         hideLoader();
         toast({
-          message: `Welcome, ${DUMMY_USER.name}!`,
+          message: `Welcome, ${authenticatedUser.name}!`,
           variant: "success",
         });
         return true;
       } catch (e) {
         hideLoader();
         toast({
-          message: "Secure storage failed. Please check your device settings.",
+          message: "Failed to save session. Please check your browser settings.",
           variant: "error",
         });
         return false;

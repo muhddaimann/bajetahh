@@ -3,24 +3,20 @@ import { View, Pressable } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useDesign } from "../../contexts/designContext";
+import { useAuth } from "../../contexts/authContext";
 
 type HeaderProps = {
   greeting: string;
-  username: string;
-  designation: string;
-  avatarText: string;
   onNotificationPress?: () => void;
 };
 
 export default function Header({
   greeting,
-  username,
-  designation,
-  avatarText,
   onNotificationPress,
 }: HeaderProps) {
   const { colors } = useTheme();
   const tokens = useDesign();
+  const { user } = useAuth();
 
   return (
     <View
@@ -61,7 +57,7 @@ export default function Header({
             }}
             numberOfLines={1}
           >
-            {username}
+            {user?.name || "Guest"}
           </Text>
         </View>
 
@@ -72,7 +68,7 @@ export default function Header({
           }}
           numberOfLines={1}
         >
-          {designation}
+          {user?.designation || "No Designation"}
         </Text>
       </View>
 
@@ -119,7 +115,7 @@ export default function Header({
               color: colors.onPrimaryContainer,
             }}
           >
-            {avatarText}
+            {user?.avatarText || "?"}
           </Text>
         </View>
       </View>
