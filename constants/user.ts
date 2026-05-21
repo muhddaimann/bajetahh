@@ -1,3 +1,8 @@
+export const APP_INITIAL = 'T';
+export const APP_NAME = 'Template';
+export const APP_TAGLINE = 'Sign in to access this template';
+export const AUTH_BUTTON_TEXT = 'Authenticate';
+
 export type User = {
   username: string;
   name: string;
@@ -17,7 +22,7 @@ export const DUMMY_STAFF: User = {
 };
 
 export const DUMMY_MANAGER: User = {
-  username: '011007123333',
+  username: 'manager',
   name: 'Siti Aminah',
   staffId: 'MGR2048',
   designation: 'Operations Manager',

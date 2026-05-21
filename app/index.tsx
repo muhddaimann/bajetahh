@@ -5,13 +5,20 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  Image,
   TextInput as RNTextInput,
 } from "react-native";
 import { Text, TextInput, Button, useTheme } from "react-native-paper";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useDesign } from "../contexts/designContext";
 import { useAuth } from "../contexts/authContext";
-import { DUMMY_STAFF, DUMMY_MANAGER } from "../constants/user";
+import {
+  DUMMY_STAFF,
+  DUMMY_MANAGER,
+  APP_INITIAL,
+  APP_NAME,
+  APP_TAGLINE,
+  AUTH_BUTTON_TEXT,
+} from "../constants/user";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -50,28 +57,34 @@ export default function Login() {
       <View
         style={{
           position: "absolute",
-          width: 320,
-          height: 320,
-          borderRadius: 999,
-          backgroundColor: theme.colors.primary,
-          top: 120,
-          left: -140,
-          opacity: 0.9,
+          top: -40,
+          right: -60,
+          opacity: 0.04,
+          transform: [{ rotate: "15deg" }],
         }}
-      />
+      >
+        <MaterialCommunityIcons
+          name="xml"
+          size={320}
+          color={theme.colors.primary}
+        />
+      </View>
 
       <View
         style={{
           position: "absolute",
-          width: 280,
-          height: 280,
-          borderRadius: 999,
-          backgroundColor: theme.colors.secondary,
-          bottom: 140,
-          right: -120,
-          opacity: 0.8,
+          bottom: -80,
+          left: -100,
+          opacity: 0.04,
+          transform: [{ rotate: "-20deg" }],
         }}
-      />
+      >
+        <MaterialCommunityIcons
+          name="code-tags"
+          size={400}
+          color={theme.colors.secondary}
+        />
+      </View>
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -108,45 +121,52 @@ export default function Login() {
             <View
               style={{
                 alignItems: "center",
-                gap: tokens.spacing.md,
+                gap: tokens.spacing.xs,
               }}
             >
-              <Image
-                source={require("../assets/img/logo.png")}
-                style={{
-                  width: 100,
-                  height: 100,
-                  resizeMode: "contain",
-                }}
-              />
-
               <View
                 style={{
+                  width: 64,
+                  height: 64,
+                  borderRadius: tokens.radii.lg,
+                  backgroundColor: theme.colors.primary,
                   alignItems: "center",
-                  gap: tokens.spacing.xs,
+                  justifyContent: "center",
+                  marginBottom: tokens.spacing.xs,
                 }}
               >
                 <Text
-                  variant="headlineSmall"
                   style={{
-                    fontWeight: "800",
-                    textAlign: "center",
-                    letterSpacing: -0.5,
+                    color: theme.colors.onPrimary,
+                    fontSize: 28,
+                    fontWeight: "900",
                   }}
                 >
-                  Sign In
-                </Text>
-
-                <Text
-                  variant="bodySmall"
-                  style={{
-                    textAlign: "center",
-                    color: theme.colors.onSurfaceVariant,
-                  }}
-                >
-                  Enter credentials or select a role to auto-fill
+                  {APP_INITIAL}
                 </Text>
               </View>
+
+              <Text
+                variant="headlineMedium"
+                style={{
+                  fontWeight: "900",
+                  color: theme.colors.primary,
+                  letterSpacing: -1.5,
+                }}
+              >
+                {APP_NAME}
+              </Text>
+
+              <Text
+                variant="bodySmall"
+                style={{
+                  textAlign: "center",
+                  color: theme.colors.onSurfaceVariant,
+                  marginTop: -tokens.spacing.xs,
+                }}
+              >
+                {APP_TAGLINE}
+              </Text>
             </View>
 
             <View
@@ -226,12 +246,13 @@ export default function Login() {
                 fontSize: 16,
               }}
             >
-              Authenticate to FAITH
+              {AUTH_BUTTON_TEXT}
             </Button>
 
             <View
               style={{
                 alignItems: "center",
+                marginTop: -tokens.spacing.sm,
               }}
             >
               <Text
@@ -241,7 +262,7 @@ export default function Login() {
                   textAlign: "center",
                 }}
               >
-                Reach system admin if you need help signing in.
+                Reach system admin if you need help.
               </Text>
             </View>
 
@@ -260,17 +281,15 @@ export default function Login() {
                   borderColor: theme.colors.outline,
                 }}
                 contentStyle={{
-                  height: 64,
+                  height: 48,
                 }}
               >
-                <View style={{ alignItems: "center" }}>
-                  <Text
-                    variant="labelLarge"
-                    style={{ fontWeight: "700", color: theme.colors.primary }}
-                  >
-                    Staff
-                  </Text>
-                </View>
+                <Text
+                  variant="labelLarge"
+                  style={{ fontWeight: "700", color: theme.colors.primary }}
+                >
+                  Staff
+                </Text>
               </Button>
 
               <Button
@@ -282,17 +301,15 @@ export default function Login() {
                   borderColor: theme.colors.outline,
                 }}
                 contentStyle={{
-                  height: 64,
+                  height: 48,
                 }}
               >
-                <View style={{ alignItems: "center" }}>
-                  <Text
-                    variant="labelLarge"
-                    style={{ fontWeight: "700", color: theme.colors.secondary }}
-                  >
-                    Manager
-                  </Text>
-                </View>
+                <Text
+                  variant="labelLarge"
+                  style={{ fontWeight: "700", color: theme.colors.secondary }}
+                >
+                  Manager
+                </Text>
               </Button>
             </View>
           </View>
