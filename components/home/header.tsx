@@ -2,9 +2,9 @@ import React from "react";
 import { View, Pressable } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useDesign } from "../contexts/designContext";
+import { useDesign } from "../../contexts/designContext";
 
-type HeadProps = {
+type HeaderProps = {
   greeting: string;
   username: string;
   designation: string;
@@ -12,13 +12,13 @@ type HeadProps = {
   onNotificationPress?: () => void;
 };
 
-export default function Head({
+export default function Header({
   greeting,
   username,
   designation,
   avatarText,
   onNotificationPress,
-}: HeadProps) {
+}: HeaderProps) {
   const { colors } = useTheme();
   const tokens = useDesign();
 

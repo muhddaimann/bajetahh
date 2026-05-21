@@ -18,9 +18,9 @@ import {
 import { useDesign } from "../../../contexts/designContext";
 import { useTabs } from "../../../contexts/tabContext";
 import { useOverlay } from "../../../contexts/overlayContext";
-import Header from "../../../components/header";
-import ScrollTop from "../../../components/scrollTop";
-import NoData from "../../../components/noData";
+import Header from "../../../components/shared/header";
+import ScrollTop from "../../../components/shared/scrollTop";
+import NoData from "../../../components/shared/noData";
 
 const DAYS = [
   "Monday",
@@ -306,8 +306,8 @@ export default function Main() {
               variant="bodyLarge"
               style={{ color: theme.colors.onSurfaceVariant }}
             >
-              Explore the different types of interactive overlays available in the
-              application.
+              Explore the different types of interactive overlays available in
+              the application.
             </Text>
 
             <Divider />
@@ -386,18 +386,20 @@ export default function Main() {
                     gap: tokens.spacing.xs,
                   }}
                 >
-                  {(["success", "error", "warning", "info"] as const).map((v) => (
-                    <Button
-                      key={v}
-                      mode="outlined"
-                      compact
-                      onPress={() => handleToast(v)}
-                      style={{ borderRadius: tokens.radii.md }}
-                      labelStyle={{ fontSize: 12 }}
-                    >
-                      {v.charAt(0).toUpperCase() + v.slice(1)}
-                    </Button>
-                  ))}
+                  {(["success", "error", "warning", "info"] as const).map(
+                    (v) => (
+                      <Button
+                        key={v}
+                        mode="outlined"
+                        compact
+                        onPress={() => handleToast(v)}
+                        style={{ borderRadius: tokens.radii.md }}
+                        labelStyle={{ fontSize: 12 }}
+                      >
+                        {v.charAt(0).toUpperCase() + v.slice(1)}
+                      </Button>
+                    ),
+                  )}
                 </View>
               </View>
 

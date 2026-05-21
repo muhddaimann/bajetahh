@@ -3,7 +3,7 @@ import { View, Pressable } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useDesign } from "../contexts/designContext";
+import { useDesign } from "../../contexts/designContext";
 
 type SectionHeaderProps = {
   icon?: keyof typeof MaterialCommunityIcons.glyphMap;

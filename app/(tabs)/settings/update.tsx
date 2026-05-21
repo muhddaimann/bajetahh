@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import { Button, Card, TextInput, useTheme } from "react-native-paper";
-import Header from "../../../components/header";
+import Header from "../../../components/shared/header";
 import { useDesign } from "../../../contexts/designContext";
 import { useTabs } from "../../../contexts/tabContext";
 

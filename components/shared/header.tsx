@@ -2,7 +2,7 @@ import React from "react";
 import { View, Pressable } from "react-native";
 import { useTheme, Text } from "react-native-paper";
 import { useRouter } from "expo-router";
-import { useDesign } from "../contexts/designContext";
+import { useDesign } from "../../contexts/designContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 type HeaderProps = {

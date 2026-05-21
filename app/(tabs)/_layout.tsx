@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { NavBar } from "../../components/navBar";
+import { NavBar } from "../../components/shared/navBar";
 import { View, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
 import { TabProvider } from "../../contexts/tabContext";

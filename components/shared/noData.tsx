@@ -2,7 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { Text, Button, useTheme } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useDesign } from "../contexts/designContext";
+import { useDesign } from "../../contexts/designContext";
 
 type NoDataProps = {
   title?: string;

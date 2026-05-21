@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "Faith PWA",
-    "slug": "faithpwa",
+    "name": "PWA",
+    "slug": "pwa",
     "version": "1.0.0",
-    "scheme": "faithpwa",
+    "scheme": "pwa",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

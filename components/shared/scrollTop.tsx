@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Pressable, Animated } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTheme } from "react-native-paper";
-import { useDesign } from "../contexts/designContext";
+import { useDesign } from "../../contexts/designContext";
 
 export default function ScrollTop({
   visible,

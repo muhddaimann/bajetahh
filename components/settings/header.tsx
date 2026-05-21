@@ -2,9 +2,9 @@ import React from "react";
 import { View, TouchableOpacity } from "react-native";
 import { Text, useTheme, Avatar, Divider } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useDesign } from "../contexts/designContext";
+import { useDesign } from "../../contexts/designContext";
 
-type TailProps = {
+type HeaderProps = {
   avatarText?: string;
   username?: string;
   staffId?: string;
@@ -12,13 +12,13 @@ type TailProps = {
   onUpdateProfilePress?: () => void;
 };
 
-export default function Tail({
+export default function Header({
   avatarText = "??",
   username = "Guest User",
   staffId = "N/A",
   designation = "No Designation",
   onUpdateProfilePress,
-}: TailProps) {
+}: HeaderProps) {
   const theme = useTheme();
   const tokens = useDesign();
 
@@ -51,7 +51,6 @@ export default function Tail({
         borderColor: theme.colors.outlineVariant,
       }}
     >
-      {/* Abstract Decorative Background Icon */}
       <View
         style={{
           position: "absolute",
@@ -75,7 +74,6 @@ export default function Tail({
           gap: tokens.spacing.md,
         }}
       >
-        {/* Profile Header Section */}
         <View style={{ alignItems: "center", gap: tokens.spacing.md }}>
           <View
             style={{
@@ -128,7 +126,6 @@ export default function Tail({
 
         <Divider style={{ width: "100%", opacity: 0.5 }} />
 
-        {/* Details Section */}
         <View style={{ width: "100%", gap: tokens.spacing.md }}>
           {details.map((item, idx) => (
             <View

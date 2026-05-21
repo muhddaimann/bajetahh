@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { Modal, Portal, Text, useTheme } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useDesign } from "../contexts/designContext";
+import { useDesign } from "../../contexts/designContext";
 
 type Variant = "single" | "range";
 type ViewMode = "Weekly" | "Monthly";
@@ -70,7 +70,7 @@ export function DatePickerContent({
     } else {
       const weekEnd = new Date(currentWeekStart);
       weekEnd.setDate(weekEnd.getDate() + 6);
-      
+
       if (currentWeekStart.getMonth() === weekEnd.getMonth()) {
         return currentWeekStart.toLocaleDateString("en-US", {
           month: "long",
@@ -93,7 +93,8 @@ export function DatePickerContent({
 
       const result = [];
       for (let i = 0; i < startOffset; i++) result.push(null);
-      for (let day = 1; day <= totalDays; day++) result.push(new Date(year, month, day));
+      for (let day = 1; day <= totalDays; day++)
+        result.push(new Date(year, month, day));
       return result;
     } else {
       const result = [];
@@ -140,10 +141,16 @@ export function DatePickerContent({
     if (variant === "range") onRangeChange?.(tempRange);
     onConfirm?.();
   };
-  
+
   const navigate = (direction: number) => {
     if (view === "Monthly") {
-      setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + direction, 1));
+      setCurrentMonth(
+        new Date(
+          currentMonth.getFullYear(),
+          currentMonth.getMonth() + direction,
+          1,
+        ),
+      );
     } else {
       const newWeekStart = new Date(currentWeekStart);
       newWeekStart.setDate(newWeekStart.getDate() + direction * 7);
@@ -164,35 +171,58 @@ export function DatePickerContent({
         : "Select Date";
     }
     return tempRange.start && tempRange.end
-      ? `${tempRange.start.getDate()} - ${tempRange.end.toLocaleDateString("en-GB", {
-          day: "numeric",
-          month: "short",
-          year: "numeric"
-        })}`
+      ? `${tempRange.start.getDate()} - ${tempRange.end.toLocaleDateString(
+          "en-GB",
+          {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          },
+        )}`
       : "Select Range";
   }, [tempSingle, tempRange, variant]);
 
   return (
     <View style={{ gap: spacing.lg }}>
       {/* Header */}
-      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: typography.sizes.lg, fontWeight: "800", color: theme.colors.onSurface }}>
+          <Text
+            style={{
+              fontSize: typography.sizes.lg,
+              fontWeight: "800",
+              color: theme.colors.onSurface,
+            }}
+          >
             {title}
           </Text>
-          <Text style={{ fontSize: typography.sizes.xs, color: theme.colors.onSurfaceVariant, opacity: 0.7 }}>
+          <Text
+            style={{
+              fontSize: typography.sizes.xs,
+              color: theme.colors.onSurfaceVariant,
+              opacity: 0.7,
+            }}
+          >
             {subtitle}
           </Text>
         </View>
 
         {/* View Switcher */}
-        <View style={{
-          flexDirection: "row",
-          backgroundColor: theme.colors.surfaceVariant,
-          borderRadius: radii.full,
-          padding: 3,
-          gap: 2
-        }}>
+        <View
+          style={{
+            flexDirection: "row",
+            backgroundColor: theme.colors.surfaceVariant,
+            borderRadius: radii.full,
+            padding: 3,
+            gap: 2,
+          }}
+        >
           {(["Weekly", "Monthly"] as ViewMode[]).map((m) => {
             const active = view === m;
             return (
@@ -206,20 +236,28 @@ export function DatePickerContent({
                   borderRadius: radii.full,
                   alignItems: "center",
                   justifyContent: "center",
-                  backgroundColor: active ? theme.colors.primary : "transparent"
+                  backgroundColor: active
+                    ? theme.colors.primary
+                    : "transparent",
                 }}
               >
                 {active ? (
-                  <Text style={{
-                    fontSize: 11,
-                    fontWeight: "700",
-                    color: theme.colors.onPrimary
-                  }}>
+                  <Text
+                    style={{
+                      fontSize: 11,
+                      fontWeight: "700",
+                      color: theme.colors.onPrimary,
+                    }}
+                  >
                     {m}
                   </Text>
                 ) : (
                   <MaterialCommunityIcons
-                    name={m === "Weekly" ? "view-week-outline" : "calendar-month-outline"}
+                    name={
+                      m === "Weekly"
+                        ? "view-week-outline"
+                        : "calendar-month-outline"
+                    }
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -232,24 +270,46 @@ export function DatePickerContent({
 
       {/* Navigation - Only show in Monthly view */}
       {view === "Monthly" && (
-        <View style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          backgroundColor: theme.colors.surfaceVariant + "40",
-          padding: spacing.xs,
-          borderRadius: radii.lg
-        }}>
-          <TouchableOpacity onPress={() => navigate(-1)} style={{ padding: spacing.xs }}>
-            <MaterialCommunityIcons name="chevron-left" size={20} color={theme.colors.onSurface} />
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            backgroundColor: theme.colors.surfaceVariant + "40",
+            padding: spacing.xs,
+            borderRadius: radii.lg,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => navigate(-1)}
+            style={{ padding: spacing.xs }}
+          >
+            <MaterialCommunityIcons
+              name="chevron-left"
+              size={20}
+              color={theme.colors.onSurface}
+            />
           </TouchableOpacity>
-          
-          <Text style={{ fontSize: typography.sizes.sm, fontWeight: "700", color: theme.colors.onSurface }}>
+
+          <Text
+            style={{
+              fontSize: typography.sizes.sm,
+              fontWeight: "700",
+              color: theme.colors.onSurface,
+            }}
+          >
             {monthLabel}
           </Text>
 
-          <TouchableOpacity onPress={() => navigate(1)} style={{ padding: spacing.xs }}>
-            <MaterialCommunityIcons name="chevron-right" size={20} color={theme.colors.onSurface} />
+          <TouchableOpacity
+            onPress={() => navigate(1)}
+            style={{ padding: spacing.xs }}
+          >
+            <MaterialCommunityIcons
+              name="chevron-right"
+              size={20}
+              color={theme.colors.onSurface}
+            />
           </TouchableOpacity>
         </View>
       )}
@@ -262,7 +322,14 @@ export function DatePickerContent({
             <View style={{ flexDirection: "row", marginBottom: spacing.xs }}>
               {weekDays.map((day, i) => (
                 <View key={i} style={{ flex: 1, alignItems: "center" }}>
-                  <Text style={{ fontSize: 10, fontWeight: "700", color: theme.colors.onSurfaceVariant, opacity: 0.5 }}>
+                  <Text
+                    style={{
+                      fontSize: 10,
+                      fontWeight: "700",
+                      color: theme.colors.onSurfaceVariant,
+                      opacity: 0.5,
+                    }}
+                  >
                     {day}
                   </Text>
                 </View>
@@ -270,19 +337,41 @@ export function DatePickerContent({
             </View>
 
             {/* Dates Grid */}
-            <View style={{ flexDirection: "row", flexWrap: "wrap", rowGap: spacing.xs }}>
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                rowGap: spacing.xs,
+              }}
+            >
               {days.map((date, index) => {
-                if (!date) return <View key={`empty-${index}`} style={{ width: "14.28%", aspectRatio: 1.2 }} />;
+                if (!date)
+                  return (
+                    <View
+                      key={`empty-${index}`}
+                      style={{ width: "14.28%", aspectRatio: 1.2 }}
+                    />
+                  );
 
-                const selected = variant === "single" 
-                  ? isSameDay(tempSingle, date) 
-                  : isSameDay(tempRange.start, date) || isSameDay(tempRange.end, date);
-                
+                const selected =
+                  variant === "single"
+                    ? isSameDay(tempSingle, date)
+                    : isSameDay(tempRange.start, date) ||
+                      isSameDay(tempRange.end, date);
+
                 const isToday = isSameDay(today, date);
-                const inRange = variant === "range" && tempRange.start && tempRange.end && date > tempRange.start && date < tempRange.end;
+                const inRange =
+                  variant === "range" &&
+                  tempRange.start &&
+                  tempRange.end &&
+                  date > tempRange.start &&
+                  date < tempRange.end;
 
                 return (
-                  <View key={date.toISOString()} style={{ width: "14.28%", alignItems: "center" }}>
+                  <View
+                    key={date.toISOString()}
+                    style={{ width: "14.28%", alignItems: "center" }}
+                  >
                     <TouchableOpacity
                       onPress={() => handleSelect(date)}
                       activeOpacity={0.8}
@@ -292,20 +381,26 @@ export function DatePickerContent({
                         borderRadius: radii.md,
                         alignItems: "center",
                         justifyContent: "center",
-                        backgroundColor: selected 
-                          ? theme.colors.primary 
-                          : inRange 
-                            ? theme.colors.primary + "20" 
+                        backgroundColor: selected
+                          ? theme.colors.primary
+                          : inRange
+                            ? theme.colors.primary + "20"
                             : "transparent",
                         borderWidth: isToday ? 1.5 : 0,
-                        borderColor: selected ? "rgba(255,255,255,0.4)" : theme.colors.primary,
+                        borderColor: selected
+                          ? "rgba(255,255,255,0.4)"
+                          : theme.colors.primary,
                       }}
                     >
-                      <Text style={{
-                        fontSize: 14,
-                        fontWeight: selected || isToday ? "800" : "600",
-                        color: selected ? theme.colors.onPrimary : theme.colors.onSurface
-                      }}>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontWeight: selected || isToday ? "800" : "600",
+                          color: selected
+                            ? theme.colors.onPrimary
+                            : theme.colors.onSurface,
+                        }}
+                      >
                         {date.getDate()}
                       </Text>
                     </TouchableOpacity>
@@ -319,9 +414,11 @@ export function DatePickerContent({
           <View style={{ gap: spacing.xs }}>
             {days.map((date) => {
               if (!date) return null;
-              const selected = variant === "single" 
-                ? isSameDay(tempSingle, date) 
-                : isSameDay(tempRange.start, date) || isSameDay(tempRange.end, date);
+              const selected =
+                variant === "single"
+                  ? isSameDay(tempSingle, date)
+                  : isSameDay(tempRange.start, date) ||
+                    isSameDay(tempRange.end, date);
               const isToday = isSameDay(today, date);
 
               return (
@@ -335,32 +432,50 @@ export function DatePickerContent({
                     justifyContent: "space-between",
                     padding: spacing.sm,
                     borderRadius: radii.lg,
-                    backgroundColor: selected 
-                      ? theme.colors.primary 
+                    backgroundColor: selected
+                      ? theme.colors.primary
                       : theme.colors.surfaceVariant + "40",
                     borderWidth: isToday && !selected ? 1.5 : 0,
                     borderColor: theme.colors.primary,
                   }}
                 >
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: spacing.sm }}>
-                    <Text style={{
-                      fontSize: 14,
-                      fontWeight: selected || isToday ? "800" : "600",
-                      color: selected ? theme.colors.onPrimary : theme.colors.onSurface,
-                      width: 30
-                    }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: spacing.sm,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        fontWeight: selected || isToday ? "800" : "600",
+                        color: selected
+                          ? theme.colors.onPrimary
+                          : theme.colors.onSurface,
+                        width: 30,
+                      }}
+                    >
                       {date.getDate()}
                     </Text>
-                    <Text style={{
-                      fontSize: 14,
-                      fontWeight: selected ? "700" : "500",
-                      color: selected ? theme.colors.onPrimary : theme.colors.onSurface,
-                    }}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        fontWeight: selected ? "700" : "500",
+                        color: selected
+                          ? theme.colors.onPrimary
+                          : theme.colors.onSurface,
+                      }}
+                    >
                       {date.toLocaleDateString("en-US", { weekday: "long" })}
                     </Text>
                   </View>
                   {selected && (
-                    <MaterialCommunityIcons name="check-circle" size={20} color={theme.colors.onPrimary} />
+                    <MaterialCommunityIcons
+                      name="check-circle"
+                      size={20}
+                      color={theme.colors.onPrimary}
+                    />
                   )}
                 </TouchableOpacity>
               );
@@ -377,17 +492,23 @@ export function DatePickerContent({
         style={{
           height: 48,
           borderRadius: radii.lg,
-          backgroundColor: hasChanged ? theme.colors.primary : theme.colors.surfaceVariant,
+          backgroundColor: hasChanged
+            ? theme.colors.primary
+            : theme.colors.surfaceVariant,
           alignItems: "center",
           justifyContent: "center",
-          opacity: hasChanged ? 1 : 0.6
+          opacity: hasChanged ? 1 : 0.6,
         }}
       >
-        <Text style={{
-          fontSize: 14,
-          fontWeight: "800",
-          color: hasChanged ? theme.colors.onPrimary : theme.colors.onSurfaceVariant
-        }}>
+        <Text
+          style={{
+            fontSize: 14,
+            fontWeight: "800",
+            color: hasChanged
+              ? theme.colors.onPrimary
+              : theme.colors.onSurfaceVariant,
+          }}
+        >
           {confirmLabel}
         </Text>
       </TouchableOpacity>
