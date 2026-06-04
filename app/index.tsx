@@ -12,8 +12,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useDesign } from "../contexts/designContext";
 import { useAuth } from "../contexts/authContext";
 import {
-  DUMMY_STAFF,
-  DUMMY_MANAGER,
+  DUMMY_CUSTOMER,
+  DUMMY_ADMIN,
   APP_INITIAL,
   APP_NAME,
   APP_TAGLINE,
@@ -64,7 +64,7 @@ export default function Login() {
         }}
       >
         <MaterialCommunityIcons
-          name="xml"
+          name="food"
           size={320}
           color={theme.colors.primary}
         />
@@ -80,7 +80,7 @@ export default function Login() {
         }}
       >
         <MaterialCommunityIcons
-          name="code-tags"
+          name="cart-outline"
           size={400}
           color={theme.colors.secondary}
         />
@@ -274,7 +274,7 @@ export default function Login() {
             >
               <Button
                 mode="outlined"
-                onPress={() => handleQuickSelect(DUMMY_STAFF.username, "123")}
+                onPress={() => handleQuickSelect(DUMMY_CUSTOMER.username, "customer123")}
                 style={{
                   flex: 1,
                   borderRadius: tokens.radii.lg,
@@ -288,13 +288,13 @@ export default function Login() {
                   variant="labelLarge"
                   style={{ fontWeight: "700", color: theme.colors.primary }}
                 >
-                  Staff
+                  Customer
                 </Text>
               </Button>
 
               <Button
                 mode="outlined"
-                onPress={() => handleQuickSelect(DUMMY_MANAGER.username, "456")}
+                onPress={() => handleQuickSelect(DUMMY_ADMIN.username, "admin123")}
                 style={{
                   flex: 1,
                   borderRadius: tokens.radii.lg,
@@ -308,7 +308,7 @@ export default function Login() {
                   variant="labelLarge"
                   style={{ fontWeight: "700", color: theme.colors.secondary }}
                 >
-                  Manager
+                  Admin
                 </Text>
               </Button>
             </View>

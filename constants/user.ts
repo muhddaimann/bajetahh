@@ -1,6 +1,6 @@
-export const APP_INITIAL = 'T';
-export const APP_NAME = 'Template';
-export const APP_TAGLINE = 'Sign in to access this template';
+export const APP_INITIAL = 'B';
+export const APP_NAME = 'BajetAhh';
+export const APP_TAGLINE = 'Makan Jimat, Order Cepat';
 export const AUTH_BUTTON_TEXT = 'Authenticate';
 
 export type User = {
@@ -9,23 +9,23 @@ export type User = {
   staffId: string;
   designation: string;
   avatarText: string;
-  role: 'staff' | 'manager';
+  role: 'customer' | 'admin';
 };
 
-export const DUMMY_STAFF: User = {
-  username: '011007100000',
+export const DUMMY_CUSTOMER: User = {
+  username: 'customer',
   name: 'Amirul Afizi',
-  staffId: 'CS1024',
-  designation: 'Customer Service Executive',
-  avatarText: 'AH',
-  role: 'staff',
+  staffId: 'CUST1024',
+  designation: 'Loyal Customer',
+  avatarText: 'AA',
+  role: 'customer',
 };
 
-export const DUMMY_MANAGER: User = {
-  username: 'manager',
+export const DUMMY_ADMIN: User = {
+  username: 'admin',
   name: 'Siti Aminah',
-  staffId: 'MGR2048',
-  designation: 'Operations Manager',
+  staffId: 'ADM2048',
+  designation: 'Restaurant Owner',
   avatarText: 'SA',
-  role: 'manager',
+  role: 'admin',
 };

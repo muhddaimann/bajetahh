@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useToken } from './tokenContext';
 import { useOverlay } from './overlayContext';
-import { User, DUMMY_STAFF, DUMMY_MANAGER } from '../constants/user';
+import { User, DUMMY_CUSTOMER, DUMMY_ADMIN } from '../constants/user';
 
 type AuthContextType = {
   user: User | null;
@@ -29,16 +29,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       showLoader("Initializing session...");
       try {
         const savedUsername = await getToken();
-        if (savedUsername === DUMMY_STAFF.username) {
-          setUser(DUMMY_STAFF);
+        if (savedUsername === DUMMY_CUSTOMER.username) {
+          setUser(DUMMY_CUSTOMER);
           toast({
-            message: `Welcome back, ${DUMMY_STAFF.name}`,
+            message: `Welcome back, ${DUMMY_CUSTOMER.name}`,
             variant: "success",
           });
-        } else if (savedUsername === DUMMY_MANAGER.username) {
-          setUser(DUMMY_MANAGER);
+        } else if (savedUsername === DUMMY_ADMIN.username) {
+          setUser(DUMMY_ADMIN);
           toast({
-            message: `Welcome back, ${DUMMY_MANAGER.name}`,
+            message: `Welcome back, ${DUMMY_ADMIN.name}`,
             variant: "success",
           });
         }
@@ -61,10 +61,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     let authenticatedUser: User | null = null;
 
-    if (username === DUMMY_STAFF.username && password === "123") {
-      authenticatedUser = DUMMY_STAFF;
-    } else if (username === DUMMY_MANAGER.username && password === "456") {
-      authenticatedUser = DUMMY_MANAGER;
+    if (username === DUMMY_CUSTOMER.username && password === "customer123") {
+      authenticatedUser = DUMMY_CUSTOMER;
+    } else if (username === DUMMY_ADMIN.username && password === "admin123") {
+      authenticatedUser = DUMMY_ADMIN;
     }
 
     if (authenticatedUser) {
