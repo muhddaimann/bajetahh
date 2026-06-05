@@ -4,6 +4,9 @@ import { Text, useTheme } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useDesign } from "../../contexts/designContext";
 import { useAuth } from "../../contexts/authContext";
+import { useOverlay } from "../../contexts/overlayContext";
+import { useRouter } from "expo-router";
+import PickerModal from "../shared/pickerModal";
 
 type HeaderProps = {
   greeting: string;
@@ -17,6 +20,51 @@ export default function Header({
   const { colors } = useTheme();
   const tokens = useDesign();
   const { user } = useAuth();
+  const { showModal, hideModal, toast } = useOverlay();
+  const router = useRouter();
+
+  const handleAvatarPress = () => {
+    const options = [
+      {
+        id: "update",
+        label: "Update Details",
+        icon: "account-edit-outline",
+        onPress: () => router.push("settings/update"),
+      },
+      ...(user?.role === "admin"
+        ? [
+            {
+              id: "admin",
+              label: "Admin Dashboard",
+              icon: "shield-account-outline",
+              onPress: () => toast({ message: "Admin Dashboard coming soon!", variant: "info" }),
+            },
+          ]
+        : []),
+      {
+        id: "about",
+        label: "About App",
+        icon: "information-outline",
+        onPress: () => toast({ message: "BajetAhh v1.0.0", variant: "info" }),
+      },
+    ];
+
+    showModal({
+      content: (
+        <PickerModal
+          title="Profile Menu"
+          data={options}
+          onSelect={(item) => {
+            hideModal();
+            item.onPress();
+          }}
+          keyExtractor={(item) => item.id}
+          labelExtractor={(item) => item.label}
+          iconExtractor={(item) => item.icon as any}
+        />
+      ),
+    });
+  };
 
   return (
     <View
@@ -98,15 +146,17 @@ export default function Header({
           />
         </Pressable>
 
-        <View
-          style={{
+        <Pressable 
+          onPress={handleAvatarPress}
+          style={({ pressed }) => ({
             width: 40,
             height: 40,
             borderRadius: tokens.radii.full,
             backgroundColor: colors.primaryContainer,
             alignItems: "center",
             justifyContent: "center",
-          }}
+            opacity: pressed ? 0.8 : 1,
+          })}
         >
           <Text
             variant="labelLarge"
@@ -117,7 +167,7 @@ export default function Header({
           >
             {user?.avatarText || "?"}
           </Text>
-        </View>
+        </Pressable>
       </View>
     </View>
   );

@@ -13,6 +13,7 @@ import { useDesign } from "../../../contexts/designContext";
 import ScrollTop from "../../../components/shared/scrollTop";
 import { useTabs } from "../../../contexts/tabContext";
 import Head from "../../../components/home/header";
+import NoData from "../../../components/shared/noData";
 import { useRouter } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { CATEGORIES, MENU_ITEMS } from "../../../constants/menu";
@@ -265,59 +266,122 @@ export default function Home() {
           </View>
         )}
 
-        {/* Pickup/Delivery Section */}
-        <View style={{ paddingHorizontal: tokens.spacing.lg, gap: tokens.spacing.md }}>
-          <SegmentedButtons
-            value={orderType}
-            onValueChange={setOrderType}
-            buttons={[
-              {
-                value: "pickup",
-                label: "Pickup",
-                icon: "walk",
-              },
-              {
-                value: "delivery",
-                label: "Delivery",
-                icon: "moped",
-              },
-            ]}
-          />
-
+        {/* Pickup/Delivery Section - Unified Design */}
+        <View style={{ paddingHorizontal: tokens.spacing.lg }}>
           <Card
             style={{
               backgroundColor: theme.colors.surfaceVariant,
               borderRadius: tokens.radii.xl,
+              overflow: 'hidden'
             }}
           >
+            {/* Custom Switcher Header */}
+            <View 
+              style={{ 
+                flexDirection: 'row', 
+                padding: 4, 
+                backgroundColor: 'rgba(0,0,0,0.05)', 
+                borderRadius: tokens.radii.xl 
+              }}
+            >
+              <Pressable
+                onPress={() => setOrderType("pickup")}
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  paddingVertical: 10,
+                  borderRadius: tokens.radii.lg,
+                  backgroundColor: orderType === "pickup" ? theme.colors.surface : 'transparent',
+                }}
+              >
+                <MaterialCommunityIcons 
+                  name="walk" 
+                  size={18} 
+                  color={orderType === "pickup" ? theme.colors.primary : theme.colors.onSurfaceVariant} 
+                />
+                <Text 
+                  style={{ 
+                    fontWeight: "800", 
+                    fontSize: 13,
+                    color: orderType === "pickup" ? theme.colors.primary : theme.colors.onSurfaceVariant 
+                  }}
+                >
+                  PICKUP
+                </Text>
+              </Pressable>
+              
+              <Pressable
+                onPress={() => setOrderType("delivery")}
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  paddingVertical: 10,
+                  borderRadius: tokens.radii.lg,
+                  backgroundColor: orderType === "delivery" ? theme.colors.surface : 'transparent',
+                }}
+              >
+                <MaterialCommunityIcons 
+                  name="moped" 
+                  size={18} 
+                  color={orderType === "delivery" ? theme.colors.primary : theme.colors.onSurfaceVariant} 
+                />
+                <Text 
+                  style={{ 
+                    fontWeight: "800", 
+                    fontSize: 13,
+                    color: orderType === "delivery" ? theme.colors.primary : theme.colors.onSurfaceVariant 
+                  }}
+                >
+                  DELIVERY
+                </Text>
+              </Pressable>
+            </View>
+
+            {/* Location Info Body */}
             <Card.Content
               style={{
                 flexDirection: "row",
                 alignItems: "center",
                 gap: tokens.spacing.md,
-                padding: tokens.spacing.md,
+                paddingVertical: tokens.spacing.sm,
               }}
             >
               <View
                 style={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: tokens.radii.full,
-                  backgroundColor: theme.colors.primaryContainer,
+                  width: 44,
+                  height: 44,
+                  borderRadius: tokens.radii.lg,
+                  backgroundColor: theme.colors.surface,
                   alignItems: "center",
                   justifyContent: "center",
+                  borderWidth: 1,
+                  borderColor: 'rgba(0,0,0,0.05)'
                 }}
               >
                 <Icon
                   source={orderType === "pickup" ? "store-marker" : "map-marker-radius"}
-                  size={24}
+                  size={22}
                   color={theme.colors.primary}
                 />
               </View>
 
-              <View style={{ flex: 1, gap: 2 }}>
-                <Text variant="labelMedium" style={{ color: theme.colors.onSurfaceVariant }}>
-                  {orderType === "pickup" ? "Pickup Point" : "Delivery Address"}
+              <View style={{ flex: 1, gap: 1 }}>
+                <Text 
+                  variant="labelSmall" 
+                  style={{ 
+                    color: theme.colors.onSurfaceVariant, 
+                    textTransform: 'uppercase', 
+                    letterSpacing: 1,
+                    fontWeight: '700'
+                  }}
+                >
+                  {orderType === "pickup" ? "Your Pickup Point" : "Delivery Address"}
                 </Text>
                 {orderType === "pickup" ? (
                   <Text variant="titleSmall" style={{ fontWeight: "700" }}>
@@ -334,16 +398,15 @@ export default function Home() {
                       style={{
                         fontWeight: "700",
                         color: theme.colors.primary,
-                        textDecorationLine: "underline",
                       }}
                     >
-                      Set Delivery Location
+                      Set your location
                     </Text>
                   </Pressable>
                 )}
               </View>
 
-              <Icon source="chevron-right" size={24} color={theme.colors.onSurfaceVariant} />
+              <Icon source="chevron-right" size={20} color={theme.colors.onSurfaceVariant} />
             </Card.Content>
           </Card>
         </View>
@@ -425,52 +488,67 @@ export default function Home() {
           </View>
 
           <View style={{ gap: tokens.spacing.md }}>
-            {filteredItems.map((item) => (
-              <Card
-                key={item.id}
-                mode="elevated"
-                style={{ backgroundColor: theme.colors.surface, borderRadius: tokens.radii.lg }}
-              >
-                <Card.Content style={{ flexDirection: 'row', padding: tokens.spacing.md, gap: tokens.spacing.md }}>
-                  <View 
-                    style={{ 
-                      width: 80, 
-                      height: 80, 
-                      borderRadius: tokens.radii.md, 
-                      backgroundColor: item.color + '20',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <MaterialCommunityIcons name={item.icon as any} size={40} color={item.color} />
-                  </View>
-                  
-                  <View style={{ flex: 1, justifyContent: 'space-between' }}>
-                    <View>
-                      <Text variant="titleMedium" style={{ fontWeight: '700' }}>{item.name}</Text>
-                      <Text variant="bodySmall" numberOfLines={2} style={{ color: theme.colors.onSurfaceVariant }}>
-                        {item.description}
-                      </Text>
+            {filteredItems.length > 0 ? (
+              filteredItems.map((item) => (
+                <Card
+                  key={item.id}
+                  mode="elevated"
+                  style={{ backgroundColor: theme.colors.surface, borderRadius: tokens.radii.lg }}
+                >
+                  <Card.Content style={{ flexDirection: 'row', padding: tokens.spacing.md, gap: tokens.spacing.md }}>
+                    <View 
+                      style={{ 
+                        width: 80, 
+                        height: 80, 
+                        borderRadius: tokens.radii.md, 
+                        backgroundColor: item.color + '20',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      <MaterialCommunityIcons name={item.icon as any} size={40} color={item.color} />
                     </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Text variant="titleMedium" style={{ fontWeight: '900', color: theme.colors.primary }}>
-                        {item.formattedPrice}
-                      </Text>
-                      <Pressable 
-                        style={{ 
-                          backgroundColor: theme.colors.primary, 
-                          paddingHorizontal: tokens.spacing.md, 
-                          paddingVertical: tokens.spacing.xs,
-                          borderRadius: tokens.radii.pill
-                        }}
-                      >
-                        <Text style={{ color: 'white', fontWeight: '700', fontSize: 12 }}>ADD</Text>
-                      </Pressable>
+                    
+                    <View style={{ flex: 1, justifyContent: 'space-between' }}>
+                      <View>
+                        <Text variant="titleMedium" style={{ fontWeight: '700' }}>{item.name}</Text>
+                        <Text variant="bodySmall" numberOfLines={2} style={{ color: theme.colors.onSurfaceVariant }}>
+                          {item.description}
+                        </Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Text variant="titleMedium" style={{ fontWeight: '900', color: theme.colors.primary }}>
+                          {item.formattedPrice}
+                        </Text>
+                        <Pressable 
+                          style={{ 
+                            backgroundColor: theme.colors.primary, 
+                            paddingHorizontal: tokens.spacing.md, 
+                            paddingVertical: tokens.spacing.xs,
+                            borderRadius: tokens.radii.pill
+                          }}
+                        >
+                          <Text style={{ color: 'white', fontWeight: '700', fontSize: 12 }}>ADD</Text>
+                        </Pressable>
+                      </View>
                     </View>
-                  </View>
-                </Card.Content>
-              </Card>
-            ))}
+                  </Card.Content>
+                </Card>
+              ))
+            ) : (
+              <View style={{ paddingVertical: tokens.spacing["2xl"] }}>
+                <NoData
+                  title="No Items Found"
+                  description="We couldn't find any items matching your current filters. Try selecting a different category."
+                  icon="food-off"
+                  buttonLabel="Reset Filters"
+                  onPress={() => {
+                    setSelectedCategory("all");
+                    setSelectedSubCategory("all");
+                  }}
+                />
+              </View>
+            )}
           </View>
         </View>
       </ScrollView>
