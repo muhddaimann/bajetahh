@@ -190,7 +190,7 @@ export default function NotificationPage() {
               </Text>
               <View style={{ flexDirection: 'row', gap: tokens.spacing.xs }}>
                 <IconButton 
-                  icon="check-all" 
+                  icon={"check-all" as any} 
                   size={18} 
                   mode="contained-tonal"
                   onPress={markAllAsRead}
@@ -198,7 +198,7 @@ export default function NotificationPage() {
                   iconColor={theme.colors.primary}
                 />
                 <IconButton 
-                  icon="delete-sweep-outline" 
+                  icon={"delete-sweep-outline" as any} 
                   size={18} 
                   mode="contained-tonal"
                   onPress={clearAll} 
@@ -227,7 +227,7 @@ export default function NotificationPage() {
                       <Card.Content style={{ flexDirection: 'row', padding: tokens.spacing.md, gap: tokens.spacing.md }}>
                         <Avatar.Icon 
                           size={40} 
-                          icon={getIcon(n.type)} 
+                          icon={getIcon(n.type) as any} 
                           style={{ backgroundColor: getColor(n.type) + '20' }}
                           color={getColor(n.type)}
                         />
@@ -252,7 +252,7 @@ export default function NotificationPage() {
                           </Text>
                         </View>
                         <IconButton 
-                          icon="close" 
+                          icon={"close" as any} 
                           size={16} 
                           onPress={() => deleteNotification(n.id)} 
                           style={{ margin: -8 }}
@@ -266,7 +266,7 @@ export default function NotificationPage() {
                   <NoData 
                     title="No Notifications Found" 
                     description={`You don't have any ${activeFilter} notifications at the moment.`}
-                    icon={NOTIFICATION_FILTERS.find(f => f.id === activeFilter)?.icon || 'bell-off-outline'}
+                    icon={(NOTIFICATION_FILTERS.find(f => f.id === activeFilter)?.icon || 'bell-off-outline') as any}
                     buttonLabel="View All"
                     onPress={() => setActiveFilter('all')}
                   />
@@ -279,7 +279,7 @@ export default function NotificationPage() {
             <NoData 
               title="No Notifications" 
               description="You're all caught up! New notifications will appear here." 
-              icon="bell-off-outline"
+              icon={"bell-off-outline" as any}
             />
           </View>
         )}

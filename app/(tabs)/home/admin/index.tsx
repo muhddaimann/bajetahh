@@ -226,7 +226,7 @@ export default function AdminDashboard() {
                         </View>
                       </View>
                       <Icon
-                        source="chevron-right"
+                        source={"chevron-right" as any}
                         size={20}
                         color={theme.colors.outline}
                       />
@@ -431,7 +431,7 @@ export default function AdminDashboard() {
                   >
                     <Avatar.Icon
                       size={40}
-                      icon={STATS[0].icon}
+                      icon={STATS[0].icon as any}
                       style={{ backgroundColor: STATS[0].color + "20" }}
                       color={STATS[0].color}
                     />
@@ -505,7 +505,7 @@ export default function AdminDashboard() {
                   >
                     <Avatar.Icon
                       size={32}
-                      icon={STATS[2].icon}
+                      icon={STATS[2].icon as any}
                       style={{ backgroundColor: STATS[2].color + "20" }}
                       color={STATS[2].color}
                     />
@@ -578,7 +578,7 @@ export default function AdminDashboard() {
                   >
                     <Avatar.Icon
                       size={32}
-                      icon={STATS[1].icon}
+                      icon={STATS[1].icon as any}
                       style={{ backgroundColor: STATS[1].color + "20" }}
                       color={STATS[1].color}
                     />
@@ -652,7 +652,7 @@ export default function AdminDashboard() {
                   >
                     <Avatar.Icon
                       size={40}
-                      icon={STATS[3].icon}
+                      icon={STATS[3].icon as any}
                       style={{ backgroundColor: STATS[3].color + "20" }}
                       color={STATS[3].color}
                     />

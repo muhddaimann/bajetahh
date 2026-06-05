@@ -11,6 +11,7 @@ import { Text, TextInput, Button, useTheme } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useDesign } from "../contexts/designContext";
 import { useAuth } from "../contexts/authContext";
+import { useRouter } from "expo-router";
 import {
   DUMMY_CUSTOMER,
   DUMMY_ADMIN,
@@ -29,6 +30,7 @@ export default function Login() {
   const theme = useTheme();
   const tokens = useDesign();
   const { signIn } = useAuth();
+  const router = useRouter();
 
   const handleQuickSelect = (user: string, pass: string) => {
     setUsername(user);
@@ -264,6 +266,18 @@ export default function Login() {
               >
                 Reach system admin if you need help.
               </Text>
+            </View>
+
+            <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: -tokens.spacing.md }}>
+              <Text variant="bodyMedium">New customer? </Text>
+              <Button 
+                mode="text" 
+                onPress={() => router.push("/signUp")}
+                labelStyle={{ fontWeight: "bold" }}
+                compact
+              >
+                Sign Up
+              </Button>
             </View>
 
             <View
