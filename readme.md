@@ -30,20 +30,21 @@ BajetAhh - Nasi Bajet Ordering App
 │  │     ├─ Better Customer Experience
 │  │     └─ Increased Sales
 │  │
-│  ├─ Features
-│  │  ├─ Customer Features
-│  │  │  ├─ Registration & Login
-│  │  │  ├─ Menu Browsing
-│  │  │  ├─ Shopping Cart
-│  │  │  ├─ Checkout
-│  │  │  ├─ Online Payment
-│  │  │  ├─ Order History
-│  │  │  └─ Notifications
-│  │  ├─ Admin Features
-│  │  │  ├─ Menu Management
-│  │  │  ├─ Order Management
-│  │  │  ├─ Customer Management
-│  │  │  └─ Sales Reports
+├─ Features
+   ├─ Customer Features
+   │  ├─ Registration & Login (Role-Based)
+   │  ├─ Menu Browsing (Realized)
+   │  ├─ Profile Management (Realized)
+   │  ├─ Shopping Cart
+   │  ├─ Checkout
+   │  ├─ Online Payment
+   │  ├─ Order History
+   │  └─ Notifications
+   ├─ Admin Features
+   │  ├─ Menu Management (Interface Ready)
+   │  ├─ Order Management
+   │  ├─ Customer Management
+   │  └─ Sales Reports (Interface Ready)
 │  │  └─ Future Features
 │  │     ├─ Loyalty Program
 │  │     ├─ Promo Codes

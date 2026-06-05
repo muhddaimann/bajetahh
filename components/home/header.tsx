@@ -37,7 +37,7 @@ export default function Header({
           style={{
             flexDirection: "row",
             alignItems: "center",
-            gap: tokens.spacing.xs,
+            gap: tokens.spacing.xxs,
           }}
         >
           <Text

@@ -14,22 +14,28 @@ export default function Header({ onUpdateProfilePress }: HeaderProps) {
   const tokens = useDesign();
   const { user } = useAuth();
 
+  const isCustomer = user?.role === 'customer';
+
   const details = [
     {
-      label: "Full Name",
+      label: "Display Name",
       value: user?.name || "Guest User",
-      icon: "account-box-outline",
+      icon: "account-circle-outline",
     },
     {
-      label: "Email Address",
-      value: `${user?.username || "user"}@company.com`,
-      icon: "email-outline",
+      label: isCustomer ? "Customer ID" : "Admin ID",
+      value: user?.staffId || "N/A",
+      icon: isCustomer ? "card-account-details-outline" : "badge-account-outline",
     },
-    { label: "Contact Number", value: "+6012 345 6789", icon: "phone-outline" },
     {
-      label: "Address",
-      value: "Level 25, Menara Faith, Jalan Bukit Bintang, 55100 KL",
-      icon: "office-building-marker-outline",
+      label: "Designation",
+      value: user?.designation || "User",
+      icon: "briefcase-outline",
+    },
+    { 
+      label: "Contact Number", 
+      value: "+6012 345 6789", 
+      icon: "phone-outline" 
     },
   ];
 
@@ -53,7 +59,7 @@ export default function Header({ onUpdateProfilePress }: HeaderProps) {
         }}
       >
         <MaterialCommunityIcons
-          name="hexagon-multiple-outline"
+          name="food-variant"
           size={240}
           color={theme.colors.primary}
         />
@@ -99,30 +105,18 @@ export default function Header({ onUpdateProfilePress }: HeaderProps) {
                 letterSpacing: -1,
               }}
             >
-              {user?.username || "Guest"}
-
-              <Text
-                style={{
-                  color: theme.colors.primary,
-                  opacity: 0.6,
-                  fontSize: 16,
-                  fontWeight: "700",
-                }}
-              >
-                {" "}
-                #{user?.staffId || "N/A"}
-              </Text>
+              {user?.name || "Guest"}
             </Text>
 
             <Text
               variant="labelLarge"
               style={{
-                color: theme.colors.onSurfaceVariant,
+                color: theme.colors.primary,
                 fontWeight: "700",
                 marginTop: -4,
               }}
             >
-              {user?.designation || "No Designation"}
+              {isCustomer ? "Premium Member" : "Restaurant Administrator"}
             </Text>
           </View>
         </View>
@@ -208,7 +202,7 @@ export default function Header({ onUpdateProfilePress }: HeaderProps) {
             }}
           >
             <MaterialCommunityIcons
-              name="account-cog"
+              name="account-edit"
               size={20}
               color={theme.colors.onPrimary}
             />
@@ -221,7 +215,7 @@ export default function Header({ onUpdateProfilePress }: HeaderProps) {
                 letterSpacing: 1,
               }}
             >
-              UPDATE WORKSPACE PROFILE
+              EDIT PROFILE
             </Text>
           </TouchableOpacity>
         )}
