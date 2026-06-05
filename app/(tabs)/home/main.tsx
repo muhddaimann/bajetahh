@@ -260,7 +260,7 @@ export default function Main() {
         scrollEventThrottle={16}
         contentContainerStyle={{
           flexGrow: 1,
-          paddingHorizontal: tokens.spacing.xl,
+          paddingHorizontal: tokens.spacing.lg,
           paddingBottom: tokens.spacing["3xl"],
         }}
         showsVerticalScrollIndicator={false}

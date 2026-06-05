@@ -17,7 +17,7 @@ import { useRouter } from "expo-router";
 export default function Settings() {
   const theme = useTheme();
   const tokens = useDesign();
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const { onScroll } = useTabs();
   const { toast } = useOverlay();
   const router = useRouter();
@@ -39,7 +39,15 @@ export default function Settings() {
 
   const isCustomer = user?.role === "customer";
 
-  const menuGroups = [
+  interface MenuItem {
+    id: string;
+    label: string;
+    icon: string;
+    onPress?: () => void;
+    right?: () => React.ReactNode;
+  }
+
+  const menuGroups: { title: string; items: MenuItem[] }[] = [
     {
       title: "Account Preferences",
       items: [
