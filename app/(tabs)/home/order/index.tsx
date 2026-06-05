@@ -1,75 +1,145 @@
-import React, { useEffect } from "react";
-import { View, ScrollView } from "react-native";
-import { useTheme } from "react-native-paper";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  ScrollView,
+  Pressable,
+  LayoutAnimation,
+  Platform,
+  UIManager,
+} from "react-native";
+import {
+  Text,
+  useTheme,
+  IconButton,
+  Button,
+  Divider,
+} from "react-native-paper";
 import { useDesign } from "../../../../contexts/designContext";
 import { useTabs } from "../../../../contexts/tabContext";
 import Header from "../../../../components/shared/header";
 import NoData from "../../../../components/shared/noData";
 import { useRouter } from "expo-router";
 import { useOrder } from "../../../../hooks/useOrder";
-import { Card, Text, Button, IconButton } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useOverlay } from "../../../../contexts/overlayContext";
+
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
+const PAYMENT_METHODS = [
+  { id: "cash", label: "Cash", icon: "cash-marker" },
+  { id: "ewallet", label: "E-Wallet", icon: "wallet-outline" },
+  { id: "fpx", label: "Banking", icon: "bank-outline" },
+];
 
 export default function OrderPage() {
   const theme = useTheme();
   const tokens = useDesign();
   const { setHideTabBar } = useTabs();
   const router = useRouter();
-  const {
-    items,
-    updateQuantity,
-    formattedTotalPrice,
-    totalItems,
-    clearOrder,
-  } = useOrder();
+  const { showLoader, hideLoader, toast, confirm } = useOverlay();
+  const { items, updateQuantity, formattedTotalPrice, clearOrder } = useOrder();
+
+  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [isItemsExpanded, setIsItemsExpanded] = useState(true);
 
   useEffect(() => {
     setHideTabBar(true);
     return () => setHideTabBar(false);
   }, []);
 
+  const toggleExpand = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setIsItemsExpanded(!isItemsExpanded);
+  };
+
+  const handleCheckout = () => {
+    confirm({
+      title: "Place Order?",
+      message: `Total amount ${formattedTotalPrice} will be paid via ${PAYMENT_METHODS.find((m) => m.id === paymentMethod)?.label}.`,
+      confirmText: "Confirm Order",
+      onConfirm: async () => {
+        showLoader("Processing order...");
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        hideLoader();
+        clearOrder();
+        toast({
+          message: "Order placed successfully!",
+          variant: "success",
+        });
+        router.replace("/(tabs)/home");
+      },
+    });
+  };
+
+  if (items.length === 0) {
+    return (
+      <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+        <Header title="Checkout" showBack />
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            padding: tokens.spacing.xl,
+          }}
+        >
+          <NoData
+            title="Cart is empty"
+            description="Add some delicious meals to get started."
+            icon="cart-outline"
+            buttonLabel="Back to Menu"
+            onPress={() => router.back()}
+          />
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          paddingHorizontal: tokens.spacing.lg,
-          paddingBottom: tokens.spacing["3xl"],
-        }}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: tokens.spacing.lg,
+          paddingBottom: tokens.spacing["3xl"] * 2,
+          gap: tokens.spacing.md,
+        }}
       >
-        <Header
-          title="My Orders"
-          subtitle="Track and manage your bajet meals"
-          showBack
-        />
+        <Header title="Checkout" subtitle="Check before Checkout" showBack />
 
-        {items.length > 0 ? (
-          <View style={{ gap: tokens.spacing.md }}>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
+        {/* Collapsible Order Items */}
+        <View>
+          <Pressable
+            onPress={toggleExpand}
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingVertical: tokens.spacing.xs,
+            }}
+          >
+            <Text
+              variant="titleMedium"
+              style={{ fontWeight: "800", letterSpacing: 0.5 }}
             >
-              <Text variant="titleMedium" style={{ fontWeight: "700" }}>
-                Order Summary
-              </Text>
-              <Button onPress={clearOrder} textColor={theme.colors.error}>
-                Clear All
-              </Button>
-            </View>
+              ORDER DETAILS
+            </Text>
+            <IconButton
+              icon={isItemsExpanded ? "chevron-up" : "chevron-down"}
+              size={24}
+              style={{ margin: 0 }}
+            />
+          </Pressable>
 
-            {items.map((item) => (
-              <Card
-                key={item.cartId}
-                style={{
-                  backgroundColor: theme.colors.surfaceVariant,
-                  borderRadius: tokens.radii.lg,
-                }}
-              >
-                <Card.Content
+          {isItemsExpanded && (
+            <View style={{ gap: tokens.spacing.md }}>
+              {items.map((item) => (
+                <View
+                  key={item.cartId}
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
@@ -78,10 +148,10 @@ export default function OrderPage() {
                 >
                   <View
                     style={{
-                      width: 50,
-                      height: 50,
+                      width: 48,
+                      height: 48,
                       borderRadius: tokens.radii.md,
-                      backgroundColor: item.color + "20",
+                      backgroundColor: item.color + "10",
                       alignItems: "center",
                       justifyContent: "center",
                     }}
@@ -97,31 +167,12 @@ export default function OrderPage() {
                     <Text variant="titleSmall" style={{ fontWeight: "700" }}>
                       {item.name}
                     </Text>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 4,
-                      }}
+                    <Text
+                      variant="labelSmall"
+                      style={{ color: theme.colors.onSurfaceVariant }}
                     >
-                      <Text
-                        variant="labelSmall"
-                        style={{ color: theme.colors.onSurfaceVariant }}
-                      >
-                        {item.formattedPrice}
-                      </Text>
-                      {item.remarks && (
-                        <Text
-                          variant="labelSmall"
-                          style={{
-                            color: theme.colors.primary,
-                            fontStyle: "italic",
-                          }}
-                        >
-                          {` • ${item.remarks}`}
-                        </Text>
-                      )}
-                    </View>
+                      {item.quantity}x • {item.formattedPrice}
+                    </Text>
                   </View>
 
                   <View
@@ -133,16 +184,17 @@ export default function OrderPage() {
                   >
                     <IconButton
                       icon="minus"
-                      size={18}
+                      size={14}
+                      mode="contained-tonal"
                       onPress={() =>
                         updateQuantity(item.cartId, item.quantity - 1)
                       }
-                      style={{ margin: 0 }}
+                      style={{ margin: 0, width: 28, height: 28 }}
                     />
                     <Text
                       style={{
-                        fontWeight: "800",
-                        minWidth: 20,
+                        fontWeight: "900",
+                        width: 20,
                         textAlign: "center",
                       }}
                     >
@@ -150,85 +202,149 @@ export default function OrderPage() {
                     </Text>
                     <IconButton
                       icon="plus"
-                      size={18}
+                      size={14}
+                      mode="contained"
                       onPress={() =>
                         updateQuantity(item.cartId, item.quantity + 1)
                       }
-                      style={{ margin: 0 }}
+                      style={{ margin: 0, width: 28, height: 28 }}
                     />
                   </View>
-                </Card.Content>
-              </Card>
-            ))}
+                </View>
+              ))}
+            </View>
+          )}
+        </View>
 
-            <Card
+        {/* Horizontal Payment Methods */}
+        <View style={{ gap: tokens.spacing.md }}>
+          <Text
+            variant="titleMedium"
+            style={{ fontWeight: "800", letterSpacing: 0.5 }}
+          >
+            PAYMENT
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: tokens.spacing.sm }}
+          >
+            {PAYMENT_METHODS.map((method) => (
+              <Pressable
+                key={method.id}
+                onPress={() => setPaymentMethod(method.id)}
+                style={({ pressed }) => ({
+                  width: 110,
+                  height: 90,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: tokens.radii.xl,
+                  borderWidth: 2,
+                  borderColor:
+                    paymentMethod === method.id
+                      ? theme.colors.primary
+                      : theme.colors.surfaceVariant,
+                  backgroundColor:
+                    paymentMethod === method.id
+                      ? theme.colors.primary + "05"
+                      : theme.colors.surface,
+                  gap: tokens.spacing.xs,
+                  opacity: pressed ? 0.8 : 1,
+                })}
+              >
+                <MaterialCommunityIcons
+                  name={method.icon as any}
+                  size={28}
+                  color={
+                    paymentMethod === method.id
+                      ? theme.colors.primary
+                      : theme.colors.onSurfaceVariant
+                  }
+                />
+                <Text
+                  variant="labelMedium"
+                  style={{
+                    fontWeight: paymentMethod === method.id ? "900" : "700",
+                    color:
+                      paymentMethod === method.id
+                        ? theme.colors.primary
+                        : theme.colors.onSurfaceVariant,
+                  }}
+                >
+                  {method.label}
+                </Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Price Breakdown */}
+        <View style={{ gap: tokens.spacing.sm }}>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text
+              variant="bodyMedium"
               style={{
-                marginTop: tokens.spacing.md,
-                backgroundColor: theme.colors.primary,
-                borderRadius: tokens.radii.xl,
+                color: theme.colors.onSurfaceVariant,
+                fontWeight: "600",
               }}
             >
-              <Card.Content style={{ gap: tokens.spacing.xs }}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Text style={{ color: "white", opacity: 0.8 }}>
-                    Total Items
-                  </Text>
-                  <Text style={{ color: "white", fontWeight: "700" }}>
-                    {totalItems}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Text style={{ color: "white", opacity: 0.8 }}>
-                    Total Price
-                  </Text>
-                  <Text
-                    style={{ color: "white", fontWeight: "900", fontSize: 20 }}
-                  >
-                    {formattedTotalPrice}
-                  </Text>
-                </View>
-                <Button
-                  mode="contained"
-                  buttonColor="white"
-                  textColor={theme.colors.primary}
-                  style={{
-                    marginTop: tokens.spacing.md,
-                    borderRadius: tokens.radii.lg,
-                  }}
-                  onPress={() => {}}
-                >
-                  PLACE ORDER
-                </Button>
-              </Card.Content>
-            </Card>
+              Subtotal
+            </Text>
+            <Text variant="bodyMedium" style={{ fontWeight: "700" }}>
+              {formattedTotalPrice}
+            </Text>
           </View>
-        ) : (
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text
+              variant="bodyMedium"
+              style={{
+                color: theme.colors.onSurfaceVariant,
+                fontWeight: "600",
+              }}
+            >
+              Service Fee
+            </Text>
+            <Text variant="bodyMedium" style={{ fontWeight: "700" }}>
+              RM 0.00
+            </Text>
+          </View>
+          <Divider style={{ marginVertical: tokens.spacing.xs }} />
           <View
             style={{
-              flex: 1,
-              justifyContent: "center",
-              marginTop: tokens.spacing["3xl"],
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            <NoData
-              title="No Active Orders"
-              description="You haven't placed any orders yet. Head back to the home screen to browse our delicious bajet meals!"
-              icon="basket-outline"
-              buttonLabel="Browse Menu"
-              onPress={() => router.back()}
-            />
+            <Text variant="titleLarge" style={{ fontWeight: "900" }}>
+              Total
+            </Text>
+            <Text
+              variant="headlineSmall"
+              style={{ fontWeight: "900", color: theme.colors.primary }}
+            >
+              {formattedTotalPrice}
+            </Text>
           </View>
-        )}
+        </View>
+
+        {/* Place Order Button - Now inside ScrollView */}
+        <Button
+          mode="contained"
+          onPress={handleCheckout}
+          contentStyle={{ height: 64 }}
+          style={{
+            borderRadius: tokens.radii.xl,
+            marginTop: tokens.spacing.md,
+          }}
+          labelStyle={{ fontSize: 18, fontWeight: "900", letterSpacing: 1 }}
+        >
+          PLACE ORDER
+        </Button>
       </ScrollView>
     </View>
   );

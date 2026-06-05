@@ -31,6 +31,12 @@ export default function Header({
         icon: "account-edit-outline",
         onPress: () => router.push("settings/update"),
       },
+      {
+        id: "records",
+        label: "Order History",
+        icon: "clipboard-text-clock-outline",
+        onPress: () => router.push("home/record"),
+      },
       ...(user?.role === "admin"
         ? [
             {
