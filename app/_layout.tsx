@@ -23,6 +23,8 @@ import {
 } from "react-native-safe-area-context";
 import { useOverlay } from "../contexts/overlayContext";
 
+import { NotificationProvider } from "../contexts/notificationContext";
+
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -42,11 +44,13 @@ export default function RootLayout() {
         <ThemeProvider>
           <OverlayProvider>
             <OrderProvider>
-              <TokenProvider>
-                <AuthProvider>
-                  <AppContent fontsLoaded={fontsLoaded} />
-                </AuthProvider>
-              </TokenProvider>
+              <NotificationProvider>
+                <TokenProvider>
+                  <AuthProvider>
+                    <AppContent fontsLoaded={fontsLoaded} />
+                  </AuthProvider>
+                </TokenProvider>
+              </NotificationProvider>
             </OrderProvider>
           </OverlayProvider>
         </ThemeProvider>

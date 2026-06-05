@@ -122,7 +122,7 @@ export default function Home() {
         <View style={{ paddingHorizontal: tokens.spacing.lg }}>
           <Head
             greeting={getGreeting()}
-            onNotificationPress={() => router.push("home/main")}
+            onNotificationPress={() => router.push("home/notification")}
           />
         </View>
 
