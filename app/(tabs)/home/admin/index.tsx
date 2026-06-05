@@ -14,7 +14,6 @@ import {
   Divider,
   Icon,
   Avatar,
-  IconButton,
 } from "react-native-paper";
 import { useDesign } from "../../../../contexts/designContext";
 import { useTabs } from "../../../../contexts/tabContext";
@@ -23,10 +22,12 @@ import Header from "../../../../components/shared/header";
 import ScrollTop from "../../../../components/shared/scrollTop";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { STATS, RECENT_ORDERS } from "../../../../constants/admin";
+import { useRouter } from "expo-router";
 
 export default function AdminDashboard() {
   const theme = useTheme();
   const tokens = useDesign();
+  const router = useRouter();
   const { setHideTabBar } = useTabs();
   const { toast } = useOverlay();
   const scrollViewRef = useRef<ScrollView | null>(null);
@@ -58,12 +59,52 @@ export default function AdminDashboard() {
     switch (activeMetric) {
       case 0: // Total Revenue
         return (
-          <View style={{ marginTop: tokens.spacing.xl }}>
-            <Text variant="titleMedium" style={{ fontWeight: "bold", marginBottom: tokens.spacing.md }}>Revenue Analytics</Text>
-            <Card style={{ backgroundColor: theme.colors.surface, borderRadius: tokens.radii.xl }}>
-              <Card.Content style={{ padding: tokens.spacing.xl, alignItems: 'center', justifyContent: 'center', height: 200 }}>
-                <MaterialCommunityIcons name="chart-bar" size={48} color={theme.colors.primary} style={{ opacity: 0.5 }} />
-                <Text variant="bodyMedium" style={{ marginTop: tokens.spacing.md, color: theme.colors.onSurfaceVariant }}>
+          <View style={{ marginTop: tokens.spacing.sm}}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: tokens.spacing.md,
+              }}
+            >
+              <Text variant="titleMedium" style={{ fontWeight: "bold" }}>
+                Revenue Analytics
+              </Text>
+              <Button
+                mode="text"
+                onPress={() => router.push("home/admin/revenue")}
+              >
+                Full Report
+              </Button>
+            </View>
+            <Card
+              style={{
+                backgroundColor: theme.colors.surface,
+                borderRadius: tokens.radii.xl,
+              }}
+            >
+              <Card.Content
+                style={{
+                  padding: tokens.spacing.xl,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: 200,
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="chart-bar"
+                  size={48}
+                  color={theme.colors.primary}
+                  style={{ opacity: 0.5 }}
+                />
+                <Text
+                  variant="bodyMedium"
+                  style={{
+                    marginTop: tokens.spacing.md,
+                    color: theme.colors.onSurfaceVariant,
+                  }}
+                >
                   Revenue chart will be displayed here.
                 </Text>
               </Card.Content>
@@ -72,13 +113,32 @@ export default function AdminDashboard() {
         );
       case 1: // Active Orders
         return (
-          <View style={{ marginTop: tokens.spacing.xl }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: tokens.spacing.md }}>
-              <Text variant="titleMedium" style={{ fontWeight: "bold" }}>Pending Orders</Text>
-              <Button mode="text" onPress={() => handleAction("View All Orders")}>See All</Button>
+          <View style={{ marginTop: tokens.spacing.sm}}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: tokens.spacing.md,
+              }}
+            >
+              <Text variant="titleMedium" style={{ fontWeight: "bold" }}>
+                Pending Orders
+              </Text>
+              <Button
+                mode="text"
+                onPress={() => router.push("home/admin/order")}
+              >
+                Manage Orders
+              </Button>
             </View>
 
-            <Card style={{ backgroundColor: theme.colors.surface, borderRadius: tokens.radii.xl }}>
+            <Card
+              style={{
+                backgroundColor: theme.colors.surface,
+                borderRadius: tokens.radii.xl,
+              }}
+            >
               <Card.Content style={{ padding: 0 }}>
                 {RECENT_ORDERS.map((order, i) => (
                   <View key={order.id}>
@@ -94,16 +154,47 @@ export default function AdminDashboard() {
                       <Avatar.Text
                         size={40}
                         label={order.user.substring(0, 1)}
-                        style={{ backgroundColor: theme.colors.primaryContainer }}
+                        style={{
+                          backgroundColor: theme.colors.primaryContainer,
+                        }}
                         labelStyle={{ color: theme.colors.onPrimaryContainer }}
                       />
                       <View style={{ flex: 1 }}>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                          <Text variant="titleSmall" style={{ fontWeight: "bold" }}>{order.user}</Text>
-                          <Text variant="titleSmall" style={{ fontWeight: "bold", color: theme.colors.primary }}>{order.amount}</Text>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Text
+                            variant="titleSmall"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            {order.user}
+                          </Text>
+                          <Text
+                            variant="titleSmall"
+                            style={{
+                              fontWeight: "bold",
+                              color: theme.colors.primary,
+                            }}
+                          >
+                            {order.amount}
+                          </Text>
                         </View>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 2 }}>
-                          <Text variant="labelSmall" style={{ color: theme.colors.onSurfaceVariant }}>{order.id} • {order.time}</Text>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            marginTop: 2,
+                          }}
+                        >
+                          <Text
+                            variant="labelSmall"
+                            style={{ color: theme.colors.onSurfaceVariant }}
+                          >
+                            {order.id} • {order.time}
+                          </Text>
                           <View
                             style={{
                               paddingHorizontal: 8,
@@ -113,8 +204,8 @@ export default function AdminDashboard() {
                                 order.status === "Completed"
                                   ? "#E8F5E9"
                                   : order.status === "Pending"
-                                  ? "#FFF3E0"
-                                  : "#E3F2FD",
+                                    ? "#FFF3E0"
+                                    : "#E3F2FD",
                             }}
                           >
                             <Text
@@ -125,8 +216,8 @@ export default function AdminDashboard() {
                                   order.status === "Completed"
                                     ? "#2E7D32"
                                     : order.status === "Pending"
-                                    ? "#EF6C00"
-                                    : "#1565C0",
+                                      ? "#EF6C00"
+                                      : "#1565C0",
                               }}
                             >
                               {order.status}
@@ -134,7 +225,11 @@ export default function AdminDashboard() {
                           </View>
                         </View>
                       </View>
-                      <Icon source="chevron-right" size={20} color={theme.colors.outline} />
+                      <Icon
+                        source="chevron-right"
+                        size={20}
+                        color={theme.colors.outline}
+                      />
                     </TouchableOpacity>
                     {i < RECENT_ORDERS.length - 1 && <Divider />}
                   </View>
@@ -145,38 +240,114 @@ export default function AdminDashboard() {
         );
       case 2: // Total Users
         return (
-          <View style={{ marginTop: tokens.spacing.xl }}>
-            <Text variant="titleMedium" style={{ fontWeight: "bold", marginBottom: tokens.spacing.md }}>User Demographics</Text>
-            <Card style={{ backgroundColor: theme.colors.surface, borderRadius: tokens.radii.xl }}>
-              <Card.Content style={{ padding: tokens.spacing.xl, gap: tokens.spacing.md }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={{ marginTop: tokens.spacing.sm}}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: tokens.spacing.md,
+              }}
+            >
+              <Text variant="titleMedium" style={{ fontWeight: "bold" }}>
+                User Demographics
+              </Text>
+              <Button
+                mode="text"
+                onPress={() => router.push("home/admin/user")}
+              >
+                Manage Users
+              </Button>
+            </View>
+            <Card
+              style={{
+                backgroundColor: theme.colors.surface,
+                borderRadius: tokens.radii.xl,
+              }}
+            >
+              <Card.Content
+                style={{ padding: tokens.spacing.xl, gap: tokens.spacing.md }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
                   <Text>New Registrations</Text>
-                  <Text style={{ fontWeight: 'bold' }}>+24 today</Text>
+                  <Text style={{ fontWeight: "bold" }}>+24 today</Text>
                 </View>
                 <Divider />
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
                   <Text>Active Sessions</Text>
-                  <Text style={{ fontWeight: 'bold' }}>156 users</Text>
+                  <Text style={{ fontWeight: "bold" }}>156 users</Text>
                 </View>
-                <Button mode="contained-tonal" style={{ marginTop: tokens.spacing.sm }}>Manage Users</Button>
               </Card.Content>
             </Card>
           </View>
         );
       case 3: // Menu Items
         return (
-          <View style={{ marginTop: tokens.spacing.xl }}>
-            <Text variant="titleMedium" style={{ fontWeight: "bold", marginBottom: tokens.spacing.md }}>Inventory Alerts</Text>
+          <View style={{ marginTop: tokens.spacing.sm}}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: tokens.spacing.md,
+              }}
+            >
+              <Text variant="titleMedium" style={{ fontWeight: "bold" }}>
+                Inventory Alerts
+              </Text>
+              <Button
+                mode="text"
+                onPress={() => router.push("home/admin/menu")}
+              >
+                Manage Menu
+              </Button>
+            </View>
             <View style={{ gap: tokens.spacing.sm }}>
-              <Card style={{ backgroundColor: theme.colors.errorContainer, borderRadius: tokens.radii.lg }}>
-                <Card.Content style={{ flexDirection: 'row', alignItems: 'center', gap: tokens.spacing.md }}>
-                  <Icon source="alert-circle" size={24} color={theme.colors.error} />
-                  <Text style={{ color: theme.colors.onErrorContainer }}>Ayam Goreng is running low (2 left)</Text>
+              <Card
+                style={{
+                  backgroundColor: theme.colors.errorContainer,
+                  borderRadius: tokens.radii.lg,
+                }}
+              >
+                <Card.Content
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: tokens.spacing.md,
+                  }}
+                >
+                  <Icon
+                    source="alert-circle"
+                    size={24}
+                    color={theme.colors.error}
+                  />
+                  <Text style={{ color: theme.colors.onErrorContainer }}>
+                    Ayam Goreng is running low (2 left)
+                  </Text>
                 </Card.Content>
               </Card>
-              <Card style={{ backgroundColor: theme.colors.surface, borderRadius: tokens.radii.xl }}>
-                <Card.Content>
-                  <Button mode="contained" onPress={() => handleAction("Manage Menu")}>Edit Menu Items</Button>
+              <Card
+                style={{
+                  backgroundColor: theme.colors.surface,
+                  borderRadius: tokens.radii.xl,
+                }}
+              >
+                <Card.Content
+                  style={{ padding: tokens.spacing.md, alignItems: "center" }}
+                >
+                  <Text variant="bodyMedium">
+                    Check stock levels for all 24 items
+                  </Text>
                 </Card.Content>
               </Card>
             </View>
@@ -206,60 +377,158 @@ export default function AdminDashboard() {
         />
 
         {/* Statistics Grid - Pinterest Style */}
-        <View style={{ flexDirection: "row", gap: tokens.spacing.md, marginTop: tokens.spacing.md }}>
+        <View
+          style={{
+            flexDirection: "row",
+            gap: tokens.spacing.md,
+            marginTop: tokens.spacing.md,
+          }}
+        >
           {/* Left Column */}
           <View style={{ flex: 1, gap: tokens.spacing.md }}>
             {/* Taller Top Card (Metric 0) */}
-            <TouchableOpacity onPress={() => setActiveMetric(0)}>
+            <TouchableOpacity
+              onPress={() => setActiveMetric(0)}
+              activeOpacity={0.8}
+            >
               <Card
                 style={{
                   backgroundColor: theme.colors.surface,
                   borderRadius: tokens.radii.xl,
-                  borderWidth: activeMetric === 0 ? 2 : 0,
-                  borderColor: theme.colors.primary,
+                  borderWidth: 2,
+                  borderColor:
+                    activeMetric === 0 ? STATS[0].color : "transparent",
+                  overflow: "hidden",
                 }}
               >
-                <Card.Content style={{ padding: tokens.spacing.md, paddingVertical: tokens.spacing.xl, gap: tokens.spacing.sm }}>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                <View
+                  style={{
+                    position: "absolute",
+                    right: -15,
+                    bottom: -15,
+                    opacity: 0.1,
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name={STATS[0].icon as any}
+                    size={100}
+                    color={STATS[0].color}
+                  />
+                </View>
+                <Card.Content
+                  style={{
+                    padding: tokens.spacing.md,
+                    paddingVertical: tokens.spacing.xl,
+                    gap: tokens.spacing.sm,
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
                     <Avatar.Icon
                       size={40}
                       icon={STATS[0].icon}
                       style={{ backgroundColor: STATS[0].color + "20" }}
                       color={STATS[0].color}
                     />
-                    <Text variant="labelSmall" style={{ color: theme.colors.primary, fontWeight: "bold" }}>{STATS[0].trend}</Text>
+                    <Text
+                      variant="labelSmall"
+                      style={{ color: STATS[0].color, fontWeight: "bold" }}
+                    >
+                      {STATS[0].trend}
+                    </Text>
                   </View>
                   <View style={{ marginTop: tokens.spacing.md }}>
-                    <Text variant="labelMedium" style={{ color: theme.colors.onSurfaceVariant }}>{STATS[0].label}</Text>
-                    <Text variant="headlineSmall" style={{ fontWeight: "bold", marginTop: 4 }}>{STATS[0].value}</Text>
+                    <Text
+                      variant="labelMedium"
+                      style={{ color: theme.colors.onSurfaceVariant }}
+                    >
+                      {STATS[0].label}
+                    </Text>
+                    <Text
+                      variant="headlineSmall"
+                      style={{
+                        fontWeight: "900",
+                        marginTop: 4,
+                        color: STATS[0].color,
+                      }}
+                    >
+                      {STATS[0].value}
+                    </Text>
                   </View>
                 </Card.Content>
               </Card>
             </TouchableOpacity>
 
             {/* Shorter Bottom Card (Metric 2) */}
-            <TouchableOpacity onPress={() => setActiveMetric(2)}>
+            <TouchableOpacity
+              onPress={() => setActiveMetric(2)}
+              activeOpacity={0.8}
+            >
               <Card
                 style={{
                   backgroundColor: theme.colors.surface,
                   borderRadius: tokens.radii.xl,
-                  borderWidth: activeMetric === 2 ? 2 : 0,
-                  borderColor: theme.colors.primary,
+                  borderWidth: 2,
+                  borderColor:
+                    activeMetric === 2 ? STATS[2].color : "transparent",
+                  overflow: "hidden",
                 }}
               >
-                <Card.Content style={{ padding: tokens.spacing.md, gap: tokens.spacing.xs }}>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                <View
+                  style={{
+                    position: "absolute",
+                    right: -10,
+                    bottom: -10,
+                    opacity: 0.1,
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name={STATS[2].icon as any}
+                    size={80}
+                    color={STATS[2].color}
+                  />
+                </View>
+                <Card.Content
+                  style={{ padding: tokens.spacing.md, gap: tokens.spacing.xs }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
                     <Avatar.Icon
                       size={32}
                       icon={STATS[2].icon}
                       style={{ backgroundColor: STATS[2].color + "20" }}
                       color={STATS[2].color}
                     />
-                    <Text variant="labelSmall" style={{ color: theme.colors.primary }}>{STATS[2].trend}</Text>
+                    <Text
+                      variant="labelSmall"
+                      style={{ color: STATS[2].color, fontWeight: "bold" }}
+                    >
+                      {STATS[2].trend}
+                    </Text>
                   </View>
                   <View style={{ marginTop: tokens.spacing.xs }}>
-                    <Text variant="labelMedium" style={{ color: theme.colors.onSurfaceVariant }}>{STATS[2].label}</Text>
-                    <Text variant="titleLarge" style={{ fontWeight: "bold" }}>{STATS[2].value}</Text>
+                    <Text
+                      variant="labelMedium"
+                      style={{ color: theme.colors.onSurfaceVariant }}
+                    >
+                      {STATS[2].label}
+                    </Text>
+                    <Text
+                      variant="titleLarge"
+                      style={{ fontWeight: "900", color: STATS[2].color }}
+                    >
+                      {STATS[2].value}
+                    </Text>
                   </View>
                 </Card.Content>
               </Card>
@@ -269,56 +538,148 @@ export default function AdminDashboard() {
           {/* Right Column */}
           <View style={{ flex: 1, gap: tokens.spacing.md }}>
             {/* Shorter Top Card (Metric 1) */}
-            <TouchableOpacity onPress={() => setActiveMetric(1)}>
+            <TouchableOpacity
+              onPress={() => setActiveMetric(1)}
+              activeOpacity={0.8}
+            >
               <Card
                 style={{
                   backgroundColor: theme.colors.surface,
                   borderRadius: tokens.radii.xl,
-                  borderWidth: activeMetric === 1 ? 2 : 0,
-                  borderColor: theme.colors.primary,
+                  borderWidth: 2,
+                  borderColor:
+                    activeMetric === 1 ? STATS[1].color : "transparent",
+                  overflow: "hidden",
                 }}
               >
-                <Card.Content style={{ padding: tokens.spacing.md, gap: tokens.spacing.xs }}>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                <View
+                  style={{
+                    position: "absolute",
+                    right: -10,
+                    bottom: -10,
+                    opacity: 0.1,
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name={STATS[1].icon as any}
+                    size={80}
+                    color={STATS[1].color}
+                  />
+                </View>
+                <Card.Content
+                  style={{ padding: tokens.spacing.md, gap: tokens.spacing.xs }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
                     <Avatar.Icon
                       size={32}
                       icon={STATS[1].icon}
                       style={{ backgroundColor: STATS[1].color + "20" }}
                       color={STATS[1].color}
                     />
-                    <Text variant="labelSmall" style={{ color: theme.colors.primary }}>{STATS[1].trend}</Text>
+                    <Text
+                      variant="labelSmall"
+                      style={{ color: STATS[1].color, fontWeight: "bold" }}
+                    >
+                      {STATS[1].trend}
+                    </Text>
                   </View>
                   <View style={{ marginTop: tokens.spacing.xs }}>
-                    <Text variant="labelMedium" style={{ color: theme.colors.onSurfaceVariant }}>{STATS[1].label}</Text>
-                    <Text variant="titleLarge" style={{ fontWeight: "bold" }}>{STATS[1].value}</Text>
+                    <Text
+                      variant="labelMedium"
+                      style={{ color: theme.colors.onSurfaceVariant }}
+                    >
+                      {STATS[1].label}
+                    </Text>
+                    <Text
+                      variant="titleLarge"
+                      style={{ fontWeight: "900", color: STATS[1].color }}
+                    >
+                      {STATS[1].value}
+                    </Text>
                   </View>
                 </Card.Content>
               </Card>
             </TouchableOpacity>
 
             {/* Taller Bottom Card (Metric 3) */}
-            <TouchableOpacity onPress={() => setActiveMetric(3)}>
+            <TouchableOpacity
+              onPress={() => setActiveMetric(3)}
+              activeOpacity={0.8}
+            >
               <Card
                 style={{
                   backgroundColor: theme.colors.surface,
                   borderRadius: tokens.radii.xl,
-                  borderWidth: activeMetric === 3 ? 2 : 0,
-                  borderColor: theme.colors.primary,
+                  borderWidth: 2,
+                  borderColor:
+                    activeMetric === 3 ? STATS[3].color : "transparent",
+                  overflow: "hidden",
                 }}
               >
-                <Card.Content style={{ padding: tokens.spacing.md, paddingVertical: tokens.spacing.xl, gap: tokens.spacing.sm }}>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                <View
+                  style={{
+                    position: "absolute",
+                    right: -15,
+                    bottom: -15,
+                    opacity: 0.1,
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name={STATS[3].icon as any}
+                    size={100}
+                    color={STATS[3].color}
+                  />
+                </View>
+                <Card.Content
+                  style={{
+                    padding: tokens.spacing.md,
+                    paddingVertical: tokens.spacing.xl,
+                    gap: tokens.spacing.sm,
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
                     <Avatar.Icon
                       size={40}
                       icon={STATS[3].icon}
                       style={{ backgroundColor: STATS[3].color + "20" }}
                       color={STATS[3].color}
                     />
-                    <Text variant="labelSmall" style={{ color: theme.colors.primary, fontWeight: "bold" }}>{STATS[3].trend}</Text>
+                    <Text
+                      variant="labelSmall"
+                      style={{ color: STATS[3].color, fontWeight: "bold" }}
+                    >
+                      {STATS[3].trend}
+                    </Text>
                   </View>
                   <View style={{ marginTop: tokens.spacing.md }}>
-                    <Text variant="labelMedium" style={{ color: theme.colors.onSurfaceVariant }}>{STATS[3].label}</Text>
-                    <Text variant="headlineSmall" style={{ fontWeight: "bold", marginTop: 4 }}>{STATS[3].value}</Text>
+                    <Text
+                      variant="labelMedium"
+                      style={{ color: theme.colors.onSurfaceVariant }}
+                    >
+                      {STATS[3].label}
+                    </Text>
+                    <Text
+                      variant="headlineSmall"
+                      style={{
+                        fontWeight: "900",
+                        marginTop: 4,
+                        color: STATS[3].color,
+                      }}
+                    >
+                      {STATS[3].value}
+                    </Text>
                   </View>
                 </Card.Content>
               </Card>
@@ -328,37 +689,6 @@ export default function AdminDashboard() {
 
         {/* Dynamic Content based on active metric */}
         {renderActiveContent()}
-
-        {/* System Health */}
-        <Card
-          style={{
-            marginTop: tokens.spacing.xl,
-            backgroundColor: theme.colors.secondaryContainer,
-            borderRadius: tokens.radii.xl,
-          }}
-        >
-          <Card.Content style={{ flexDirection: "row", alignItems: "center", gap: tokens.spacing.md }}>
-            <Avatar.Icon
-              size={40}
-              icon="shield-check"
-              style={{ backgroundColor: "transparent" }}
-              color={theme.colors.onSecondaryContainer}
-            />
-            <View style={{ flex: 1 }}>
-              <Text variant="titleSmall" style={{ fontWeight: "bold", color: theme.colors.onSecondaryContainer }}>
-                System Secure
-              </Text>
-              <Text variant="bodySmall" style={{ color: theme.colors.onSecondaryContainer, opacity: 0.8 }}>
-                All services are running normally. Last backup: 2 hours ago.
-              </Text>
-            </View>
-            <IconButton
-              icon="refresh"
-              iconColor={theme.colors.onSecondaryContainer}
-              onPress={() => toast("System status refreshed")}
-            />
-          </Card.Content>
-        </Card>
       </ScrollView>
 
       <ScrollTop visible={showScrollTop} onPress={scrollToTop} />
