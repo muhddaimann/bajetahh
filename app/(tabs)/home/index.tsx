@@ -8,7 +8,7 @@ import {
   Dimensions,
   Animated,
 } from "react-native";
-import { Text, useTheme, Card, SegmentedButtons, Icon, Chip } from "react-native-paper";
+import { Text, useTheme, Card, Icon, Chip } from "react-native-paper";
 import { useDesign } from "../../../contexts/designContext";
 import ScrollTop from "../../../components/shared/scrollTop";
 import { useTabs } from "../../../contexts/tabContext";

@@ -67,107 +67,123 @@ export default function Header({
   };
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: tokens.spacing.lg,
-      }}
-    >
-      <View
-        style={{
-          flex: 1,
-          gap: 2,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: tokens.spacing.xxs,
-          }}
-        >
-          <Text
-            variant="bodyMedium"
-            style={{
-              color: colors.onSurfaceVariant,
-            }}
-          >
-            {greeting},
-          </Text>
-
-          <Text
-            variant="titleSmall"
-            style={{
-              fontWeight: "700",
-              flexShrink: 1,
-            }}
-            numberOfLines={1}
-          >
-            {user?.name || "Guest"}
-          </Text>
-        </View>
-
-        <Text
-          variant="bodySmall"
-          style={{
-            color: colors.onSurfaceVariant,
-          }}
-          numberOfLines={1}
-        >
-          {user?.designation || "No Designation"}
-        </Text>
-      </View>
-
+    <View style={{ gap: tokens.spacing.sm }}>
       <View
         style={{
           flexDirection: "row",
           alignItems: "center",
-          gap: tokens.spacing.sm,
+          justifyContent: "space-between",
+          gap: tokens.spacing.lg,
         }}
       >
-        <Pressable
-          onPress={onNotificationPress}
-          style={({ pressed }) => ({
-            width: 40,
-            height: 40,
-            borderRadius: tokens.radii.full,
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: colors.surfaceVariant,
-            opacity: pressed ? 0.9 : 1,
-          })}
+        <View
+          style={{
+            flex: 1,
+            gap: 0,
+          }}
         >
-          <MaterialCommunityIcons
-            name="bell-outline"
-            size={20}
-            color={colors.onSurface}
-          />
-        </Pressable>
-
-        <Pressable 
-          onPress={handleAvatarPress}
-          style={({ pressed }) => ({
-            width: 40,
-            height: 40,
-            borderRadius: tokens.radii.full,
-            backgroundColor: colors.primaryContainer,
-            alignItems: "center",
-            justifyContent: "center",
-            opacity: pressed ? 0.8 : 1,
-          })}
-        >
-          <Text
-            variant="labelLarge"
+          <View
             style={{
-              fontWeight: "700",
-              color: colors.onPrimaryContainer,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: tokens.spacing.xxs,
             }}
           >
-            {user?.avatarText || "?"}
+            <Text
+              variant="bodyMedium"
+              style={{
+                color: colors.onSurfaceVariant,
+              }}
+            >
+              {greeting},
+            </Text>
+
+            <Text
+              variant="titleSmall"
+              style={{
+                fontWeight: "700",
+                flexShrink: 1,
+              }}
+              numberOfLines={1}
+            >
+              {user?.name || "Guest"}
+            </Text>
+          </View>
+
+          <Text
+            variant="bodySmall"
+            style={{
+              color: colors.onSurfaceVariant,
+            }}
+            numberOfLines={1}
+          >
+            {user?.designation || "No Designation"}
           </Text>
-        </Pressable>
+        </View>
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: tokens.spacing.sm,
+          }}
+        >
+          <Pressable
+            onPress={onNotificationPress}
+            style={({ pressed }) => ({
+              width: 40,
+              height: 40,
+              borderRadius: tokens.radii.full,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: colors.surfaceVariant,
+              opacity: pressed ? 0.9 : 1,
+            })}
+          >
+            <MaterialCommunityIcons
+              name="bell-outline"
+              size={20}
+              color={colors.onSurface}
+            />
+          </Pressable>
+
+          <Pressable 
+            onPress={handleAvatarPress}
+            style={({ pressed }) => ({
+              width: 40,
+              height: 40,
+              borderRadius: tokens.radii.full,
+              backgroundColor: colors.primaryContainer,
+              alignItems: "center",
+              justifyContent: "center",
+              opacity: pressed ? 0.8 : 1,
+            })}
+          >
+            <Text
+              variant="labelLarge"
+              style={{
+                fontWeight: "700",
+                color: colors.onPrimaryContainer,
+              }}
+            >
+              {user?.avatarText || "?"}
+            </Text>
+          </Pressable>
+        </View>
+      </View>
+
+      <View style={{ alignItems: 'center', marginTop: 4 }}>
+        <Text 
+          style={{ 
+            fontSize: 26, 
+            fontWeight: "900", 
+            letterSpacing: -1.5,
+            textAlign: 'center',
+          }}
+        >
+          <Text style={{ color: colors.primary }}>Makan Jimat. </Text>
+          <Text style={{ color: colors.secondary }}>Order Cepat.</Text>
+        </Text>
       </View>
     </View>
   );
