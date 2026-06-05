@@ -1,23 +1,23 @@
 {
   "expo": {
-    "name": "BA",
-    "slug": "ba",
+    "name": "BajetAhh",
+    "slug": "bajetahh",
     "version": "1.0.0",
-    "scheme": "ba",
+    "scheme": "bajetahh",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#FFFDF8"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#FFF4E5",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -26,20 +26,18 @@
     },
     "web": {
       "favicon": "./assets/favicon.png",
-      "name": "Faith HRMS",
-      "shortName": "Faith",
-      "description": "HR Management System for Customer Service Staff",
+      "name": "BajetAhh",
+      "shortName": "BajetAhh",
+      "description": "Platform tempahan nasi bajet yang mudah, pantas dan mesra pengguna.",
       "display": "standalone",
-      "themeColor": "#E6F4FE",
-      "backgroundColor": "#ffffff",
+      "themeColor": "#F59E0B",
+      "backgroundColor": "#FFFDF8",
       "splash": {
         "image": "./assets/splash-icon.png",
         "resizeMode": "contain",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#FFFDF8"
       }
     },
-    "plugins": [
-      "expo-router"
-    ]
+    "plugins": ["expo-router"]
   }
 }
