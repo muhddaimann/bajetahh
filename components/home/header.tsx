@@ -37,7 +37,7 @@ export default function Header({
               id: "admin",
               label: "Admin Dashboard",
               icon: "shield-account-outline",
-              onPress: () => toast({ message: "Admin Dashboard coming soon!", variant: "info" }),
+              onPress: () => router.push("home/admin"),
             },
           ]
         : []),
