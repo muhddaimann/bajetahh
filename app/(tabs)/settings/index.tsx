@@ -5,10 +5,9 @@ import {
   NativeScrollEvent,
   View,
 } from "react-native";
-import { Text, useTheme, List, Switch, Divider } from "react-native-paper";
+import { Text, useTheme, List, Divider } from "react-native-paper";
 import { useDesign } from "../../../contexts/designContext";
 import { useTabs } from "../../../contexts/tabContext";
-import { useAuth } from "../../../contexts/authContext";
 import { useOverlay } from "../../../contexts/overlayContext";
 import ScrollTop from "../../../components/shared/scrollTop";
 import Header from "../../../components/settings/header";
@@ -17,15 +16,11 @@ import { useRouter } from "expo-router";
 export default function Settings() {
   const theme = useTheme();
   const tokens = useDesign();
-  const { user } = useAuth();
   const { onScroll } = useTabs();
   const { toast } = useOverlay();
   const router = useRouter();
-
   const scrollRef = useRef<ScrollView | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true);
-  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offset = e.nativeEvent.contentOffset.y;
@@ -37,8 +32,6 @@ export default function Settings() {
     scrollRef.current?.scrollTo({ y: 0, animated: true });
   };
 
-  const isCustomer = user?.role === "customer";
-
   interface MenuItem {
     id: string;
     label: string;
@@ -48,74 +41,6 @@ export default function Settings() {
   }
 
   const menuGroups: { title: string; items: MenuItem[] }[] = [
-    {
-      title: "Account Preferences",
-      items: [
-        {
-          id: "notifications",
-          label: "Push Notifications",
-          icon: "bell-outline",
-          right: () => (
-            <Switch
-              value={isNotificationsEnabled}
-              onValueChange={setIsNotificationsEnabled}
-            />
-          ),
-        },
-        {
-          id: "darkmode",
-          label: "Dark Mode",
-          icon: "theme-light-dark",
-          right: () => (
-            <Switch value={isDarkMode} onValueChange={setIsDarkMode} />
-          ),
-        },
-      ],
-    },
-    {
-      title: isCustomer ? "Ordering" : "Management",
-      items: isCustomer
-        ? [
-            {
-              id: "orders",
-              label: "My Orders",
-              icon: "clipboard-list-outline",
-              onPress: () => toast("Order history coming soon!"),
-            },
-            {
-              id: "payments",
-              label: "Payment Methods",
-              icon: "credit-card-outline",
-              onPress: () => toast("Payment settings coming soon!"),
-            },
-            {
-              id: "address",
-              label: "Delivery Addresses",
-              icon: "map-marker-outline",
-              onPress: () => toast("Address management coming soon!"),
-            },
-          ]
-        : [
-            {
-              id: "menu",
-              label: "Manage Menu",
-              icon: "food-variant",
-              onPress: () => toast("Menu editor coming soon!"),
-            },
-            {
-              id: "sales",
-              label: "Sales Reports",
-              icon: "chart-bar",
-              onPress: () => toast("Analytics coming soon!"),
-            },
-            {
-              id: "staff",
-              label: "Staff Management",
-              icon: "account-group-outline",
-              onPress: () => toast("Staff settings coming soon!"),
-            },
-          ],
-    },
     {
       title: "Support",
       items: [

@@ -17,45 +17,49 @@ export function useOrder() {
     const [remarks, setRemarks] = useState("");
 
     return (
-      <View style={{ gap: tokens.spacing.lg, paddingBottom: tokens.spacing.xl }}>
-        <View style={{ flexDirection: 'row', gap: tokens.spacing.md, alignItems: 'center' }}>
+      <View style={{ gap: tokens.spacing.xl, paddingBottom: tokens.spacing.xl, alignItems: 'center' }}>
+        <View style={{ alignItems: 'center', gap: tokens.spacing.sm }}>
           <View 
             style={{ 
-              width: 60, 
-              height: 60, 
-              borderRadius: tokens.radii.lg, 
-              backgroundColor: item.color + '20',
+              width: 80, 
+              height: 80, 
+              borderRadius: tokens.radii.xl, 
+              backgroundColor: item.color + '15',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              marginBottom: tokens.spacing.xs
             }}
           >
-            <MaterialCommunityIcons name={item.icon} size={32} color={item.color} />
+            <MaterialCommunityIcons name={item.icon} size={44} color={item.color} />
           </View>
-          <View style={{ flex: 1 }}>
-            <Text variant="titleLarge" style={{ fontWeight: '900' }}>{item.name}</Text>
-            <Text variant="titleMedium" style={{ color: theme.colors.primary, fontWeight: '700' }}>{item.formattedPrice}</Text>
-          </View>
+          <Text variant="headlineSmall" style={{ fontWeight: '900', textAlign: 'center' }}>{item.name}</Text>
+          <Text variant="titleLarge" style={{ color: theme.colors.primary, fontWeight: '800' }}>{item.formattedPrice}</Text>
         </View>
 
-        <View style={{ gap: tokens.spacing.sm }}>
-          <Text variant="labelLarge" style={{ fontWeight: '700' }}>Quantity</Text>
+        <View style={{ width: '100%', alignItems: 'center', gap: tokens.spacing.md }}>
+          <Text variant="labelLarge" style={{ fontWeight: '800', color: theme.colors.onSurfaceVariant, textTransform: 'uppercase', letterSpacing: 1 }}>Select Quantity</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: tokens.spacing.xl }}>
             <IconButton 
               icon="minus" 
               mode="contained-tonal"
+              size={28}
               onPress={() => setQty(Math.max(1, qty - 1))} 
+              style={{ backgroundColor: theme.colors.surfaceVariant }}
             />
-            <Text variant="headlineSmall" style={{ fontWeight: '900', minWidth: 40, textAlign: 'center' }}>{qty}</Text>
+            <View style={{ minWidth: 60, alignItems: 'center' }}>
+              <Text variant="displaySmall" style={{ fontWeight: '900' }}>{qty}</Text>
+            </View>
             <IconButton 
               icon="plus" 
               mode="contained"
+              size={28}
               onPress={() => setQty(qty + 1)} 
             />
           </View>
         </View>
 
-        <View style={{ gap: tokens.spacing.sm }}>
-          <Text variant="labelLarge" style={{ fontWeight: '700' }}>Special Remarks</Text>
+        <View style={{ width: '100%', gap: tokens.spacing.sm }}>
+          <Text variant="labelLarge" style={{ fontWeight: '700', marginLeft: 4 }}>Special Remarks</Text>
           <TextInput
             placeholder="e.g. No spicy, extra gravy..."
             value={remarks}
@@ -64,14 +68,16 @@ export function useOrder() {
             multiline
             numberOfLines={3}
             outlineStyle={{ borderRadius: tokens.radii.lg }}
+            style={{ backgroundColor: theme.colors.surface }}
           />
         </View>
 
         <Button 
           mode="contained" 
-          contentStyle={{ height: 56 }}
-          style={{ borderRadius: tokens.radii.lg, marginTop: tokens.spacing.md }}
+          contentStyle={{ height: 64 }}
+          style={{ width: '100%', borderRadius: tokens.radii.xl, marginTop: tokens.spacing.sm }}
           onPress={() => onConfirm(qty, remarks)}
+          labelStyle={{ fontSize: 18, fontWeight: '900' }}
         >
           {`ADD TO ORDER • RM ${(item.price * qty).toFixed(2)}`}
         </Button>
@@ -81,7 +87,6 @@ export function useOrder() {
 
   const addItemWithSheet = (item: any) => {
     showSheet({
-      title: "Customize Order",
       content: (
         <OrderSheet 
           item={item} 

@@ -29,12 +29,12 @@ export default function Home() {
   const { onScroll } = useTabs();
   const { addItem } = useOrder();
   const scrollViewRef = useRef<ScrollView | null>(null);
-  const carouselRef = useRef<ScrollView | null>(null);  
+  const carouselRef = useRef<ScrollView | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [orderType, setOrderType] = useState("pickup");
   const [userLocation, setUserLocation] = useState("");
-  
+
   // Filtering State
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedSubCategory, setSelectedSubCategory] = useState("all");
@@ -42,16 +42,23 @@ export default function Home() {
   const progress = useRef(new Animated.Value(0)).current;
 
   // Derived Data
-  const promoItems = useMemo(() => MENU_ITEMS.filter(item => item.isPromo), []);
-  
-  const currentCategory = useMemo(() => 
-    CATEGORIES.find(c => c.id === selectedCategory), 
-  [selectedCategory]);
+  const promoItems = useMemo(
+    () => MENU_ITEMS.filter((item) => item.isPromo),
+    [],
+  );
+
+  const currentCategory = useMemo(
+    () => CATEGORIES.find((c) => c.id === selectedCategory),
+    [selectedCategory],
+  );
 
   const filteredItems = useMemo(() => {
-    return MENU_ITEMS.filter(item => {
-      const matchCategory = selectedCategory === "all" || item.category === selectedCategory;
-      const matchSubCategory = selectedSubCategory === "all" || item.subCategory === selectedSubCategory;
+    return MENU_ITEMS.filter((item) => {
+      const matchCategory =
+        selectedCategory === "all" || item.category === selectedCategory;
+      const matchSubCategory =
+        selectedSubCategory === "all" ||
+        item.subCategory === selectedSubCategory;
       return matchCategory && matchSubCategory;
     });
   }, [selectedCategory, selectedSubCategory]);
@@ -70,7 +77,7 @@ export default function Home() {
         if (finished) {
           const nextSlide = (activeSlide + 1) % promoItems.length;
           const offset = nextSlide * SCREEN_WIDTH;
-          
+
           carouselRef.current?.scrollTo({
             x: offset,
             animated: true,
@@ -114,7 +121,7 @@ export default function Home() {
         scrollEventThrottle={16}
         contentContainerStyle={{
           paddingTop: tokens.spacing.md,
-          paddingBottom: tokens.spacing["3xl"],
+          paddingBottom: tokens.spacing["3xl"] * 2,
           gap: tokens.spacing.md,
         }}
         showsVerticalScrollIndicator={false}
@@ -210,47 +217,47 @@ export default function Home() {
                         >
                           {promo.formattedPrice}
                         </Text>
-                        
-                        <View 
-                          style={{ 
-                            width: 130, 
-                            height: 44, 
-                            borderRadius: tokens.radii.lg, 
-                            backgroundColor: 'rgba(255,255,255,0.7)', 
-                            overflow: 'hidden',
-                            position: 'absolute',
+
+                        <View
+                          style={{
+                            width: 130,
+                            height: 44,
+                            borderRadius: tokens.radii.lg,
+                            backgroundColor: "rgba(255,255,255,0.7)",
+                            overflow: "hidden",
+                            position: "absolute",
                             bottom: -tokens.spacing["2xl"],
                             right: -tokens.spacing.sm,
                           }}
                         >
                           {activeSlide === index && (
-                            <Animated.View 
-                              style={{ 
-                                position: 'absolute',
+                            <Animated.View
+                              style={{
+                                position: "absolute",
                                 top: 0,
                                 left: 0,
                                 bottom: 0,
-                                backgroundColor: 'white',
+                                backgroundColor: "white",
                                 width: progress.interpolate({
                                   inputRange: [0, 1],
-                                  outputRange: ['0%', '100%']
-                                })
-                              }} 
+                                  outputRange: ["0%", "100%"],
+                                }),
+                              }}
                             />
                           )}
-                          <Pressable 
+                          <Pressable
                             onPress={() => addItem(promo)}
                             style={({ pressed }) => ({
                               flex: 1,
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              opacity: pressed ? 0.8 : 1
+                              alignItems: "center",
+                              justifyContent: "center",
+                              opacity: pressed ? 0.8 : 1,
                             })}
                           >
                             <Text
                               style={{
                                 fontSize: 13,
-                                fontWeight: '900',
+                                fontWeight: "900",
                                 letterSpacing: 0.5,
                                 color: promo.color,
                                 zIndex: 2,
@@ -275,70 +282,90 @@ export default function Home() {
             style={{
               backgroundColor: theme.colors.surfaceVariant,
               borderRadius: tokens.radii.xl,
-              overflow: 'hidden'
+              overflow: "hidden",
             }}
           >
             {/* Custom Switcher Header */}
-            <View 
-              style={{ 
-                flexDirection: 'row', 
-                padding: 4, 
-                backgroundColor: 'rgba(0,0,0,0.05)', 
-                borderRadius: tokens.radii.xl 
+            <View
+              style={{
+                flexDirection: "row",
+                padding: 4,
+                backgroundColor: "rgba(0,0,0,0.05)",
+                borderRadius: tokens.radii.xl,
               }}
             >
               <Pressable
                 onPress={() => setOrderType("pickup")}
                 style={{
                   flex: 1,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
                   gap: 8,
                   paddingVertical: 10,
                   borderRadius: tokens.radii.lg,
-                  backgroundColor: orderType === "pickup" ? theme.colors.surface : 'transparent',
+                  backgroundColor:
+                    orderType === "pickup"
+                      ? theme.colors.surface
+                      : "transparent",
                 }}
               >
-                <MaterialCommunityIcons 
-                  name="walk" 
-                  size={18} 
-                  color={orderType === "pickup" ? theme.colors.primary : theme.colors.onSurfaceVariant} 
+                <MaterialCommunityIcons
+                  name="walk"
+                  size={18}
+                  color={
+                    orderType === "pickup"
+                      ? theme.colors.primary
+                      : theme.colors.onSurfaceVariant
+                  }
                 />
-                <Text 
-                  style={{ 
-                    fontWeight: "800", 
+                <Text
+                  style={{
+                    fontWeight: "800",
                     fontSize: 13,
-                    color: orderType === "pickup" ? theme.colors.primary : theme.colors.onSurfaceVariant 
+                    color:
+                      orderType === "pickup"
+                        ? theme.colors.primary
+                        : theme.colors.onSurfaceVariant,
                   }}
                 >
                   PICKUP
                 </Text>
               </Pressable>
-              
+
               <Pressable
                 onPress={() => setOrderType("delivery")}
                 style={{
                   flex: 1,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
                   gap: 8,
                   paddingVertical: 10,
                   borderRadius: tokens.radii.lg,
-                  backgroundColor: orderType === "delivery" ? theme.colors.surface : 'transparent',
+                  backgroundColor:
+                    orderType === "delivery"
+                      ? theme.colors.surface
+                      : "transparent",
                 }}
               >
-                <MaterialCommunityIcons 
-                  name="moped" 
-                  size={18} 
-                  color={orderType === "delivery" ? theme.colors.primary : theme.colors.onSurfaceVariant} 
+                <MaterialCommunityIcons
+                  name="moped"
+                  size={18}
+                  color={
+                    orderType === "delivery"
+                      ? theme.colors.primary
+                      : theme.colors.onSurfaceVariant
+                  }
                 />
-                <Text 
-                  style={{ 
-                    fontWeight: "800", 
+                <Text
+                  style={{
+                    fontWeight: "800",
                     fontSize: 13,
-                    color: orderType === "delivery" ? theme.colors.primary : theme.colors.onSurfaceVariant 
+                    color:
+                      orderType === "delivery"
+                        ? theme.colors.primary
+                        : theme.colors.onSurfaceVariant,
                   }}
                 >
                   DELIVERY
@@ -364,27 +391,33 @@ export default function Home() {
                   alignItems: "center",
                   justifyContent: "center",
                   borderWidth: 1,
-                  borderColor: 'rgba(0,0,0,0.05)'
+                  borderColor: "rgba(0,0,0,0.05)",
                 }}
               >
                 <Icon
-                  source={orderType === "pickup" ? "store-marker" : "map-marker-radius"}
+                  source={
+                    orderType === "pickup"
+                      ? "store-marker"
+                      : "map-marker-radius"
+                  }
                   size={22}
                   color={theme.colors.primary}
                 />
               </View>
 
               <View style={{ flex: 1, gap: 1 }}>
-                <Text 
-                  variant="labelSmall" 
-                  style={{ 
-                    color: theme.colors.onSurfaceVariant, 
-                    textTransform: 'uppercase', 
+                <Text
+                  variant="labelSmall"
+                  style={{
+                    color: theme.colors.onSurfaceVariant,
+                    textTransform: "uppercase",
                     letterSpacing: 1,
-                    fontWeight: '700'
+                    fontWeight: "700",
                   }}
                 >
-                  {orderType === "pickup" ? "Your Pickup Point" : "Delivery Address"}
+                  {orderType === "pickup"
+                    ? "Your Pickup Point"
+                    : "Delivery Address"}
                 </Text>
                 {orderType === "pickup" ? (
                   <Text variant="titleSmall" style={{ fontWeight: "700" }}>
@@ -395,7 +428,9 @@ export default function Home() {
                     {userLocation}
                   </Text>
                 ) : (
-                  <Pressable onPress={() => setUserLocation("Menara TM, Kuala Lumpur")}>
+                  <Pressable
+                    onPress={() => setUserLocation("Menara TM, Kuala Lumpur")}
+                  >
                     <Text
                       variant="titleSmall"
                       style={{
@@ -409,17 +444,24 @@ export default function Home() {
                 )}
               </View>
 
-              <Icon source="chevron-right" size={20} color={theme.colors.onSurfaceVariant} />
+              <Icon
+                source="chevron-right"
+                size={20}
+                color={theme.colors.onSurfaceVariant}
+              />
             </Card.Content>
           </Card>
         </View>
 
         {/* Filters Section */}
         <View style={{ gap: tokens.spacing.sm }}>
-          <ScrollView 
-            horizontal 
+          <ScrollView
+            horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: tokens.spacing.lg, gap: tokens.spacing.sm }}
+            contentContainerStyle={{
+              paddingHorizontal: tokens.spacing.lg,
+              gap: tokens.spacing.sm,
+            }}
           >
             {CATEGORIES.map((cat) => (
               <Pressable
@@ -431,19 +473,29 @@ export default function Home() {
                   paddingHorizontal: tokens.spacing.md,
                   paddingVertical: tokens.spacing.sm,
                   borderRadius: tokens.radii.pill,
-                  backgroundColor: selectedCategory === cat.id ? theme.colors.primary : theme.colors.surfaceVariant,
+                  backgroundColor:
+                    selectedCategory === cat.id
+                      ? theme.colors.primary
+                      : theme.colors.surfaceVariant,
                   gap: tokens.spacing.xs,
                 }}
               >
-                <Icon 
-                  source={cat.icon} 
-                  size={18} 
-                  color={selectedCategory === cat.id ? "white" : theme.colors.onSurfaceVariant} 
+                <Icon
+                  source={cat.icon}
+                  size={18}
+                  color={
+                    selectedCategory === cat.id
+                      ? "white"
+                      : theme.colors.onSurfaceVariant
+                  }
                 />
-                <Text 
-                  style={{ 
-                    fontWeight: "700", 
-                    color: selectedCategory === cat.id ? "white" : theme.colors.onSurfaceVariant 
+                <Text
+                  style={{
+                    fontWeight: "700",
+                    color:
+                      selectedCategory === cat.id
+                        ? "white"
+                        : theme.colors.onSurfaceVariant,
                   }}
                 >
                   {cat.label}
@@ -453,15 +505,23 @@ export default function Home() {
           </ScrollView>
 
           {currentCategory?.subCategories && (
-            <ScrollView 
-              horizontal 
+            <ScrollView
+              horizontal
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: tokens.spacing.lg, gap: tokens.spacing.xs }}
+              contentContainerStyle={{
+                paddingHorizontal: tokens.spacing.lg,
+                gap: tokens.spacing.xs,
+              }}
             >
               <Chip
                 selected={selectedSubCategory === "all"}
                 onPress={() => setSelectedSubCategory("all")}
-                style={{ backgroundColor: selectedSubCategory === "all" ? theme.colors.primaryContainer : 'transparent' }}
+                style={{
+                  backgroundColor:
+                    selectedSubCategory === "all"
+                      ? theme.colors.primaryContainer
+                      : "transparent",
+                }}
               >
                 All {currentCategory.label}
               </Chip>
@@ -470,7 +530,12 @@ export default function Home() {
                   key={sub.id}
                   selected={selectedSubCategory === sub.id}
                   onPress={() => setSelectedSubCategory(sub.id)}
-                  style={{ backgroundColor: selectedSubCategory === sub.id ? theme.colors.primaryContainer : 'transparent' }}
+                  style={{
+                    backgroundColor:
+                      selectedSubCategory === sub.id
+                        ? theme.colors.primaryContainer
+                        : "transparent",
+                  }}
                 >
                   {sub.label}
                 </Chip>
@@ -480,12 +545,26 @@ export default function Home() {
         </View>
 
         {/* Food List Section */}
-        <View style={{ paddingHorizontal: tokens.spacing.lg, gap: tokens.spacing.md }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <View
+          style={{
+            paddingHorizontal: tokens.spacing.lg,
+            gap: tokens.spacing.md,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <Text variant="titleMedium" style={{ fontWeight: "700" }}>
               {`Menu Items`}
             </Text>
-            <Text variant="labelSmall" style={{ color: theme.colors.onSurfaceVariant }}>
+            <Text
+              variant="labelSmall"
+              style={{ color: theme.colors.onSurfaceVariant }}
+            >
               {`${filteredItems.length} items found`}
             </Text>
           </View>
@@ -496,44 +575,85 @@ export default function Home() {
                 <Card
                   key={item.id}
                   mode="elevated"
-                  style={{ backgroundColor: theme.colors.surface, borderRadius: tokens.radii.lg }}
+                  style={{
+                    backgroundColor: theme.colors.surface,
+                    borderRadius: tokens.radii.lg,
+                  }}
                 >
-                  <Card.Content style={{ flexDirection: 'row', padding: tokens.spacing.md, gap: tokens.spacing.md }}>
-                    <View 
-                      style={{ 
-                        width: 80, 
-                        height: 80, 
-                        borderRadius: tokens.radii.md, 
-                        backgroundColor: item.color + '20',
-                        alignItems: 'center',
-                        justifyContent: 'center'
+                  <Card.Content
+                    style={{
+                      flexDirection: "row",
+                      padding: tokens.spacing.md,
+                      gap: tokens.spacing.md,
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 80,
+                        height: 80,
+                        borderRadius: tokens.radii.md,
+                        backgroundColor: item.color + "20",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
-                      <MaterialCommunityIcons name={item.icon as any} size={40} color={item.color} />
+                      <MaterialCommunityIcons
+                        name={item.icon as any}
+                        size={40}
+                        color={item.color}
+                      />
                     </View>
-                    
-                    <View style={{ flex: 1, justifyContent: 'space-between' }}>
+
+                    <View style={{ flex: 1, justifyContent: "space-between" }}>
                       <View>
-                        <Text variant="titleMedium" style={{ fontWeight: '700' }}>{item.name}</Text>
-                        <Text variant="bodySmall" numberOfLines={2} style={{ color: theme.colors.onSurfaceVariant }}>
+                        <Text
+                          variant="titleMedium"
+                          style={{ fontWeight: "700" }}
+                        >
+                          {item.name}
+                        </Text>
+                        <Text
+                          variant="bodySmall"
+                          numberOfLines={2}
+                          style={{ color: theme.colors.onSurfaceVariant }}
+                        >
                           {item.description}
                         </Text>
                       </View>
-                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Text variant="titleMedium" style={{ fontWeight: '900', color: theme.colors.primary }}>
-                          {item.formattedPrice}
-                        </Text>
-                        <Pressable 
-                          onPress={() => addItem(item)}
-                          style={{ 
-                            backgroundColor: theme.colors.primary, 
-                            paddingHorizontal: tokens.spacing.md, 
-                            paddingVertical: tokens.spacing.xs,
-                            borderRadius: tokens.radii.pill
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Text
+                          variant="titleMedium"
+                          style={{
+                            fontWeight: "900",
+                            color: theme.colors.primary,
                           }}
                         >
-
-                          <Text style={{ color: 'white', fontWeight: '700', fontSize: 12 }}>ADD</Text>
+                          {item.formattedPrice}
+                        </Text>
+                        <Pressable
+                          onPress={() => addItem(item)}
+                          style={{
+                            backgroundColor: theme.colors.primary,
+                            paddingHorizontal: tokens.spacing.md,
+                            paddingVertical: tokens.spacing.xs,
+                            borderRadius: tokens.radii.pill,
+                          }}
+                        >
+                          <Text
+                            style={{
+                              color: "white",
+                              fontWeight: "700",
+                              fontSize: 12,
+                            }}
+                          >
+                            ADD
+                          </Text>
                         </Pressable>
                       </View>
                     </View>
