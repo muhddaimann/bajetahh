@@ -2,6 +2,7 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import { DesignProvider } from "../contexts/designContext";
 import { ThemeProvider } from "../contexts/themeContext";
 import { OverlayProvider } from "../contexts/overlayContext";
+import { OrderProvider } from "../contexts/orderContext";
 import { AuthProvider, useAuth } from "../contexts/authContext";
 import { TokenProvider } from "../contexts/tokenContext";
 import * as SplashScreen from "expo-splash-screen";
@@ -40,11 +41,13 @@ export default function RootLayout() {
       <DesignProvider>
         <ThemeProvider>
           <OverlayProvider>
-            <TokenProvider>
-              <AuthProvider>
-                <AppContent fontsLoaded={fontsLoaded} />
-              </AuthProvider>
-            </TokenProvider>
+            <OrderProvider>
+              <TokenProvider>
+                <AuthProvider>
+                  <AppContent fontsLoaded={fontsLoaded} />
+                </AuthProvider>
+              </TokenProvider>
+            </OrderProvider>
           </OverlayProvider>
         </ThemeProvider>
       </DesignProvider>

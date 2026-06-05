@@ -17,6 +17,7 @@ import NoData from "../../../components/shared/noData";
 import { useRouter } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { CATEGORIES, MENU_ITEMS } from "../../../constants/menu";
+import { useOrder } from "../../../hooks/useOrder";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CAROUSEL_INTERVAL = 5000;
@@ -26,6 +27,7 @@ export default function Home() {
   const tokens = useDesign();
   const router = useRouter();
   const { onScroll } = useTabs();
+  const { addItem } = useOrder();
   const scrollViewRef = useRef<ScrollView | null>(null);
   const carouselRef = useRef<ScrollView | null>(null);  
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -129,7 +131,7 @@ export default function Home() {
           <View style={{ gap: tokens.spacing.sm }}>
             <View style={{ paddingHorizontal: tokens.spacing.lg }}>
               <Text variant="titleMedium" style={{ fontWeight: "700" }}>
-                Today's Specials
+                {`Today's Specials`}
               </Text>
             </View>
 
@@ -237,6 +239,7 @@ export default function Home() {
                             />
                           )}
                           <Pressable 
+                            onPress={() => addItem(promo)}
                             style={({ pressed }) => ({
                               flex: 1,
                               alignItems: 'center',
@@ -480,10 +483,10 @@ export default function Home() {
         <View style={{ paddingHorizontal: tokens.spacing.lg, gap: tokens.spacing.md }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <Text variant="titleMedium" style={{ fontWeight: "700" }}>
-              Menu Items
+              {`Menu Items`}
             </Text>
             <Text variant="labelSmall" style={{ color: theme.colors.onSurfaceVariant }}>
-              {filteredItems.length} items found
+              {`${filteredItems.length} items found`}
             </Text>
           </View>
 
@@ -521,6 +524,7 @@ export default function Home() {
                           {item.formattedPrice}
                         </Text>
                         <Pressable 
+                          onPress={() => addItem(item)}
                           style={{ 
                             backgroundColor: theme.colors.primary, 
                             paddingHorizontal: tokens.spacing.md, 
@@ -528,6 +532,7 @@ export default function Home() {
                             borderRadius: tokens.radii.pill
                           }}
                         >
+
                           <Text style={{ color: 'white', fontWeight: '700', fontSize: 12 }}>ADD</Text>
                         </Pressable>
                       </View>

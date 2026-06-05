@@ -5,7 +5,7 @@ import { usePathname, router } from "expo-router";
 import { useDesign } from "../../contexts/designContext";
 import { useAuth } from "../../contexts/authContext";
 import { useTabs } from "../../contexts/tabContext";
-import { useOverlay } from "../../contexts/overlayContext";
+import { useOrder } from "../../hooks/useOrder";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export function NavBar() {
@@ -14,7 +14,7 @@ export function NavBar() {
   const pathname = usePathname();
   const { signOut } = useAuth();
   const { hideTabBar } = useTabs();
-  const { showModal, hideModal } = useOverlay();
+  const { totalItems } = useOrder();
 
   const isHome =
     pathname.startsWith("/home") || pathname.startsWith("/(tabs)/home");
@@ -151,6 +151,27 @@ export function NavBar() {
           size={26}
           color={isHome ? theme.colors.onPrimary : theme.colors.onError}
         />
+        {isHome && totalItems > 0 && (
+          <View
+            style={{
+              position: "absolute",
+              top: -4,
+              right: -4,
+              backgroundColor: theme.colors.secondary,
+              borderRadius: 12,
+              minWidth: 24,
+              height: 24,
+              alignItems: "center",
+              justifyContent: "center",
+              borderWidth: 2,
+              borderColor: theme.colors.background,
+            }}
+          >
+            <Text style={{ color: "white", fontSize: 10, fontWeight: "900" }}>
+              {totalItems}
+            </Text>
+          </View>
+        )}
       </Pressable>
     </Animated.View>
   );

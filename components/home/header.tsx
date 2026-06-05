@@ -181,8 +181,8 @@ export default function Header({
             textAlign: 'center',
           }}
         >
-          <Text style={{ color: colors.primary }}>Makan Jimat. </Text>
-          <Text style={{ color: colors.secondary }}>Order Cepat.</Text>
+          <Text style={{ color: colors.primary }}>{`Makan Jimat. `}</Text>
+          <Text style={{ color: colors.secondary }}>{`Order Cepat.`}</Text>
         </Text>
       </View>
     </View>
