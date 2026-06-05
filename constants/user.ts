@@ -1,4 +1,4 @@
-export const APP_INITIAL = 'B';
+export const APP_INITIAL = 'BA';
 export const APP_NAME = 'BajetAhh';
 export const APP_TAGLINE = 'Makan Jimat, Order Cepat';
 export const AUTH_BUTTON_TEXT = 'Authenticate';
